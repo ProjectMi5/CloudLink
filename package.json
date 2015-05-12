@@ -1,0 +1,22 @@
+{
+  "name": "CloudLink",
+  "version": "0.0.1",
+  "description": "Links an MQTT broker to the GCM Push service according to Showcase Mi5 specifications",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cloud",
+    "mqtt",
+    "showcase",
+    "mi5",
+    "gcm"
+  ],
+  "author": "Thomas Frei",
+  "license": "MIT",
+  "dependencies": {
+    "mqtt": "^1.1.4",
+    "node-gcm": "^0.9.15"
+  }
+}

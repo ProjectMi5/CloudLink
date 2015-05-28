@@ -1,9 +1,8 @@
 /**
  * Created by Thomas on 28.05.2015.
  */
-var gcm = require('node-gcm');
 var config = require('./../config.js');
-
+var gcm = require('node-gcm');
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/test');
@@ -107,5 +106,19 @@ db.once('open', function (callback) {
 
     // Start web-server
     app.listen(config.HTTPPort);
+    // -----------------------------------------------------------------
+
+
+    // -----------------------------------------------------------------
+    // MQTT
+    var mqtt = require('mqtt');
+    var client  = mqtt.connect(config.MQTTHost);
+
+    client.on('message', function (topic, message) {
+        // message is Buffer
+        console.log('Message:', message.toString(), 'Topic:', topic);
+        //client.end();
+    });
+
     // -----------------------------------------------------------------
 });

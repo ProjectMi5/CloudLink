@@ -1,5 +1,5 @@
 var gcm = require('node-gcm');
-var config = require('./../config.js');
+var config = require('./../../config.js');
 
 // ... or some given values
 var message = new gcm.Message({

@@ -14,8 +14,7 @@ app.post('/register', function (req, res) {
     if (undefined === regId) {
         res.json({status: "BAD", msg: "No regId-parameter given"});
     } else {
-
-        res.json({status: "OK"});
+        res.json({status: "OK", msg: "Your regId: "+regId});
     }
 });
 

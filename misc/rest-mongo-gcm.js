@@ -30,6 +30,11 @@ db.once('open', function (callback) {
     // app.use(bodyParser.json()); // for parsing application/json
     app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
 
+    app.get('/helloWorld', function (req, res) {
+        console.log('Hello World!');
+        res.send('Hello World!');
+    });
+
     app.post('/register', function (req, res) {
         var regId = req.body.regId;
 
@@ -100,7 +105,7 @@ db.once('open', function (callback) {
         }
     });
 
-    // Start Server on Port 80
+    // Start web-server
     app.listen(config.HTTPPort);
     // -----------------------------------------------------------------
 });

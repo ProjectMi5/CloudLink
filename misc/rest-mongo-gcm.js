@@ -101,6 +101,6 @@ db.once('open', function (callback) {
     });
 
     // Start Server on Port 80
-    app.listen(3001);
+    app.listen(config.HTTPPort);
     // -----------------------------------------------------------------
 });

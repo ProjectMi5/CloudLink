@@ -91,6 +91,7 @@ db.once('open', function (callback) {
                 });
                 //console.log(regIds);
 
+		// GCM Send
                 sender.sendNoRetry(message, regIds, function(err, result) {
                     if(err) {
                         console.error(err);

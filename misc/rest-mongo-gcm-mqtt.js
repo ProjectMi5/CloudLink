@@ -97,7 +97,24 @@ db.once('open', function (callback) {
                         console.error(err);
                         res.json(err);
                     } else {
-                        console.log(result);
+                        // Handle GCM result
+                        cleanRegIds(regIds, result.results);
+                        function cleanRegIds(regIds, results){
+                           results.forEach(function(result, key){
+                              //console.log('Pair:', result, regIds[key]);
+                               if('InvalidRegistration' == result.error){
+                                   console.log('found error');
+                                   deleteRegId(regIds[key]);
+                               }
+
+                           });
+                        }
+                        function deleteRegId(regId){
+                            Device.findOneAndRemove({regId: regId}, function(err, result){
+                                console.log('err',err,' -- removed result:',result);
+                            });
+                        }
+
                         res.json(result);
                     }
                 });

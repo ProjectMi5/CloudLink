@@ -1,9 +1,10 @@
 /**
  * Created by Thomas on 28.05.2015.
  */
+var config = require('./../../config.js');
 var mqtt = require('mqtt');
 
-var client  = mqtt.connect('mqtt://localhost');
+var client  = mqtt.connect(config.MQTTHost);
 
 client.on('connect', function () {
     client.subscribe('presence');

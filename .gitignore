@@ -3,3 +3,4 @@ node_modules
 /.project
 config.js
 .idea
+grunt-tests-results.txt

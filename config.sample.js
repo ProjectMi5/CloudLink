@@ -1,7 +1,6 @@
 /**
  * Sample Configuration
  */
-
 var config = {};
 
 config.GoogleAPI = '';

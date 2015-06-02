@@ -15,25 +15,26 @@ describe('MQTT Connection test', function(){
    });
 
    describe('Connect to the MQTT-Broker', function(){
-       var client  = mqtt.connect(config.MQTTHost);
-
        var topic = 'testTopic';
        var message = 'testMessage';
 
-       it('should connect, subscribe and publish', function(done){
-           client.on('connect', function () {
-               client.subscribe(topic);
-               client.publish(topic, message);
-               //done();
-           });
+       var client  = mqtt.connect(config.MQTTHost);
+
+       //it.skip('wait 1000ms for connectiong', function(done){
+       //    setTimeout(done, 1000);
+       //});
+
+       it('should subscribe to '+topic, function(){
+           client.subscribe(topic);
        });
 
        it('should receive the '+topic+' and the message '+message, function(done){
            client.on('message', function (_topic, _message) {
                expect(_topic).to.be.equal(topic);
-               expect(_message).to.be.equal(message);
+               expect(_message.toString()).to.be.equal(message);
                done();
            });
+           client.publish(topic,message);
        });
    });
 });

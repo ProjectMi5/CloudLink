@@ -15,14 +15,16 @@
   ],
   "author": "Thomas Frei",
   "license": "MIT",
+  "repository": "https://github.com/ProjectMi5/CloudLink",
   "dependencies": {
     "body-parser": "^1.12.4",
     "express": "^4.12.4",
     "mongoose": "^4.0.3",
+    "mongoose-q": "0.0.17",
     "mqtt": "^1.1.4",
     "node-gcm": "^0.9.15",
     "promise": "^7.0.1",
-    "promised-mongo": "^0.11.1"
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "chai": "^2.3.0",

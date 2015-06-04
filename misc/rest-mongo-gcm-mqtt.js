@@ -97,7 +97,7 @@ db.once('open', function (callback) {
                         console.error(err);
                         res.json(err);
                     } else {
-                        // Handle GCM result
+                        // Handle GCM result and remove obsolet regIds
                         cleanRegIds(regIds, result.results);
                         function cleanRegIds(regIds, results){
                            results.forEach(function(result, key){
@@ -132,9 +132,18 @@ db.once('open', function (callback) {
     var mqtt = require('mqtt');
     var client  = mqtt.connect(config.MQTTHost);
 
+    var topicCocktailTaste = 'Mi5/User/Cocktail/Taste';
+    client.subscribe(topicCocktailTaste);
+
     client.on('message', function (topic, message) {
         // message is Buffer
-        console.log('Message:', message.toString(), 'Topic:', topic);
+        message = message.toString()
+        console.log('Message:', message, 'Topic:', topic);
+
+        // Prototyp listen on:
+        if(topic == topicCocktailTaste){
+            console.log('send a push message:',message);
+        }
         //client.end();
     });
 

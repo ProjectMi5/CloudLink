@@ -5,6 +5,7 @@ var config = require('./../config.js');
 var assert = require('better-assert');
 //var assert = require('assert');
 var mongoose = require('mongoose-q')();
+var _ = require('underscore');
 
 mongoose.connect(config.MongoDBHost);
 
@@ -33,6 +34,33 @@ function getRegIdsQ(){
     });
 }
 exports.getRegIdsQ = getRegIdsQ;
+
+/**
+ *
+ * @param gcm.result
+ */
+function cleanRegIdsQ(result){
+    getRegIdsQ()
+        .then(function(regIds){
+            console.log(regIds,result.results);
+            return cleanRegIds(regIds, result.results);
+        });
+
+
+    function cleanRegIds(regIds, results){
+        return _.reduce(results, function(memo, result, key){
+            if('InvalidRegistration' == result.error){
+                console.log('found error:', regIds[key]);
+                return deleteRegIdQ(regIds[key]);
+            }
+        }, Promise.resolve());
+    }
+    function deleteRegIdQ(regId){
+        console.log('now find',regId);
+        return Device.findOneAndRemoveQ({regId: regId});
+    }
+}
+exports.cleanRegIdsQ = cleanRegIdsQ;
 
 //NewDevice.save(function (err) {
 //    if (err) return console.error(err);

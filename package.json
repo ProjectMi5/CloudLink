@@ -25,6 +25,7 @@
     "mqtt": "^1.1.4",
     "node-gcm": "^0.9.15",
     "promise": "^7.0.1",
+    "q": "^1.4.1",
     "underscore": "^1.8.3"
   },
   "devDependencies": {

@@ -26,10 +26,10 @@ app.post('/register', function (req, res) {
         // Error
         res.json({status: "BAD", msg: "No regId-parameter given"});
     } else {
-        database.registerNewDevice(regId)
+        database.registerNewDeviceQ(regId)
             .then(function(result){
                 console.log('saved');
-                res.json({status: "OK", msg: "Your regId: " + regId});
+                res.json({status: "OK", msg: "Your regId: " + regId, result: result});
             });
     }
 });
@@ -48,15 +48,14 @@ app.post('/pushMessage', function (req, res) {
         // Error
         res.json({status: "BAD", msg: "No data to push"});
     } else {
-        // node-gcm Message
+        // Push message via gcm
         database.getRegIdsQ()
             .then(function(regIds){
                 return gcm.pushMessage(data,regIds);
             })
             .then(database.cleanRegIdsQ)
-            .then(function(){
-                res.json(result);
-            });
+            .done();
+            res.json({"status:":"OK"});
     }
 });
 
@@ -75,12 +74,18 @@ client.subscribe(topicCocktailTaste);
 
 client.on('message', function (topic, message) {
     // message is Buffer
-    message = message.toString()
-    console.log('Message:', message, 'Topic:', topic);
+    message = message.toString();
+    console.log('Incoming message on topic:', topic);
 
     // Prototyp listen on:
     if(topic == topicCocktailTaste){
         console.log('send a push message:',message);
+        database.getRegIdsQ()
+            .then(function(regIds){
+                return gcm.pushMessage(message,regIds);
+            })
+            .then(database.cleanRegIdsQ)
+            .done();
     }
     //client.end();
 });

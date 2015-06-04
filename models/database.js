@@ -6,6 +6,8 @@ var assert = require('better-assert');
 //var assert = require('assert');
 var mongoose = require('mongoose-q')();
 var _ = require('underscore');
+var Q = require('q');
+
 
 mongoose.connect(config.MongoDBHost);
 
@@ -16,12 +18,34 @@ var deviceSchema = mongoose.Schema({
 });
 var Device = mongoose.model('Device', deviceSchema);
 
+/**
+ * Register a new Device
+ *
+ * Check if regId already exist, do not save then
+ * Check if regId is a string
+ *
+ * @param regId (string)
+ * @returns {*}
+ */
 function registerNewDeviceQ(regId){
     assert(typeof regId == 'string');
+    return Device.findQ({regId: regId})
+        .then(function fullfill(result){
+            if (_.isEmpty(result)){
+                return saveDeviceQ(regId);
+            }
+            else {
+                return Q.fcall(function (){
+                    return 'device already exists';
+                });
+            }
+        });
+}
+function saveDeviceQ(regId){
     var NewDevice = new Device({regId: regId});
     return NewDevice.saveQ();
 }
-exports.registerNewDevice = registerNewDeviceQ;
+exports.registerNewDeviceQ = registerNewDeviceQ;
 
 function getRegIdsQ(){
     return Device.findQ({}).then(function(devices){
@@ -56,7 +80,7 @@ function cleanRegIdsQ(result){
         }, Promise.resolve());
     }
     function deleteRegIdQ(regId){
-        console.log('now find',regId);
+        console.log('now delete',regId);
         return Device.findOneAndRemoveQ({regId: regId});
     }
 }

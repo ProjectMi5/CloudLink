@@ -19,4 +19,7 @@ describe('Database: Mongo Promised', function() {
     it('Get all regIds', function(done){
         database.getRegIdsQ().should.eventually.be.an('array').notify(done);
     });
+
+    // check that duplicate entires dont get saved
+    // check for regId cleaning on gcm result
 });

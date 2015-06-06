@@ -1,0 +1,1 @@
+﻿<?xml version="1.0" encoding="utf-8"?><RequestViewModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Url>http://mi5.itq.de:5235/helloWorld</Url><Method>GET</Method><Headers><string>Accept: application/json</string><string>Cache-Control: no-cache</string></Headers><Body /></RequestViewModel>

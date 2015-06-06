@@ -4,3 +4,4 @@ node_modules
 config.js
 .idea
 grunt-tests-results.txt
+/log

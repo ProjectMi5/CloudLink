@@ -69,16 +69,23 @@ app.listen(config.HTTPPort);
 var mqtt = require('mqtt');
 var client  = mqtt.connect(config.MQTTHost);
 
-var topicCocktailTaste = 'Mi5/User/Cocktail/Taste';
-client.subscribe(topicCocktailTaste);
+var mi5ServerPush = '/mi5/server/push';
+client.subscribe(mi5ServerPush);
+var mi5ServerUpstream = '/mi5/server/upstream';
+client.subscribe(mi5ServerUpstream);
+
+// Cocktail Scenario - only pushExample Message
+var mi5ShowcaseCocktailUserFeedback = '/mi5/showcase/cocktail/user/feedback';
+client.subscribe(mi5ShowcaseCocktailUserFeedback);
+
 
 client.on('message', function (topic, message) {
     // message is Buffer
     message = message.toString();
-    console.log('Incoming message on topic:', topic);
+    console.log('incoming message on topic:', topic);
 
-    // Prototyp listen on:
-    if(topic == topicCocktailTaste){
+    // Listen on topic: ----------------------------
+    if(mi5ServerPush == topic){
         console.log('send a push message:',message);
         database.getRegIdsQ()
             .then(function(regIds){
@@ -87,8 +94,95 @@ client.on('message', function (topic, message) {
             .then(database.cleanRegIdsQ)
             .done();
     }
+
+    if(mi5ServerUpstream == topic){
+        console.log('received an upstream message:');
+        //console.log(message);
+        message = JSON.parse(message);
+
+        // Check if it is a upstream-demo-message
+        if(typeof message.data.my_message != 'undefined'){
+            // Upstream-Demo sends the payload as JSON (gcm is JSON, and payload is JSON again)
+            var payload = JSON.parse(message.data.my_message)
+            console.log('payload:', payload);
+            if(typeof payload.recommendation != 'undefined'){
+                console.log('message is a recommendation');
+                // cannot send JSON-object directly!
+                client.publish('/mi5/showcase/cocktail/operator/recommendation', JSON.stringify(payload));
+            }
+        }
+    }
+
+    // Send always the Example message
+    if(mi5ShowcaseCocktailUserFeedback == topic){
+        database.getRegIdsQ()
+            .then(function(regIds){
+                return gcm.pushMessage(pushExample,regIds);
+            })
+            .then(database.cleanRegIdsQ)
+            .done();
+    }
+
+
+    // End Listen ---------------------------------
     //client.end();
 });
 
+function checkUpstreaMessage(message){
+}
+
+// https://alpha.itq.de/projects/mi5-watchout/wiki/JSON-Push
+var pushExample = {
+    "productId": 123,
+    "timestamp": "2015-05-01 14:02:05",
+    "machine": {
+        "id": 1,
+        "location": {
+            "latitude": 49.418423,
+            "longitude": 11.117910
+        }
+    },
+    "recipe": {
+        "id": 8,
+        "name": "Free Passion",
+        "imageUrl": "http://bit.ly/1bFDyGj"
+    },
+    "mixRatio": {
+        "ingredientName": ["Orange", "Passion Fruit", "Syrup"],
+        "ratio": [0.4, 0.5, 0.1]
+    },
+    "review": {
+        "id": 1,
+        "location": {
+            "latitude": 49.418423,
+            "longitude": 11.117910
+        },
+        "rating": {
+            "like": false,
+            "feedback": ["Too sweet"]
+        }
+    }
+};
+
+var upstreamExample = {
+    "productId": 123,
+    "timestamp": "2015-06-06 14:02:05",
+    "machine": {
+        "id": 1
+    },
+    "recipe": {
+        "id": 8
+    },
+    "mixRatio": {
+        "ingredientName": ["Orange", "Passion Fruit", "Syrup"],
+        "ratio": [0.4, 0.5, 0.1]
+    },
+    "recommendation": {
+        "mixRatio": {
+            "ingredientName": ["Orange", "Passion Fruit", "Syrup"],
+            "ratio": [0.1, 0.625, 0.625]
+        }
+    }
+};
 // -----------------------------------------------------------------
 

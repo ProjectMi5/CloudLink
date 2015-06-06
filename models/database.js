@@ -8,8 +8,11 @@ var mongoose = require('mongoose-q')();
 var _ = require('underscore');
 var Q = require('q');
 
-
-mongoose.connect(config.MongoDBHost);
+try {
+    mongoose.connect(config.MongoDBHost);
+} catch(err){
+    console.log(err);
+}
 
 // Create the Mongoose Schema
 var deviceSchema = mongoose.Schema({

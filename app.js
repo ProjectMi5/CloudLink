@@ -115,9 +115,11 @@ client.on('message', function (topic, message) {
 
     // Send always the Example message
     if(mi5ShowcaseCocktailUserFeedback == topic){
+        console.log('user feedback');
+        //var payload = JSON.parse(message);
         database.getRegIdsQ()
             .then(function(regIds){
-                return gcm.pushMessage(pushExample,regIds);
+                return gcm.pushMessage(message,regIds); // Message is forwarded directly since it is a JSON-object-string
             })
             .then(database.cleanRegIdsQ)
             .done();

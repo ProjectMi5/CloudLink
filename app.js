@@ -101,9 +101,9 @@ client.on('message', function (topic, message) {
         message = JSON.parse(message);
 
         // Check if it is a upstream-demo-message
-        if(typeof message.data.my_message != 'undefined'){
+        if(typeof message.data.watchout != 'undefined'){
             // Upstream-Demo sends the payload as JSON (gcm is JSON, and payload is JSON again)
-            var payload = JSON.parse(message.data.my_message)
+            var payload = JSON.parse(message.data.watchout);
             console.log('payload:', payload);
             if(typeof payload.recommendation != 'undefined'){
                 console.log('message is a recommendation');
@@ -113,13 +113,13 @@ client.on('message', function (topic, message) {
         }
     }
 
-    // Send always the Example message
+    // Forward the Feedback from the HMI
     if(mi5ShowcaseCocktailUserFeedback == topic){
         console.log('user feedback');
         //var payload = JSON.parse(message);
         database.getRegIdsQ()
             .then(function(regIds){
-                return gcm.pushMessage(message,regIds); // Message is forwarded directly since it is a JSON-object-string
+                return gcm.pushMessage(message,regIds);
             })
             .then(database.cleanRegIdsQ)
             .done();
@@ -130,10 +130,8 @@ client.on('message', function (topic, message) {
     //client.end();
 });
 
-function checkUpstreaMessage(message){
-}
-
 // https://alpha.itq.de/projects/mi5-watchout/wiki/JSON-Push
+/*
 var pushExample = {
     "productId": 123,
     "timestamp": "2015-05-01 14:02:05",
@@ -188,3 +186,4 @@ var upstreamExample = {
 };
 // -----------------------------------------------------------------
 
+*/

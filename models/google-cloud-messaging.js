@@ -14,7 +14,7 @@ function pushMessage(text,regIds){
 
         var message = new gcm.Message({
             collapseKey: 'collapseKey',
-            delayWhileIdle: true,
+            delayWhileIdle: false,
             timeToLive: 3,
             data: {
                 mi5: text

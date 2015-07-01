@@ -76,7 +76,7 @@ function cleanRegIdsQ(result){
 
     function cleanRegIds(regIds, results){
         return _.reduce(results, function(memo, result, key){
-            if('InvalidRegistration' == result.error){
+            if('InvalidRegistration' == result.error || 'NotRegistered' == result.error){
                 console.log('found error:', regIds[key]);
                 return deleteRegIdQ(regIds[key]);
             }

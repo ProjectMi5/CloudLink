@@ -3,6 +3,7 @@
  */
 var config = require('./config.js');
 var database = require('./models/database.js');
+var mi5Database = require('./models/mi5Database').instance;
 var gcm = require('./models/google-cloud-messaging.js');
 
 // -----------------------------------------------------------------
@@ -57,6 +58,57 @@ app.post('/pushMessage', function (req, res) {
             .done();
             res.json({"status:":"OK"});
     }
+});
+
+// Mi5 Watchout new REST API
+app.get('/getRecipes', function(req, res){
+    mi5Database.getRecipes()
+      .then(function(recipes){
+          console.log(recipes);
+          res.json(recipes);
+      })
+      .catch(function(err){
+          res.json({err: err});
+          console.log(err);
+      });
+});
+
+app.get('/getLastOrder', function(req,res){
+    mi5Database.getLastOrder()
+      .then(function(order){
+          console.log('getlastorder', order);
+          res.json(order);
+      })
+      .catch(function(err){
+          res.json({err: err});
+          console.log(err);
+      })
+});
+
+app.get('/getOrders', function(req,res){
+    mi5Database.getOrders()
+      .then(function(orders){
+          console.log('getOrders', orders);
+          res.json(orders);
+      })
+      .catch(function(err){
+          res.json({err: err});
+          console.log(err);
+      });
+});
+
+app.post('/getOrderById', function(req,res){
+    var id = parseInt(req.body.id, 10);
+
+    mi5Database.getOrder(id)
+      .then(function(order){
+          console.log('getlastorder', order);
+          res.json(order);
+      })
+      .catch(function(err){
+          res.json({err: err});
+          console.log(err);
+      })
 });
 
 // Start web-server

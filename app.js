@@ -150,7 +150,7 @@ app.post('/giveFeedback', function(req, res){
       .then(database.cleanRegIdsQ)
       .then(function(){
           console.log('feedback saved and pushed');
-          res.json({status: 'ok', description: 'feedback has been saved'});
+          res.json({status: 'ok', description: 'feedback saved and pushed'});
       })
       .catch(function(err){
           console.log('error while saving feedback:', err);

@@ -3,14 +3,13 @@
  */
 
 var config = require('./../config.js');
-var assert = require('better-assert');
-//var assert = require('assert');
-var Promise = require('promise');
+var Q = require('q');
 
 var gcm = require('node-gcm');
 
 function pushMessage(text,regIds){
-    return new Promise(function (fullfill, reject){
+    console.log('gcm.pushMessage');
+    return Q.Promise(function (fullfill, reject){
 
         var message = new gcm.Message({
             collapseKey: 'collapseKey',
@@ -22,15 +21,22 @@ function pushMessage(text,regIds){
         });
 
         var sender = new gcm.Sender(config.GoogleAPI);
+        console.log('gcmSender', message);
 
-        sender.sendNoRetry(message, regIds, function(err, result) {
-            if (err) {
-                return reject(err);
-            } else {
-                //console.log('gcm:',JSON.stringify(result)); //hiermit funktionierts
-                return fullfill(result);
-            }
-        });
+        try{
+            sender.sendNoRetry(message, regIds, function(err, result) {
+                if (err) {
+                    console.log('sender.sendNoRetry - rejected:', err, result);
+                    return reject(err);
+                } else {
+                    console.log('sender.sendNoRetry gcm:',JSON.stringify(result)); //hiermit funktionierts
+                    return fullfill(result);
+                }
+            });
+        } catch(err){
+            reject(err);
+            throw new Error('sendNoRetry was not successfull',err);
+        }
     });
 }
 exports.pushMessage = pushMessage;

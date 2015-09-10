@@ -29,13 +29,21 @@ mi5database = function() {
 
   var recommendationSchema = this.mongoose.Schema({
     productId: Number,
-    timestamp: Date,
+    timestamp: { type: Date, default: Date.now },
     recipe: this.mongoose.Schema.Types.Mixed,
     order: this.mongoose.Schema.Types.Mixed,
     review: this.mongoose.Schema.Types.Mixed,
     recommendation: this.mongoose.Schema.Types.Mixed
   });
   this.Recommendation = this.mongoose.model('Recommendation', recommendationSchema);
+
+  var feedbackSchema = this.mongoose.Schema({
+    productId: Number,
+    like: Boolean,
+    feedback: String,
+    timestamp: { type: Date, default: Date.now }
+  });
+  this.Feedback = this.mongoose.model('Feedback', feedbackSchema);
 
   var recipeSchema = this.mongoose.Schema({
     recipeId  : Number,
@@ -152,14 +160,40 @@ mi5database.prototype.updateRecipe = function(recipeId, name, description, userp
   return self.Recipe.updateQ({recipeId: recipeId}, recipe);
 }
 
-/**
- * Save an order
- *
- * @param taskId [int]
- * @param recipeId [int]
- * @param userParameters [array_handlePostParameters]
- * @returns Promise
- */
+mi5database.prototype.checkOrder = function(order){
+  var self = this;
+  var deferred = Q.defer();
+
+  var taskId = parseInt(order.taskId, 10);
+  var recipeId = parseInt(order.recipeId, 10);
+  var parameters = [];
+  if(_.isArray(order.parameters)){
+    order.parameters.forEach(function(parameter){
+      parameters.push(parseInt(parameter, 10));
+    });
+  }
+
+  if(!_.isNumber(taskId)) {
+    deferred.reject('taskId is not a number');
+  }
+  if(!_.isNumber(recipeId)){
+    deferred.reject('recipeId is not a number');
+  }
+
+  // Check if order already exists
+  self.getOrder(taskId)
+    .then(function(order){
+      // undefined if order with this taskId does not exist
+      if(typeof order == 'undefined'){
+        deferred.resolve([taskId, recipeId, parameters]); //used with promise.spread()
+      } else {
+        deferred.reject('an order with the taskId '+taskId+' already exists!');
+      }
+    });
+
+  return deferred.promise;
+};
+
 mi5database.prototype.saveOrder = function(taskId, recipeId, userParameters){
   var self = instance;
 
@@ -168,7 +202,6 @@ mi5database.prototype.saveOrder = function(taskId, recipeId, userParameters){
               parameters: userParameters};
 
   var NewOrder = new self.Order(order);
-  console.log('new order:'+order);
   return NewOrder.saveQ();
 };
 
@@ -188,6 +221,46 @@ mi5database.prototype.getRecommendation = function(taskId){
     if(err) deferred.reject(err);
 
     deferred.resolve(post.pop());
+  });
+
+  return deferred.promise;
+};
+
+
+mi5database.prototype.checkFeedback = function(feedback) {
+  var self = instance;
+  var deferred = Q.defer();
+
+  var productId = parseInt(feedback.productId, 10);
+  var like = !!feedback.like; // !! is equivalent to a boolean cast
+  var feedback = String(feedback.feedback);
+
+  deferred.resolve([productId, like, feedback]);
+
+  return deferred.promise;
+};
+
+mi5database.prototype.saveFeedback = function(productId, like, feedback){
+  var self = instance;
+
+  var feedback = {
+    productId: productId,
+    like: like,
+    feedback: feedback
+  };
+
+  var NewFeedback = new self.Feedback(feedback);
+  return NewFeedback.saveQ();
+}
+
+mi5database.prototype.getFeedbacks = function(){
+  var self = instance;
+  var deferred = Q.defer();
+
+  self.Feedback.find().limit().exec(function(err, post){
+    if(err) deferred.reject(err);
+
+    deferred.resolve(post);
   });
 
   return deferred.promise;

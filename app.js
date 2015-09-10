@@ -6,6 +6,8 @@ var database = require('./models/database.js');
 var mi5Database = require('./models/mi5Database').instance;
 var gcm = require('./models/google-cloud-messaging.js');
 
+var Q = require('q');
+
 // -----------------------------------------------------------------
 // REST API
 var express = require('express');
@@ -73,6 +75,11 @@ app.get('/getRecipes', function(req, res){
       });
 });
 
+app.post('/manageRecipe', function(req, res){
+    //mi5Database.
+    res.json({status:'err', description:'this feature is not yet implemented'})
+});
+
 app.get('/getLastOrder', function(req,res){
     mi5Database.getLastOrder()
       .then(function(order){
@@ -97,6 +104,20 @@ app.get('/getOrders', function(req,res){
       });
 });
 
+app.post('/saveOrder', function(req,res){
+    var order = JSON.parse(req.body.order);
+    console.log(order);
+
+    mi5Database.checkOrder(order)
+      .spread(mi5Database.saveOrder)
+      .then(function(){
+          res.json({status: 'ok', description: 'order has been saved'});
+      })
+      .catch(function(err){
+          res.json({status: 'err', description: err});
+      });
+});
+
 app.post('/getOrderById', function(req,res){
     var id = parseInt(req.body.id, 10);
 
@@ -109,6 +130,42 @@ app.post('/getOrderById', function(req,res){
           res.json({err: err});
           console.log(err);
       })
+});
+
+app.post('/giveFeedback', function(req, res){
+    var feedback = JSON.parse(req.body.feedback);
+
+    mi5Database.checkFeedback(feedback)
+      .spread(mi5Database.saveFeedback)
+      .then(function(){
+        return Q.fcall(function(){
+          console.log('saved, now pushing...');
+        });
+      })
+      .then(database.getRegIdsQ)
+      .then(function(regIds){
+        console.log('pushing...');
+        return gcm.pushMessage(JSON.stringify(feedback).toString(),regIds);
+      })
+      .then(database.cleanRegIdsQ)
+      .then(function(){
+          console.log('feedback saved and pushed');
+          res.json({status: 'ok', description: 'feedback has been saved'});
+      })
+      .catch(function(err){
+          console.log('error while saving feedback:', err);
+          res.json({status: 'err', description: err});
+      });
+});
+
+app.get('/getFeedbacks', function(req, res){
+    mi5Database.getFeedbacks()
+      .then(function(feedbacks){
+          res.json(feedbacks);
+      })
+      .catch(function(err){
+          res.json({status: 'err', description: err});
+      });
 });
 
 // Start web-server

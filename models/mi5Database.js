@@ -231,6 +231,15 @@ mi5database.prototype.checkFeedback = function(feedback) {
   var self = instance;
   var deferred = Q.defer();
 
+  console.log('feedback', feedback);
+
+  if(_.isEmpty(feedback) || typeof feedback == 'undefined'){
+    deferred.reject('no feedback was given');
+    return deferred.promise;
+  };
+
+  feedback = JSON.parse(feedback);
+
   var productId = parseInt(feedback.productId, 10);
   var like = !!feedback.like; // !! is equivalent to a boolean cast
   var feedback = String(feedback.feedback);

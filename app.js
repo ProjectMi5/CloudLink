@@ -13,166 +13,50 @@ var Q = require('q');
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var basicAuth = require('basic-auth-connect');
+
+var DeviceHandling  = require('./controllers/device-handling').DeviceHandling;
+var RecipeHandling  = require('./controllers/recipe-handling').RecipeHandling;
+var OrderHandling   = require('./controllers/order-handling').OrderHandling;
+var FeedbackHandling= require('./controllers/feedback-handling').FeedbackHandling;
 
 // app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
+// Basic authentification
+app.use(basicAuth('mi5-watchout', 'ITQandC3nt1gr4d3'));
 
 app.get('/helloWorld', function (req, res) {
     console.log('Hello World!');
     res.send('Hello World!');
 });
 
-app.post('/register', function (req, res) {
-    var regId = req.body.regid;
+// Device Handling
+app.post('/register', DeviceHandling.register);
+app.get('/getRegIds', DeviceHandling.getRegIds);
+app.post('/pushMessage', DeviceHandling.pushMessage);
 
-    if (undefined === regId || regId == '') {
-        // Error
-        res.json({status: "BAD", msg: "No regId-parameter given"});
-    } else {
-        database.registerNewDeviceQ(regId)
-            .then(function(result){
-                console.log('saved');
-                res.json({status: "OK", msg: "Your regId: " + regId, result: result});
-            });
-    }
-});
+// Recipes
+app.get('/getRecipes', RecipeHandling.getRecipes);
+app.post('/manageRecipe', RecipeHandling.manageRecipe);
 
-app.get('/getRegIds', function (req, res) {
-    database.getRegIdsQ()
-        .then(function(regIds){
-            res.json(JSON.stringify(regIds));
-        });
-});
+// Orders
+app.get('/getLastOrder', OrderHandling.getLastOrder);
+app.get('/getOrders', OrderHandling.getOrders);
+app.post('/saveOrder', OrderHandling.saveOrder);
+app.post('/getOrderById', OrderHandling.getOrderById);
 
-app.post('/pushMessage', function (req, res) {
-    var data = req.body.data;
-
-    if (undefined === data) {
-        // Error
-        res.json({status: "BAD", msg: "No data to push"});
-    } else {
-        // Push message via gcm
-        database.getRegIdsQ()
-            .then(function(regIds){
-                return gcm.pushMessage(data,regIds);
-            })
-            .then(database.cleanRegIdsQ)
-            .done();
-            res.json({"status:":"OK"});
-    }
-});
-
-// Mi5 Watchout new REST API
-app.get('/getRecipes', function(req, res){
-    mi5Database.getRecipes()
-      .then(function(recipes){
-          console.log(recipes);
-          res.json(recipes);
-      })
-      .catch(function(err){
-          res.json({err: err});
-          console.log(err);
-      });
-});
-
-app.post('/manageRecipe', function(req, res){
-    //mi5Database.
-    res.json({status:'err', description:'this feature is not yet implemented'})
-});
-
-app.get('/getLastOrder', function(req,res){
-    mi5Database.getLastOrder()
-      .then(function(order){
-          console.log('getlastorder', order);
-          res.json(order);
-      })
-      .catch(function(err){
-          res.json({err: err});
-          console.log(err);
-      })
-});
-
-app.get('/getOrders', function(req,res){
-    mi5Database.getOrders()
-      .then(function(orders){
-          console.log('getOrders', orders);
-          res.json(orders);
-      })
-      .catch(function(err){
-          res.json({err: err});
-          console.log(err);
-      });
-});
-
-app.post('/saveOrder', function(req,res){
-    var order = JSON.parse(req.body.order);
-    console.log(order);
-
-    mi5Database.checkOrder(order)
-      .spread(mi5Database.saveOrder)
-      .then(function(){
-          res.json({status: 'ok', description: 'order has been saved'});
-      })
-      .catch(function(err){
-          res.json({status: 'err', description: err});
-      });
-});
-
-app.post('/getOrderById', function(req,res){
-    var id = parseInt(req.body.id, 10);
-
-    mi5Database.getOrder(id)
-      .then(function(order){
-          console.log('getlastorder', order);
-          res.json(order);
-      })
-      .catch(function(err){
-          res.json({err: err});
-          console.log(err);
-      })
-});
-
-app.post('/giveFeedback', function(req, res){
-    var feedback = JSON.parse(req.body.feedback);
-
-    mi5Database.checkFeedback(feedback)
-      .spread(mi5Database.saveFeedback)
-      .then(function(){
-        return Q.fcall(function(){
-          console.log('saved, now pushing...');
-        });
-      })
-      .then(database.getRegIdsQ)
-      .then(function(regIds){
-        console.log('pushing...');
-        return gcm.pushMessage(JSON.stringify(feedback).toString(),regIds);
-      })
-      .then(database.cleanRegIdsQ)
-      .then(function(){
-          console.log('feedback saved and pushed');
-          res.json({status: 'ok', description: 'feedback saved and pushed'});
-      })
-      .catch(function(err){
-          console.log('error while saving feedback:', err);
-          res.json({status: 'err', description: err});
-      });
-});
-
-app.get('/getFeedbacks', function(req, res){
-    mi5Database.getFeedbacks()
-      .then(function(feedbacks){
-          res.json(feedbacks);
-      })
-      .catch(function(err){
-          res.json({status: 'err', description: err});
-      });
-});
+// Feedback
+app.post('/giveFeedback', FeedbackHandling.giveFeedback);
+app.get('/getFeedbacks', FeedbackHandling.getFeedbacks);
 
 // Start web-server
 app.listen(config.HTTPPort);
+
+// -----------------------------------------------------------------
 // -----------------------------------------------------------------
 
 
+// -----------------------------------------------------------------
 // -----------------------------------------------------------------
 // MQTT
 var mqtt = require('mqtt');

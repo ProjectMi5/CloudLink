@@ -33,7 +33,7 @@ var Device = mongoose.model('Device', deviceSchema);
 function registerNewDeviceQ(regId){
     assert(typeof regId == 'string');
     return Device.findQ({regId: regId})
-        .then(function fullfill(result){
+        .then(function(result){
             if (_.isEmpty(result)){
                 return saveDeviceQ(regId);
             }
@@ -44,17 +44,15 @@ function registerNewDeviceQ(regId){
             }
         });
 }
+exports.registerNewDeviceQ = registerNewDeviceQ;
 function saveDeviceQ(regId){
     var NewDevice = new Device({regId: regId});
     return NewDevice.saveQ();
 }
-exports.registerNewDeviceQ = registerNewDeviceQ;
 
 function getRegIdsQ(){
     return Device.findQ({}).then(function(devices){
-        var regIds = devices.map(function(device){ return device.regId; });
-        //console.log(regIds);
-        return regIds;
+        return devices.map(function(device){ return device.regId; });
     }, function(err){
         //console.log(err);
         return err;
@@ -89,17 +87,11 @@ function cleanRegIdsQ(result){
 }
 exports.cleanRegIdsQ = cleanRegIdsQ;
 
-//NewDevice.save(function (err) {
-//    if (err) return console.error(err);
-//    console.log('saved');
-//    res.json({status: "OK", msg: "Your regId: " + regId}); //TODO: scope compatibility?
-//});
-//
-//
-//kitty.saveQ()
-//    .then(function(){
-//        console.log('meow');
-//    })
-//    .fail(function (err) {
-//        console.log(err);
-//    });
+function deleteAllRegIdsQ(result){
+    return Q.Promise(function(resolve, reject){
+        Device.remove(function(err){
+            if(!err) resolve();
+            else reject(err);
+        });
+    });
+}

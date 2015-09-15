@@ -137,7 +137,7 @@ db.once('open', function (callback) {
 
     client.on('message', function (topic, message) {
         // message is Buffer
-        message = message.toString()
+        message = message.toString();
         console.log('Message:', message, 'Topic:', topic);
 
         // Prototyp listen on:

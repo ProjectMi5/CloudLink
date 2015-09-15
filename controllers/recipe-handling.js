@@ -32,4 +32,4 @@ RecipeHandling.prototype.manageRecipe = function(req, res){
       res.json({err: err});
       console.log('manageRecipe err:',err);
     });
-}
+};

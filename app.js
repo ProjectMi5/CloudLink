@@ -3,10 +3,13 @@
  */
 var config = require('./config.js');
 var database = require('./models/database.js');
-var mi5Database = require('./models/mi5Database').instance;
 var gcm = require('./models/google-cloud-messaging.js');
 
 var Q = require('q');
+
+// MQTT
+var mqtt = require('mqtt');
+var client  = mqtt.connect(config.MQTTHost);
 
 // -----------------------------------------------------------------
 // REST API
@@ -59,8 +62,6 @@ app.listen(config.HTTPPort);
 // -----------------------------------------------------------------
 // -----------------------------------------------------------------
 // MQTT
-var mqtt = require('mqtt');
-var client  = mqtt.connect(config.MQTTHost);
 
 var mi5ServerPush = '/mi5/server/push';
 client.subscribe(mi5ServerPush);

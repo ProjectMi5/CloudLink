@@ -9,7 +9,7 @@ exports.RecipeHandling = new RecipeHandling();
 RecipeHandling.prototype.getRecipes = function(req, res){
   mi5Database.getRecipes()
     .then(function(recipes){
-      console.log(recipes);
+      console.log('/getRecipes called');
       res.json(recipes);
     })
     .catch(function(err){
@@ -19,6 +19,17 @@ RecipeHandling.prototype.getRecipes = function(req, res){
 };
 
 RecipeHandling.prototype.manageRecipe = function(req, res){
-  //mi5Database.
-  res.json({status:'err', description:'this feature is not yet implemented'})
+  var recipe = req.body.recipe;
+
+  mi5Database.parseRecipeRequest(recipe)
+    .then(mi5Database.translateRecipe)
+    .then(mi5Database.manageRecipe)
+    .then(function(){
+      console.log('/manageRecipe called');
+      res.json({status: 'ok', description: 'recipe has been managed'})
+    })
+    .catch(function(err){
+      res.json({err: err});
+      console.log('manageRecipe err:',err);
+    });
 }

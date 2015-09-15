@@ -4,8 +4,8 @@
   "description": "Links an MQTT broker to the GCM Push service according to Showcase Mi5 specifications",
   "main": "app.js",
   "scripts": {
-    "test": "grunt",
-    "docs": "jsdoc -c jsdoc.json -d ./docs"
+    "start": "node app.js",
+    "test": "grunt"
   },
   "keywords": [
     "cloud",
@@ -27,7 +27,8 @@
     "mqtt": "^1.1.4",
     "node-gcm": "^0.9.15",
     "q": "^1.4.1",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "request": "^2.61.0"
   },
   "devDependencies": {
     "chai": "^2.3.0",

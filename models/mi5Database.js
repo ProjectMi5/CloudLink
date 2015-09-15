@@ -1,5 +1,6 @@
 var Q = require('q');
 var _ = require('underscore');
+var assert = require('assert');
 
 var config = require('./../config.js');
 var CONFIG = {};
@@ -10,7 +11,7 @@ mi5database = function() {
 
   console.log('Mi5 - Database loaded');
 
-  // Connect to database
+  // Connect to database - somehow not needed?
   try {
     this.mongoose.connect(CONFIG.DatabaseHost);
   } catch(err){
@@ -49,6 +50,7 @@ mi5database = function() {
     recipeId  : Number,
     name      : String,
     description : String,
+    dummy     : Boolean,
     userparameters : this.mongoose.Schema.Types.Mixed
   });
   this.Recipe = this.mongoose.model('Recipe', recipeSchema);
@@ -56,37 +58,26 @@ mi5database = function() {
 var instance = new mi5database();
 exports.instance = instance;
 
-/**
- * save a recipe
- * @param recipeId
- * @param name
- * @param description
- * @param userparameters
- * @returns {*}
- */
-mi5database.prototype.saveRecipe = function(recipeId, name, description, userparameters){
-  var self = instance;
+// ============================================================================================================
+// ==================================  recipes                         ========================================
+// ============================================================================================================
 
-  var recipe = {
-    recipeId: recipeId,
-    name: name,
-    description: description,
-    userparameters: userparameters,
+
+mi5database.prototype.translateRecipe = function(recipe){
+  var deferred = Q.defer();
+
+  var mongoRecipe = {
+    recipeId: recipe.RecipeID,
+    name: recipe.Name,
+    description: recipe.Description,
+    dummy: recipe.Dummy,
+    userparameters: recipe.userparameters
   };
 
-  var NewRecipe = new self.Recipe(recipe);
-  console.log('new recipe saving:'+recipe);
-  return NewRecipe.saveQ();
+  deferred.resolve(mongoRecipe);
+  return deferred.promise;
 };
 
-/**
- * get a Recipe by id
- *
- * returns undefined if no recipe is found
- *
- * @param recipeId
- * @returns {*|promise}
- */
 mi5database.prototype.getRecipe = function(recipeId){
   var self = instance;
   var deferred = Q.defer();
@@ -133,32 +124,62 @@ mi5database.prototype.removeMongoDBattributes = function(posts){
   return deferred.promise;
 };
 
-mi5database.prototype.manageRecipe = function(recipeId, name, description, userparameters){
+/**
+ * Recipe
+ *
+ * @param recipe
+ * @returns {*}
+ */
+mi5database.prototype.parseRecipeRequest = function(recipe){
   var self = instance;
 
-  return self.getRecipe(recipeId)
-    .then(function(recipe){
-      if(typeof recipe == 'undefined'){ // no recipe found
-        return self.saveRecipe(recipeId, name, description, userparameters);
+  return Q.fcall(function(){
+    return JSON.parse(recipe);
+  });
+};
+
+mi5database.prototype.manageRecipe = function(recipe){
+  var self = instance;
+
+  return self.getRecipe(recipe.recipeId)
+    .then(function(oldRecipe){
+      if(typeof oldRecipe == 'undefined'){ // no recipe found
+        return self.saveRecipe(recipe);
       }
       else {
-        return self.updateRecipe(recipeId, name, description, userparameters);
+        return self.updateRecipe(recipe);
       }
     });
 };
 
-mi5database.prototype.updateRecipe = function(recipeId, name, description, userparameters){
+mi5database.prototype.updateRecipe = function(recipe){
   var self = instance;
 
-  var recipe = {
-    recipeId: recipeId,
-    name: name,
-    description: description,
-    userparameters: userparameters,
-  };
+  return self.Recipe.updateQ({recipeId: recipe.recipeId}, recipe);
+};
 
-  return self.Recipe.updateQ({recipeId: recipeId}, recipe);
-}
+mi5database.prototype.saveRecipe = function(recipe){
+  var self = instance;
+
+  var NewRecipe = new self.Recipe(recipe);
+  //console.log('new recipe saving:'+recipe);
+  return NewRecipe.saveQ();
+};
+
+mi5database.prototype.deleteAllRecipes = function(){
+  var self = this;
+
+  return Q.Promise(function(resolve, reject){
+    self.Recipe.remove(function(err){
+      if(!err) resolve();
+      else reject(err);
+    });
+  });
+};
+
+// ============================================================================================================
+// ==================================  Order                           ========================================
+// ============================================================================================================
 
 mi5database.prototype.checkOrder = function(order){
   var self = this;
@@ -209,7 +230,7 @@ mi5database.prototype.saveRecommendation = function(recommendation){
   var self = instance;
 
   var NewRecommendation = new self.Recommendation(recommendation);
-  console.log('new recommendation saved:'+recommendation);
+  //console.log('new recommendation saved:'+recommendation);
   return NewRecommendation.saveQ();
 };
 

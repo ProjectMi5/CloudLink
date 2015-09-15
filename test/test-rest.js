@@ -1,5 +1,5 @@
 var assert = require('chai').assert;
-var chai = require('chai')
+var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
@@ -119,7 +119,7 @@ describe('Test REST api', function() {
     it('/getRecipes', function(done){
       var options = {
         url:  'http://localhost:'+config.HTTPPort+'/getRecipes'
-      }
+      };
       request.get(options, function(err, res, body){
         var recipes = JSON.parse(body);
         assert.isNull(err);
@@ -131,7 +131,7 @@ describe('Test REST api', function() {
       var options = {
         url:  'http://localhost:'+config.HTTPPort+'/manageRecipe',
         form: {recipe: JSON.stringify(recipePOST)}
-      }
+      };
       request.post(options, function(err, res, body){
         assert.isNull(err);
 

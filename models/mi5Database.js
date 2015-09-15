@@ -104,32 +104,6 @@ mi5database.prototype.getRecipes = function(){
   return deferred.promise;
 };
 
-/**
- * should remove __v, and _id - not working
- * @param posts
- * @returns {*}
- */
-mi5database.prototype.removeMongoDBattributes = function(posts){
-  var deferred = Q.defer();
-
-  var blankPosts = posts.map(function(post){
-    var temp = post;
-    delete temp.__v;
-    delete temp._id;
-    return temp;
-  });
-
-  deferred.resolve(blankPosts);
-
-  return deferred.promise;
-};
-
-/**
- * Recipe
- *
- * @param recipe
- * @returns {*}
- */
 mi5database.prototype.parseRecipeRequest = function(recipe){
   var self = instance;
 
@@ -226,81 +200,6 @@ mi5database.prototype.saveOrder = function(taskId, recipeId, userParameters){
   return NewOrder.saveQ();
 };
 
-mi5database.prototype.saveRecommendation = function(recommendation){
-  var self = instance;
-
-  var NewRecommendation = new self.Recommendation(recommendation);
-  //console.log('new recommendation saved:'+recommendation);
-  return NewRecommendation.saveQ();
-};
-
-mi5database.prototype.getRecommendation = function(taskId){
-  var self = instance;
-  var deferred = Q.defer();
-
-  self.Recommendation.find({'productId': taskId}).limit(1).exec(function(err, post){
-    if(err) deferred.reject(err);
-
-    deferred.resolve(post.pop());
-  });
-
-  return deferred.promise;
-};
-
-
-mi5database.prototype.checkFeedback = function(feedback) {
-  var self = instance;
-  var deferred = Q.defer();
-
-  console.log('feedback', feedback);
-
-  if(_.isEmpty(feedback) || typeof feedback == 'undefined'){
-    deferred.reject('no feedback was given');
-    return deferred.promise;
-  };
-
-  feedback = JSON.parse(feedback);
-
-  var productId = parseInt(feedback.productId, 10);
-  var like = !!feedback.like; // !! is equivalent to a boolean cast
-  var feedback = String(feedback.feedback);
-
-  deferred.resolve([productId, like, feedback]);
-
-  return deferred.promise;
-};
-
-mi5database.prototype.saveFeedback = function(productId, like, feedback){
-  var self = instance;
-
-  var feedback = {
-    productId: productId,
-    like: like,
-    feedback: feedback
-  };
-
-  var NewFeedback = new self.Feedback(feedback);
-  return NewFeedback.saveQ();
-}
-
-mi5database.prototype.getFeedbacks = function(){
-  var self = instance;
-  var deferred = Q.defer();
-
-  self.Feedback.find().limit().exec(function(err, post){
-    if(err) deferred.reject(err);
-
-    deferred.resolve(post);
-  });
-
-  return deferred.promise;
-};
-
-/**
- * Returns a promised-order object
- * @param taskId
- * @returns {*|promise}
- */
 mi5database.prototype.getOrder = function(taskId){
   var self = instance;
   var deferred = Q.defer();
@@ -357,6 +256,78 @@ mi5database.prototype.getLastOrder = function(){
   return self.getLastTaskId().then(self.getOrder);
 };
 
+// ============================================================================================================
+// ==================================  Recommendation/Feedback         ========================================
+// ============================================================================================================
+
+mi5database.prototype.saveRecommendation = function(recommendation){
+  var self = instance;
+
+  var NewRecommendation = new self.Recommendation(recommendation);
+  //console.log('new recommendation saved:'+recommendation);
+  return NewRecommendation.saveQ();
+};
+
+mi5database.prototype.getRecommendation = function(taskId){
+  var self = instance;
+  var deferred = Q.defer();
+
+  self.Recommendation.find({'productId': taskId}).limit(1).exec(function(err, post){
+    if(err) deferred.reject(err);
+
+    deferred.resolve(post.pop());
+  });
+
+  return deferred.promise;
+};
+
+mi5database.prototype.checkFeedback = function(feedback) {
+  var self = instance;
+  var deferred = Q.defer();
+
+  console.log('feedback', feedback);
+
+  if(_.isEmpty(feedback) || typeof feedback == 'undefined'){
+    deferred.reject('no feedback was given');
+    return deferred.promise;
+  }
+  feedback = JSON.parse(feedback);
+
+  var productId = parseInt(feedback.productId, 10);
+  var like = !!feedback.like; // !! is equivalent to a boolean cast
+  var feedback = String(feedback.feedback);
+
+  deferred.resolve([productId, like, feedback]);
+
+  return deferred.promise;
+};
+
+mi5database.prototype.saveFeedback = function(productId, like, feedback){
+  var self = instance;
+
+  var feedback = {
+    productId: productId,
+    like: like,
+    feedback: feedback
+  };
+
+  var NewFeedback = new self.Feedback(feedback);
+  return NewFeedback.saveQ();
+};
+
+mi5database.prototype.getFeedbacks = function(){
+  var self = instance;
+  var deferred = Q.defer();
+
+  self.Feedback.find().limit().exec(function(err, post){
+    if(err) deferred.reject(err);
+
+    deferred.resolve(post);
+  });
+
+  return deferred.promise;
+};
+
 mi5database.prototype.getLastRecommendationId = function(){
   var self = instance;
   var deferred = Q.defer();
@@ -380,4 +351,28 @@ mi5database.prototype.getLastRecommendation = function(){
   var self = instance;
 
   return self.getLastRecommendationId().then(self.getRecommendation);
+};
+
+// ============================================================================================================
+// ==================================  Helper                          ========================================
+// ============================================================================================================
+
+/**
+ * should remove __v, and _id - not working
+ * @param posts
+ * @returns {*}
+ */
+mi5database.prototype._removeMongoDBattributes = function(posts){
+  var deferred = Q.defer();
+
+  var blankPosts = posts.map(function(post){
+    var temp = post;
+    delete temp.__v;
+    delete temp._id;
+    return temp;
+  });
+
+  deferred.resolve(blankPosts);
+
+  return deferred.promise;
 };

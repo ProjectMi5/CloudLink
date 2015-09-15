@@ -1,10 +1,10 @@
 var assert = require('chai').assert;
-var chai = require('chai')
+var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
 
-describe('Database: Mi5 Specific - Mongo Promised', function() {
+describe('Mi5 Specific interface', function() {
   var mi5Database = require('./../models/mi5Database').instance;
 
   // clean database
@@ -16,8 +16,7 @@ describe('Database: Mi5 Specific - Mongo Promised', function() {
     return mi5Database.deleteAllRecipes();
   });
 
-
-  describe('check recipes', function(){
+  describe('test recipe handling', function(){
     // recipePOST is coming from HMI
     var recipePOST = {
         userparameters:
@@ -101,12 +100,12 @@ describe('Database: Mi5 Specific - Mongo Promised', function() {
         .then(function(recipe){
           assert.deepEqual(recipe, recipePOST);
         })
-    })
+    });
 
     it('parse a post Recipe', function(){
       return mi5Database.translateRecipe(recipePOST)
         .then(function(recipe){
-          assert.deepEqual(recipe, recipeParsed)
+          assert.deepEqual(recipe, recipeParsed);
           assert.equal(recipe.recipeId, recipeId);
         });
     });
@@ -129,12 +128,15 @@ describe('Database: Mi5 Specific - Mongo Promised', function() {
           var expectedResult = { ok: 1, nModified: 1, n: 1 };
           assert.deepEqual(result, expectedResult);
         })
-    })
+    });
 
     it('manage a recipe', function(){
       return mi5Database.manageRecipe(recipeParsed);
     });
 
+  });
+
+  describe('check order', function(){
 
   });
 });

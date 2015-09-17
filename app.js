@@ -26,7 +26,7 @@ var FeedbackHandling= require('./controllers/feedback-handling').FeedbackHandlin
 // app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
 // Basic authentification
-app.use(basicAuth('mi5-watchout', 'ITQandC3nt1gr4d3'));
+app.use(basicAuth(config.basicAuthUser, config.basicAuthPW));
 
 app.get('/helloWorld', function (req, res) {
     console.log('Hello World!');

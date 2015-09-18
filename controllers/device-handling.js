@@ -8,7 +8,7 @@ DeviceHandling = function(){
 exports.DeviceHandling = new DeviceHandling();
 
 DeviceHandling.prototype.register = function(req, res){
-  var regId = req.body.regid;
+  var regId = req.body.regId;
 
   if (undefined === regId || regId == '') {
     // Error

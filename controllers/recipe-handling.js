@@ -25,11 +25,31 @@ RecipeHandling.prototype.manageRecipe = function(req, res){
     .then(mi5Database.translateRecipe)
     .then(mi5Database.manageRecipe)
     .then(function(){
-      console.log('/manageRecipe called');
-      res.json({status: 'ok', description: 'recipe has been managed'})
+
+      // this chain is only to get the recipeId;
+      mi5Database.parseRecipeRequest(recipe)
+        .then(mi5Database.translateRecipe)
+        .then(mi5Database.extractRecipeId)
+        .then(function(recipeId){
+          console.log('/manageRecipe succesfull', 'RecipeID:', recipeId );
+          res.json({status: 'ok', description: 'recipe has been managed'})
+        });
+
     })
     .catch(function(err){
       res.json({err: err});
       console.log('manageRecipe err:',err);
     });
+};
+
+RecipeHandling.prototype.deleteAllRecipes = function(req, res){
+  mi5Database.deleteAllRecipes()
+    .then(function(){
+      console.log('/deleteAllRecipes succesfull');
+      res.json({status: 'ok', description: 'all recipes have been removed'});
+    })
+    .catch(function(err){
+      res.json({err: err});
+      console.log('deleteAllRecipes err:',err);
+    })
 };

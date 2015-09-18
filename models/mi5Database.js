@@ -78,6 +78,10 @@ mi5database.prototype.translateRecipe = function(recipe){
   return deferred.promise;
 };
 
+mi5database.prototype.extractRecipeId = function(recipe){
+  return recipe.recipeId;
+}
+
 mi5database.prototype.getRecipe = function(recipeId){
   var self = instance;
   var deferred = Q.defer();

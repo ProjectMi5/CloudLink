@@ -18,15 +18,16 @@ var app = express();
 var bodyParser = require('body-parser');
 var basicAuth = require('basic-auth-connect');
 
+// Form Data
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
+// Basic authentification
+app.use(basicAuth(config.basicAuthUser, config.basicAuthPW));
+
 var DeviceHandling  = require('./controllers/device-handling').DeviceHandling;
 var RecipeHandling  = require('./controllers/recipe-handling').RecipeHandling;
 var OrderHandling   = require('./controllers/order-handling').OrderHandling;
 var FeedbackHandling= require('./controllers/feedback-handling').FeedbackHandling;
-
-// app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
-// Basic authentification
-app.use(basicAuth(config.basicAuthUser, config.basicAuthPW));
 
 app.get('/helloWorld', function (req, res) {
     console.log('Hello World!');
@@ -41,6 +42,7 @@ app.post('/pushMessage', DeviceHandling.pushMessage);
 // Recipes
 app.get('/getRecipes', RecipeHandling.getRecipes);
 app.post('/manageRecipe', RecipeHandling.manageRecipe);
+app.get('/deleteAllRecipes', RecipeHandling.deleteAllRecipes); //deactivate later maybe
 
 // Orders
 app.get('/getLastOrder', OrderHandling.getLastOrder);

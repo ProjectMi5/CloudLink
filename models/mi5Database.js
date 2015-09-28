@@ -112,7 +112,8 @@ mi5database.prototype.parseRecipeRequest = function(recipe){
   var self = instance;
 
   return Q.fcall(function(){
-    return JSON.parse(recipe);
+    if(self._isJsonString(recipe)) recipe = JSON.parse(recipe);
+    return recipe;
   });
 };
 
@@ -311,12 +312,11 @@ mi5database.prototype.checkFeedback = function(feedback) {
   var self = instance;
   var deferred = Q.defer();
 
-  //console.log('feedback', feedback);
+  console.log('feedback', feedback);
 
   if(_.isEmpty(feedback) || typeof feedback == 'undefined'){
     deferred.reject('no feedback was given');
-    throw new Error('ERROR: no feedback was given');
-    //return deferred.promise;
+    return deferred.promise;
   }
   if(self._isJsonString(feedback)){
     feedback = JSON.parse(feedback);

@@ -51,10 +51,3 @@ FeedbackHandling.prototype.getFeedbacks = function(req, res){
       res.json({status: 'err', description: err});
     });
 };
-
-FeedbackHandling.prototype.enrichFeedback = function(feedback){
-  mi5Database.getOrder(feedback.productId)
-    .then(function(order){
-      console.log(order);
-    })
-};

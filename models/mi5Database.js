@@ -211,6 +211,8 @@ mi5database.prototype.getOrder = function(taskId){
   self.Order.find({'taskId': taskId}).limit(1).exec(function(err, post){
     if(err) deferred.reject(err);
 
+    //if(typeof post == 'undefined') deferred.reject('no order with taskId '+taskId+' found.');
+
     deferred.resolve(post.pop());
   });
 
@@ -260,6 +262,17 @@ mi5database.prototype.getLastOrder = function(){
   return self.getLastTaskId().then(self.getOrder);
 };
 
+mi5database.prototype.deleteAllOrders = function(){
+  var self = this;
+
+  return Q.Promise(function(resolve, reject){
+    self.Order.remove(function(err){
+      if(!err) resolve();
+      else reject(err);
+    });
+  });
+}
+
 // ============================================================================================================
 // ==================================  Recommendation/Feedback         ========================================
 // ============================================================================================================
@@ -285,17 +298,29 @@ mi5database.prototype.getRecommendation = function(taskId){
   return deferred.promise;
 };
 
+/**
+ * check feedback for productId, like and 'feedback'
+ * usage:
+ * checkFeedback().spread(function(productId, like, feedback){
+ *    // your code
+ * });
+ * @param feedback
+ * @returns {*|promise}
+ */
 mi5database.prototype.checkFeedback = function(feedback) {
   var self = instance;
   var deferred = Q.defer();
 
-  console.log('feedback', feedback);
+  //console.log('feedback', feedback);
 
   if(_.isEmpty(feedback) || typeof feedback == 'undefined'){
     deferred.reject('no feedback was given');
-    return deferred.promise;
+    throw new Error('ERROR: no feedback was given');
+    //return deferred.promise;
   }
-  feedback = JSON.parse(feedback);
+  if(self._isJsonString(feedback)){
+    feedback = JSON.parse(feedback);
+  }
 
   var productId = parseInt(feedback.productId, 10);
   var like = !!feedback.like; // !! is equivalent to a boolean cast
@@ -357,6 +382,94 @@ mi5database.prototype.getLastRecommendation = function(){
   return self.getLastRecommendationId().then(self.getRecommendation);
 };
 
+mi5database.prototype.deleteAllFeedbacks = function(){
+  var self = this;
+
+  return Q.Promise(function(resolve, reject){
+    self.Feedback.remove(function(err){
+      if(!err) resolve();
+      else reject(err);
+    });
+  });
+};
+
+mi5database.prototype.enrichFeedback = function(feedback){
+  var self = instance;
+  var ret = {};
+  var temp = {};
+
+  ret.productId = feedback.productId;
+  ret.timestamp = feedback.timestamp;
+  ret.order = {};
+  ret.review = {};
+  ret.review.like = feedback.like;
+  ret.review.feedback = feedback.feedback;
+
+  // create the amount and mixRatio only for cocktails
+  if(true){
+    return self.getOrder(feedback.productId)
+      .then(function(order){
+        temp.order = order;
+        return self.getRecipe(order.recipeId);
+      })
+      .then(function(recipe){
+        temp.recipe = recipe;
+
+        // Recipe part ------------------
+        ret.recipe = {};
+        ret.recipe.id = recipe.recipeId;
+        ret.recipe.name = recipe.name;
+        // Recipe part end --------------
+
+        // Order part -------------------
+        temp.mixRatio = {};
+        temp.mixRatio.ingredientName = [];
+        temp.mixRatio.ratio = [];
+
+        // Calculate intermediateTotal by summing all parameters and subtracting the total amount
+        var intermediateTotal = _.reduce(temp.order.parameters, function(memo, num){return memo+num;}, 0);
+        intermediateTotal = intermediateTotal - temp.order.parameters[0]; //parameters[0] = total amount
+        console.log('intermediateTotal', intermediateTotal);
+
+        // Calculate mixRatio.ratio;
+        var el = 0;
+        _.each(recipe.userparameters, function(parameter){
+          //console.log('ELEMENT: ',el);
+          //console.log(parameter.Name);
+          //console.log('Max',parameter.MaxValue);
+          //console.log('UserParam', temp.order.parameters[el]);
+
+          if(el == 0){
+            // Total Amount
+            ret.order.amount = temp.order.parameters[el];
+          } else {
+            temp.mixRatio.ingredientName.push(parameter.Name);
+            // Ratio for other liquids
+            temp.mixRatio.ratio.push(temp.order.parameters[el]/intermediateTotal);
+          }
+
+          el = el + 1;
+        });
+        ret.order.mixRatio = temp.mixRatio;
+        // Order part end ----------------
+
+        console.log('Feedback has been enriched, example output:', ret.order);
+        return ret;
+      });
+  } else {
+    return self.getOrder(feedback.productId)
+      .then(function(order){
+        ret.order = order;
+        return self.getRecipe(order.recipeId);
+      })
+      .then(function(recipe){
+        ret.recipe = recipe;
+        return ret;
+      });
+  }
+};
+
+
 // ============================================================================================================
 // ==================================  Helper                          ========================================
 // ============================================================================================================
@@ -380,3 +493,18 @@ mi5database.prototype._removeMongoDBattributes = function(posts){
 
   return deferred.promise;
 };
+
+/**
+ * Check if string is JSON.stringified or nit
+ *
+ * http://stackoverflow.com/questions/3710204/how-to-check-if-a-string-is-a-valid-json-string-in-javascript-without-using-try
+ *
+ */
+mi5database.prototype._isJsonString = function(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}

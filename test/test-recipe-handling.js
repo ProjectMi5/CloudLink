@@ -138,7 +138,7 @@ describe('Mi5 Specific interface', function() {
         return mi5Database.parseRecipeRequest(JSON.stringify(recipePOST))
             .then(mi5Database.translateRecipe)
             .then(mi5Database.manageRecipe);
-    })
+    });
 
   });
 

@@ -57,3 +57,15 @@ OrderHandling.prototype.getOrderById = function(req,res){
       console.log(err);
     })
 };
+
+OrderHandling.prototype.deleteAllOrders = function(req,res){
+  mi5Database.deleteAllOrders()
+    .then(function(){
+      console.log('/deleteAllOrders');
+      res.json({status: 'ok', description: 'all orders have been deleted'});
+    })
+    .catch(function(err){
+      res.json({err: err});
+      console.log(err);
+    })
+};

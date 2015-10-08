@@ -22,13 +22,14 @@
     "better-assert": "^1.0.2",
     "body-parser": "^1.12.4",
     "express": "^4.12.4",
+    "moment": "^2.10.6",
     "mongoose": "^4.0.3",
     "mongoose-q": "0.0.17",
     "mqtt": "^1.1.4",
     "node-gcm": "^0.9.15",
     "q": "^1.4.1",
-    "underscore": "^1.8.3",
-    "request": "^2.61.0"
+    "request": "^2.61.0",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "chai": "^2.3.0",

@@ -14,7 +14,7 @@ describe('Mi5 Feedback Interface', function() {
     feedback: 'Too sweet'
   };
   var mockOrder = {
-    taskId: 4242,
+    orderId: 4242,
     recipeId: 10051,
     parameters: [127, 100, 80, 10]
   };
@@ -136,8 +136,8 @@ describe('Mi5 Feedback Interface', function() {
       var _ = require('underscore');
 
       // Save a test order
-      return mi5Database.checkOrder(mockOrder)
-        .spread(mi5Database.saveOrder)
+      return mi5Database.checkOrderLite(mockOrder)
+        .spread(mi5Database.saveOrderLite)
         // Save a test recipe
         .then(function(saved){
           return Q.fcall(function(){

@@ -34,14 +34,27 @@ OrderHandling.prototype.saveOrder = function(req,res){
   var order = JSON.parse(req.body.order);
   console.log(order);
 
-  mi5Database.checkOrder(order)
-    .spread(mi5Database.saveOrder)
+  mi5Database.checkOrderLite(order)
+    .spread(mi5Database.saveOrderLite)
     .then(function(){
       res.json({status: 'ok', description: 'order has been saved'});
     })
     .catch(function(err){
       res.json({status: 'err', description: err});
     });
+};
+
+OrderHandling.prototype.placeOrder = function(req,res){
+  var order = JSON.parse(req.body.order);
+  console.log(order);
+
+  mi5Database.placeOrder(order)
+      .then(function(order){
+        res.json({status: 'ok', description: 'order has been saved', orderId: order.orderId});
+      })
+      .catch(function(err){
+        res.json({status: 'err', description: err});
+      });
 };
 
 OrderHandling.prototype.getOrderById = function(req,res){
@@ -51,18 +64,6 @@ OrderHandling.prototype.getOrderById = function(req,res){
     .then(function(order){
       console.log('getlastorder', order);
       res.json(order);
-    })
-    .catch(function(err){
-      res.json({err: err});
-      console.log(err);
-    })
-};
-
-OrderHandling.prototype.deleteAllOrders = function(req,res){
-  mi5Database.deleteAllOrders()
-    .then(function(){
-      console.log('/deleteAllOrders');
-      res.json({status: 'ok', description: 'all orders have been deleted'});
     })
     .catch(function(err){
       res.json({err: err});

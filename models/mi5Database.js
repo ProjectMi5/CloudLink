@@ -393,6 +393,7 @@ mi5database.prototype.getOrder = function(orderId){
         if(err) deferred.reject(err);
 
         //if(typeof post == 'undefined') deferred.reject('no order with orderId '+orderId+' found.');
+        if(typeof post == 'undefined') deferred.resolve(undefined);
 
         deferred.resolve(post.pop());
     });

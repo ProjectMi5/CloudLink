@@ -82,6 +82,43 @@ describe('Mi5 Feedback Interface', function() {
     Name: 'Free Passion',
     RecipeID: 10051 };
 
+    var recipeParsed = { recipeId: 10051,
+        name: 'Free Passion',
+        description: 'Sweet cocktail combining the sourness of maracuja and orange juice with the sweetness of grenadine syrup',
+        dummy: false,
+        userparameters:
+            [ { Default: 200,
+                Description: 'Gives the total fluid amount in the glass',
+                Dummy: false,
+                MaxValue: 200,
+                MinValue: 10,
+                Name: 'Total Liquid Amount',
+                Step: 0,
+                Unit: 'ml' },
+                { Default: 50,
+                    Description: 'Maracuja Juice',
+                    Dummy: false,
+                    MaxValue: 100,
+                    MinValue: 1,
+                    Name: 'Maracuja Juice',
+                    Step: 0,
+                    Unit: 'ml' },
+                { Default: 35,
+                    Description: 'Orange Juice',
+                    Dummy: false,
+                    MaxValue: 100,
+                    MinValue: 1,
+                    Name: 'Orange Juice',
+                    Step: 0,
+                    Unit: 'ml' },
+                { Default: 15,
+                    Description: 'Grenadine Syrup',
+                    Dummy: false,
+                    MaxValue: 50,
+                    MinValue: 1,
+                    Name: 'Grenadine Syrup',
+                    Step: 0,
+                    Unit: 'ml' } ] };
 
   // clean database
   before('Clean database: delete all orders, recipes and feedbacks', function(){
@@ -120,40 +157,41 @@ describe('Mi5 Feedback Interface', function() {
         });
     });
 
-    it('/saveFeedback', function(){
-      return mi5Database.checkFeedback(mockFeedback)
-        .spread(mi5Database.saveFeedback)
-        .then(function(saved){
-          assert.equal(saved.__v, 0);
-          assert.equal(saved.productId, mockFeedback.productId);
-          assert.equal(saved.like, mockFeedback.like);
-          assert.equal(saved.feedback, mockFeedback.feedback);
-          assert.isDefined(saved._id);
-        });
-    });
+
+      it('/saveFeedback', function(){
+          // Save a test order
+          return mi5Database.checkOrderLite(mockOrder)
+              .spread(mi5Database.saveOrderLite)
+              // Save a test recipe
+              .then(function(saved){
+                  return Q.fcall(function(){
+                      return JSON.stringify(recipePOST);
+                  });
+              })
+              .then(mi5Database.parseRecipeRequest)
+              .then(mi5Database.translateRecipe)
+              .then(mi5Database.manageRecipe)
+              // Enrich now
+              .then(function(){
+                  return Q.fcall(function(){
+                      return mockFeedback;
+                  });
+              })
+              .then(mi5Database.checkFeedback)
+              .spread(mi5Database.saveFeedback)
+              .then(function(saved){
+                  assert.equal(saved.__v, 0);
+                  assert.equal(saved.productId, mockFeedback.productId);
+                  assert.equal(saved.like, mockFeedback.like);
+                  assert.equal(saved.feedback, mockFeedback.feedback);
+                  assert.isDefined(saved._id);
+              });
+      });
 
     it('/enrichFeedback', function(){
       var _ = require('underscore');
 
-      // Save a test order
-      return mi5Database.checkOrderLite(mockOrder)
-        .spread(mi5Database.saveOrderLite)
-        // Save a test recipe
-        .then(function(saved){
-          return Q.fcall(function(){
-            return JSON.stringify(recipePOST);
-          });
-        })
-        .then(mi5Database.parseRecipeRequest)
-        .then(mi5Database.translateRecipe)
-        .then(mi5Database.manageRecipe)
-        // Enrich now
-        .then(function(){
-          return Q.fcall(function(){
-            return mockFeedback;
-          });
-        })
-        .then(mi5Database.checkFeedback)
+      return mi5Database.checkFeedback(mockFeedback)
         .spread(mi5Database.saveFeedback)
         .then(mi5Database.enrichFeedback)
         .then(function(feedback){
@@ -170,5 +208,28 @@ describe('Mi5 Feedback Interface', function() {
           assert.equal(sum, 1);
         });
     });
+
+      it('/getFeedback', function(){
+          return mi5Database.getFeedback(mockFeedback.productId)
+              .then(function(feedback){
+                  console.log(feedback);
+              });
+      });
+
+      it('/enrichedCocktailData', function(){
+          return mi5Database.getOrderSave(mockFeedback.productId)
+              .then(function(order){
+                  console.log(order);
+                  return order;
+              })
+              .then(mi5Database.returnEnrichedCocktailData)
+              .then(function(ret){
+                  console.log(ret);
+              })
+              .then(mi5Database.getFeedbacks)
+              .then(function(ret){
+                  console.log(ret);
+              });
+      });
   });
 });

@@ -8,10 +8,19 @@ describe('Mi5 Order Interface', function() {
   var mi5Database = require('./../models/mi5Database').instance;
 
   var mockOrder = {
-    orderId: 4242,
+    orderId: 4243,
     recipeId: 10051,
     parameters: [40, 100, 80, 20]
   };
+
+var mockOrder2 = {
+    recipeId: 10051,
+    parameters: [40, 100, 80, 20],
+    marketPlaceId: 'EU',
+    customerName: 'Frau Fröhlich',
+    orderedTimeOfCompletion: '2015-09-07T09:21:14.382Z',
+    barcode: '12345678'
+};
 
   var recipeParsed = { recipeId: 10051,
     name: 'Free Passion',
@@ -79,7 +88,7 @@ describe('Mi5 Order Interface', function() {
     });
 
     it('/placeOrder', function(){
-      return mi5Database.checkOrder(mockOrder)
+      return mi5Database.checkOrder(mockOrder2)
           .then(mi5Database.prepareOrder)
           .then(mi5Database.saveOrder)
           .then(function(saved){
@@ -103,6 +112,9 @@ describe('Mi5 Order Interface', function() {
                     'barcode: ' + saved.barcode + ', ' +
 
                 '}');
+          })
+          .catch(function(err){
+              console.log('err: '+err);
           });
     });
 
@@ -114,5 +126,27 @@ describe('Mi5 Order Interface', function() {
           //assert.equal(order.parameters, mockOrder.parameters); // TODO: check for an array comparison function
         });
     });
+
+      it('/setBarcode', function(){
+          return mi5Database.setBarcode(mockOrder.orderId, mockOrder2.barcode)
+              .then(function(feedback){
+                  console.log(feedback);
+                  assert.equal(feedback.ok, 1);
+              });
+      });
+
+      it('/getBarcode', function(){
+          return mi5Database.getBarcode(mockOrder.orderId)
+              .then(function(barcode){
+                  assert.equal(barcode, mockOrder2.barcode);
+              });
+      });
+
+      it('/getOrderIdByBarcode', function(){
+          return mi5Database.getOrderIdByBarcode(mockOrder2.barcode)
+              .then(function(orderId){
+                  assert.equal(orderId, mockOrder.orderId);
+              });
+      });
   });
 });

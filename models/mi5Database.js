@@ -338,7 +338,6 @@ mi5database.prototype.prepareOrder = function(order){
 mi5database.prototype.idHelper = function(){
   var self = instance;
   var deferred = Q.defer();
-  console.log('create new id is not undefined');
 
   self.getLastOrderId()
       .then(function(id){
@@ -347,7 +346,7 @@ mi5database.prototype.idHelper = function(){
            deferred.resolve(1);
         } else {
            deferred.resolve(id + 1);
-        } // check of id not needed because of sorting
+        }
       });
 
   return deferred.promise;
@@ -387,18 +386,101 @@ mi5database.prototype.placeOrder = function(order){
 };
 
 mi5database.prototype.getOrder = function(orderId){
-  var self = instance;
-  var deferred = Q.defer();
+    var self = instance;
+    var deferred = Q.defer();
 
-  self.Order.find({'orderId': orderId}).limit(1).exec(function(err, post){
-    if(err) deferred.reject(err);
+    self.Order.find({'orderId': orderId}).limit(1).exec(function(err, post){
+        if(err) deferred.reject(err);
 
-    //if(typeof post == 'undefined') deferred.reject('no order with orderId '+orderId+' found.');
+        //if(typeof post == 'undefined') deferred.reject('no order with orderId '+orderId+' found.');
 
-    deferred.resolve(post.pop());
-  });
+        deferred.resolve(post.pop());
+    });
 
-  return deferred.promise;
+    return deferred.promise;
+};
+
+mi5database.prototype.getOrderSave = function(orderId){
+    var self = instance;
+    var deferred = Q.defer();
+
+    self.getOrder(orderId)
+        .then(function(order){
+           if(typeof order == 'undefined'){
+               deferred.reject('There is no order with id ' + orderId + '!');
+           } else {
+               deferred.resolve(order);
+           }
+        });
+
+    return deferred.promise;
+};
+
+mi5database.prototype.returnEnrichedCocktailData = function(order){
+    console.log(order);
+    var self = instance;
+    var ret = {};
+
+    // timestamp
+    ret.timestamp = order.date;
+
+    // recipe part
+    ret.recipe = {};
+    ret.recipe.id = order.recipeId;
+    var recipe = self.getRecipe(order.recipeId);
+    var temp1 = recipe.then(function(recipe){
+        ret.recipe.name = recipe.name;
+        return recipe;
+    });
+
+    // to do: ensure this is a cocktail
+
+    // order part
+    ret.order = {};
+    ret.order.customerName = order.customerName;
+    ret.order.marketPlaceId = order.marketPlaceId;
+    ret.order.priority = order.priority;
+    ret.order.status = order.status;
+    ret.order.estimatedTimeOfCompletion = order.estimatedTimeOfCompletion;
+    ret.order.mixRatio = {};
+    ret.order.mixRatio.ingredientName = [];
+    ret.order.mixRatio.ratio = [];
+
+    // calculate mix ratio
+    var intermediateTotal = _.reduce(order.parameters, function (memo, num) {
+        return memo + num;
+    }, 0);
+    intermediateTotal = intermediateTotal - order.parameters[0]; //parameters[0] = total amount
+    var temp2 = temp1.then(function(recipe){
+        var el = 0;
+        _.each(recipe.userparameters, function (parameter) {
+            if (el == 0) {
+                // Total Amount
+                ret.order.amount = order.parameters[el];
+            } else {
+                ret.order.mixRatio.ingredientName.push(parameter.Name);
+                // Ratio for other liquids
+                ret.order.mixRatio.ratio.push(order.parameters[el] / intermediateTotal);
+            }
+            el = el + 1;
+        });
+    });
+
+    // append feedback and return
+    if(order.reviewed){
+        return temp2.then(self.getFeedback(order.orderId))
+            .then(function(feedback){
+                console.log('feedback: '+feedback);
+                ret.feedback = feedback;
+                return ret;
+            });
+    } else {
+        return temp2.then(function(){
+            ret.feedback = "";
+            return ret;
+        });
+    }
+
 };
 
 mi5database.prototype.getOrders = function(){
@@ -453,7 +535,62 @@ mi5database.prototype.deleteAllOrders = function(){
       else reject(err);
     });
   });
-}
+};
+
+mi5database.prototype.checkBarcode = function(barcode){
+    var self = instance;
+    console.log('check barcode');
+    if(isNaN(barcode)){
+        throw new Error("barcode is not a number");
+    }
+    if ((barcode < 0) | (barcode>99999999)){
+        throw new Error("barcode out of range");
+    }
+
+};
+
+mi5database.prototype.setBarcode = function(orderId, barcode){
+    var self = instance;
+
+    return self.getOrderSave(orderId)
+        .then(function(order){
+            self.checkBarcode(barcode);
+            if(typeof order.barcode == 'undefined'){
+                order.barcode = barcode;
+                return self.Order.updateQ({orderId: orderId}, { $set: {barcode: barcode}});
+            } else {
+                throw new Error("barcode is already set to " + order.barcode);
+            }
+        });
+};
+
+mi5database.prototype.getBarcode = function(orderId){
+    var self = instance;
+
+    return self.getOrderSave(orderId)
+        .then(function(order){
+            return order.barcode;
+        });
+};
+
+mi5database.prototype.getOrderIdByBarcode = function(barcode){
+    var self = instance;
+    var deferred = Q.defer();
+
+    self.Order.find({'barcode': barcode}).limit(1).exec(function(err, post){
+        if(err) deferred.reject(err);
+        //if(typeof post == 'undefined') deferred.reject('no order with orderId '+orderId+' found.');
+        var order = post.pop();
+        if (typeof order == 'undefined'){
+            deferred.resolve('');
+        } else {
+            deferred.resolve(order.orderId);
+        }
+    });
+
+    return deferred.promise;
+};
+
 
 // ============================================================================================================
 // ==================================  Recommendation/Feedback         ========================================
@@ -523,7 +660,14 @@ mi5database.prototype.saveFeedback = function(productId, like, feedback){
   };
 
   var NewFeedback = new self.Feedback(feedback);
-  return NewFeedback.saveQ();
+  var newFeedback = NewFeedback.saveQ();
+
+  return newFeedback.then(function(feedback){
+          self.Order.updateQ({orderId: productId}, { $set: {reviewed: true}});
+      })
+      .then(function(){
+          return newFeedback;
+      });
 };
 
 mi5database.prototype.getFeedbacks = function(){
@@ -537,6 +681,19 @@ mi5database.prototype.getFeedbacks = function(){
   });
 
   return deferred.promise;
+};
+
+mi5database.prototype.getFeedback = function(orderId){
+    var self = instance;
+    var deferred = Q.defer();
+
+    self.Feedback.find({'productId': orderId}).limit(1).exec(function(err, post){
+        if(err) deferred.reject(err);
+
+        deferred.resolve(post.pop());
+    });
+
+    return deferred.promise;
 };
 
 mi5database.prototype.getLastRecommendationId = function(){

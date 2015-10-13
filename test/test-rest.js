@@ -3,7 +3,7 @@ var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
-describe('Test REST api', function() {
+describe.only('Test REST api', function() {
 
   // Mock-Data
   var recipePOST = {
@@ -81,6 +81,7 @@ describe('Test REST api', function() {
           Name: 'Grenadine Syrup',
           Step: 0,
           Unit: 'ml' } ] };
+  var mockFeedback = {"productId":4242,"like":false,"feedback":"Too sweet"};
 
   before(function(){
     var config = require('./../config');
@@ -93,8 +94,9 @@ describe('Test REST api', function() {
     var express = require('express');
     var app = express();
     var bodyParser = require('body-parser');
-    var basicAuth = require('basic-auth-connect');
     app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
+    var basicAuth = require('basic-auth-connect');
+    app.use(basicAuth(config.basicAuthUser, config.basicAuthPW));
 
     var RecipeHandling  = require('./../controllers/recipe-handling').RecipeHandling;
 
@@ -118,7 +120,11 @@ describe('Test REST api', function() {
 
     it('/getRecipes', function(done){
       var options = {
-        url:  'http://localhost:'+config.HTTPPort+'/getRecipes'
+        url:  'http://localhost:'+config.HTTPPort+'/getRecipes',
+        auth: {
+          'user': config.basicAuthUser,
+          'password':   config.basicAuthPW
+        }
       };
       request.get(options, function(err, res, body){
         var recipes = JSON.parse(body);
@@ -130,7 +136,11 @@ describe('Test REST api', function() {
     it('/manageRecipe', function(done){
       var options = {
         url:  'http://localhost:'+config.HTTPPort+'/manageRecipe',
-        form: {recipe: JSON.stringify(recipePOST)}
+        form: {recipe: JSON.stringify(recipePOST)},
+        auth: {
+          'user': config.basicAuthUser,
+          'password':   config.basicAuthPW
+        }
       };
       request.post(options, function(err, res, body){
         assert.isNull(err);
@@ -140,8 +150,42 @@ describe('Test REST api', function() {
 
         done();
       });
-    })
+    });
+
+    it.skip('/saveOrder', function(done){
+      var options = {
+        url:  'http://localhost:'+config.HTTPPort+'/saveOrder',
+        form: {order: JSON.stringify(mockOrder)},
+        auth: {
+          'user': config.basicAuthUser,
+          'password':   config.basicAuthPW
+        }
+      };
+      request.post(options, function(err, res, body){
+        console.log('\n');
+        console.log(err, body);
+        assert.isNull(err);
+        assert.equal(body.status, 'ok');
+        done();
+      });
+    });
+
+    it.skip('/giveFeedback', function(done){
+      var options = {
+        url:  'http://localhost:'+config.HTTPPort+'/giveFeedback',
+        form: {feedback: JSON.stringify(mockFeedback)},
+        auth: {
+          'user': config.basicAuthUser,
+          'password':   config.basicAuthPW
+        }
+      };
+      request.post(options, function(err, res, body){
+        console.log('\n');
+        console.log(err, body);
+        assert.isNull(err);
+        assert.equal(body.status, 'ok');
+        done();
+      });
+    });
   });
-
-
 });

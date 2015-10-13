@@ -116,6 +116,6 @@ OrderHandling.prototype.getCocktailDataByOrderId = function(req,res){
         })
 };
 
-OrderHandling.prototype.deleteAllOrders() = function(req, res){
+OrderHandling.prototype.deleteAllOrders = function(req, res){
   res.json({err: 'not yet implemented'});
 }

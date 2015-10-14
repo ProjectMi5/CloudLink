@@ -183,10 +183,10 @@ mi5database.prototype.checkOrderLite = function(order){
     });
   }
 
-  if(!_.isNumber(orderId)) {
+  if(isNaN(orderId)) {
     deferred.reject('orderId is not a number');
   }
-  if(!_.isNumber(recipeId)){
+  if(isNaN(recipeId)){
     deferred.reject('recipeId is not a number');
   }
 
@@ -229,7 +229,7 @@ mi5database.prototype.checkOrder = function(order){
 
   // the following inputs are crucial and therefore checked:
   // recipeId, parameters
-  if(!_.isNumber(recipeId)){
+  if(isNaN(recipeId)){
     deferred.reject('recipeId is not a number');
   }
 
@@ -276,7 +276,7 @@ mi5database.prototype.checkOrder = function(order){
 };
 
 mi5database.prototype.prepareOrder = function(order){
-  console.log('order: ' + order);
+  console.log('order: ' + JSON.stringify(order));
   var self = instance;
   var deferred = Q.defer();
 
@@ -330,26 +330,30 @@ mi5database.prototype.prepareOrder = function(order){
           orderedTimeOfCompletion:  orderedTimeOfCompletion
         };
         deferred.resolve(order);
-      });
+      })
+    .catch(function(err){
+      deferred.reject(err);
+    });
 
   return deferred.promise;
 };
 
 mi5database.prototype.idHelper = function(){
   var self = instance;
-  var deferred = Q.defer();
 
-  self.getLastOrderId()
-      .then(function(id){
-        // undefined if there are no existing orders
-        if(typeof id == 'undefined'){
-           deferred.resolve(1);
-        } else {
-           deferred.resolve(id + 1);
-        }
-      });
-
-  return deferred.promise;
+  return self.getLastOrderId()
+    .then(function(id){
+         return id + 1;
+      })
+    .catch(function(err){
+      if(err == "no order has been found"){
+        return 1;
+      } else {
+        var deferred = Q.defer();
+        deferred.reject(err);
+        return deferred.promise;
+      }
+    });
 };
 
 mi5database.prototype.returnPriority = function(marketplaceId){
@@ -378,9 +382,11 @@ mi5database.prototype.placeOrder = function(order){
 
   self.checkOrder(order)
       .then(self.prepareOrder)
-      //.then(self.saveOrder)
-      //.then(deferred.resolve)
-      .catch(deferred.reject(err));
+      .then(self.saveOrder)
+      .then(deferred.resolve)
+      .catch(function(err){
+        deferred.reject(err)
+      });
 
   return deferred.promise;
 };
@@ -393,7 +399,7 @@ mi5database.prototype.getOrder = function(orderId){
         if(err) deferred.reject(err);
 
         //if(typeof post == 'undefined') deferred.reject('no order with orderId '+orderId+' found.');
-        if(typeof post == 'undefined') deferred.resolve(undefined);
+        if(typeof post == 'undefined') deferred.reject('undefined order id');
 
         deferred.resolve(post.pop());
     });

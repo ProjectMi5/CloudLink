@@ -4,7 +4,7 @@ var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
 
-describe('Mi5 Feedback Interface', function() {
+describe.skip('Mi5 Feedback Interface', function() {
   var Q = require('q');
   var mi5Database = require('./../models/mi5Database').instance;
 

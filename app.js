@@ -50,7 +50,6 @@ app.get('/getOrders', OrderHandling.getOrders);
 app.post('/saveOrder', OrderHandling.saveOrder);
 app.post('/placeOrder', OrderHandling.placeOrder);
 app.post('/getOrderById', OrderHandling.getOrderById);
-app.get('/deleteAllOrders', OrderHandling.deleteAllOrders);
 app.post('/setBarcode', OrderHandling.setBarcode);
 app.post('/getOrderIdByBarcode', OrderHandling.getOrderIdByBarcode);
 app.post('/getCocktailDataByOrderId', OrderHandling.getCocktailDataByOrderId);

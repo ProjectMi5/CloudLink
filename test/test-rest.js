@@ -3,7 +3,7 @@ var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
-describe.only('Test REST api', function() {
+describe('Test REST api', function() {
 
   // Mock-Data
   var recipePOST = {
@@ -82,6 +82,7 @@ describe.only('Test REST api', function() {
           Step: 0,
           Unit: 'ml' } ] };
   var mockFeedback = {"productId":4242,"like":false,"feedback":"Too sweet"};
+  var mockOrder = {"orderId":2, "recipeId":10051, "parameters":[100,27,34,25]};
 
   before(function(){
     var config = require('./../config');
@@ -89,6 +90,7 @@ describe.only('Test REST api', function() {
     var mi5Database = require('./../models/mi5Database').instance;
     mi5Database.deleteAllRecipes();
     mi5Database.saveRecipe(recipeParsed);
+    mi5Database.deleteAllOrders();
 
     // Start webserver
     var express = require('express');
@@ -99,9 +101,16 @@ describe.only('Test REST api', function() {
     app.use(basicAuth(config.basicAuthUser, config.basicAuthPW));
 
     var RecipeHandling  = require('./../controllers/recipe-handling').RecipeHandling;
+    var OrderHandling = require('./../controllers/order-handling').OrderHandling;
 
     // Recipes
     app.get('/getRecipes', RecipeHandling.getRecipes);
+    app.post('/saveOrder', OrderHandling.saveOrder);
+    app.post('/placeOrder', OrderHandling.placeOrder);
+    app.post('/getOrderById', OrderHandling.getOrderById);
+    app.post('/setBarcode', OrderHandling.setBarcode);
+    app.post('/getOrderIdByBarcode', OrderHandling.getOrderIdByBarcode);
+    app.post('/getCocktailDataByOrderId', OrderHandling.getCocktailDataByOrderId);
     app.post('/manageRecipe', RecipeHandling.manageRecipe);
 
     // Start web-server
@@ -112,9 +121,10 @@ describe.only('Test REST api', function() {
     // clean up database
     var mi5Database = require('./../models/mi5Database').instance;
     mi5Database.deleteAllRecipes();
+    mi5Database.deleteAllOrders();
   });
 
-  describe('Test RecipeHandling', function(){
+  describe('Test REST', function(){
     var config = require('./../config');
     var request = require('request');
 
@@ -133,6 +143,7 @@ describe.only('Test REST api', function() {
       });
     });
 
+
     it('/manageRecipe', function(done){
       var options = {
         url:  'http://localhost:'+config.HTTPPort+'/manageRecipe',
@@ -143,6 +154,7 @@ describe.only('Test REST api', function() {
         }
       };
       request.post(options, function(err, res, body){
+        console.log(body);
         assert.isNull(err);
 
         body = JSON.parse(body);
@@ -154,7 +166,26 @@ describe.only('Test REST api', function() {
 
     it.skip('/saveOrder', function(done){
       var options = {
-        url:  'http://localhost:'+config.HTTPPort+'/saveOrder',
+          url:  'http://localhost:'+config.HTTPPort+'/saveOrder',
+          form: {order: JSON.stringify(mockOrder)},
+          auth: {
+              'user': config.basicAuthUser,
+              'password':   config.basicAuthPW
+          }
+      };
+      request.post(options, function(err, res, body){
+          console.log('\n');
+          console.log(err, body);
+          assert.isNull(err);
+          body = JSON.parse(body);
+          assert.equal(body.status, 'ok');
+          done();
+      });
+    });
+
+    it('/placeOrder', function(done){
+      var options = {
+        url:  'http://localhost:'+config.HTTPPort+'/placeOrder',
         form: {order: JSON.stringify(mockOrder)},
         auth: {
           'user': config.basicAuthUser,
@@ -162,10 +193,92 @@ describe.only('Test REST api', function() {
         }
       };
       request.post(options, function(err, res, body){
-        console.log('\n');
-        console.log(err, body);
+        console.log(body);
         assert.isNull(err);
+
+        body = JSON.parse(body);
         assert.equal(body.status, 'ok');
+
+        done();
+      });
+    });
+
+    it('/getOrderById', function(done){
+      var options = {
+        url:  'http://localhost:'+config.HTTPPort+'/getOrderById',
+        form: {"id": 1},
+        auth: {
+          'user': config.basicAuthUser,
+          'password':   config.basicAuthPW
+        }
+      };
+      request.post(options, function(err, res, body){
+        console.log(body);
+        assert.isNull(err);
+        assert.isDefined(body, 'body is defined');
+        body = JSON.parse(body);
+        assert.equal(body.status, 'pending approval');
+
+        done();
+      });
+    });
+
+    it('/setBarcode', function(done){
+      var options = {
+        url:  'http://localhost:'+config.HTTPPort+'/setBarcode',
+        form: {"id": 1, "barcode":12345678},
+        auth: {
+          'user': config.basicAuthUser,
+          'password':   config.basicAuthPW
+        }
+      };
+      request.post(options, function(err, res, body){
+        console.log(body);
+        assert.isNull(err);
+        assert.isDefined(body, 'body is defined');
+        body = JSON.parse(body);
+        assert.equal(body.status, 'ok');
+
+        done();
+      });
+    });
+
+    it('/getOrderIdByBarcode', function(done){
+      var options = {
+        url:  'http://localhost:'+config.HTTPPort+'/getOrderIdByBarcode',
+        form: {"barcode":12345678},
+        auth: {
+          'user': config.basicAuthUser,
+          'password':   config.basicAuthPW
+        }
+      };
+      request.post(options, function(err, res, body){
+        console.log(body);
+        assert.isNull(err);
+        assert.isDefined(body, 'body is defined');
+        body = JSON.parse(body);
+        assert.equal(body.orderId, '1');
+
+        done();
+      });
+    });
+
+    it('/getCocktailDataByOrderId', function(done){
+      var options = {
+        url:  'http://localhost:'+config.HTTPPort+'/getCocktailDataByOrderId',
+        form: {"id":1},
+        auth: {
+          'user': config.basicAuthUser,
+          'password':   config.basicAuthPW
+        }
+      };
+      request.post(options, function(err, res, body){
+        console.log(body);
+        assert.isNull(err);
+        assert.isDefined(body, 'body is defined');
+        body = JSON.parse(body);
+        assert.equal(body.orderId, '1');
+
         done();
       });
     });

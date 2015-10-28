@@ -21,18 +21,21 @@ var basicAuth = require('basic-auth-connect');
 // Form Data
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
-// Basic authentification
-app.use(basicAuth(config.basicAuthUser, config.basicAuthPW));
 
 var DeviceHandling  = require('./controllers/device-handling').DeviceHandling;
 var RecipeHandling  = require('./controllers/recipe-handling').RecipeHandling;
 var OrderHandling   = require('./controllers/order-handling').OrderHandling;
 var FeedbackHandling= require('./controllers/feedback-handling').FeedbackHandling;
 
+// Routes: No authentification
 app.get('/helloWorld', function (req, res) {
     console.log('Hello World!');
     res.send('Hello World!');
 });
+
+// Basic authentification
+// !!Every route below this line requires authentification then !!
+app.use(basicAuth(config.basicAuthUser, config.basicAuthPW));
 
 // Device Handling
 app.post('/register', DeviceHandling.register);

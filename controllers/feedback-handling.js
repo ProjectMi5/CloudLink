@@ -2,7 +2,7 @@ var Q = require('q');
 var _ = require('underscore');
 
 var database = require('./../models/database.js');
-var mi5Database = require('./../models/mi5Database').instance;
+var mi5Database = require('./../models/database-feedback').instance;
 var gcm = require('./../models/google-cloud-messaging.js');
 
 FeedbackHandling = function(){

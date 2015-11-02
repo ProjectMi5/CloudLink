@@ -6,7 +6,7 @@ chai.use(chaiAsPromised);
 
 describe.skip('Mi5 Feedback Interface', function() {
   var Q = require('q');
-  var mi5Database = require('./../models/mi5Database').instance;
+  var mi5Database = require('./../models/database-feedback').instance;
 
   var mockFeedback = {
     productId: 4242,

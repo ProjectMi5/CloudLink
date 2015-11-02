@@ -4,7 +4,7 @@ var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
 
-describe('Mi5 Specific interface', function() {
+describe('Recipes', function() {
   var mi5Database = require('./../models/database-recipe').instance;
 
   // clean database
@@ -16,7 +16,7 @@ describe('Mi5 Specific interface', function() {
     return mi5Database.deleteAllRecipes();
   });
 
-  describe('test recipe handling', function(){
+  describe('Test recipe handling', function(){
     // recipePOST is coming from HMI
     var recipePOST = {
         userparameters:
@@ -139,10 +139,6 @@ describe('Mi5 Specific interface', function() {
             .then(mi5Database.translateRecipe)
             .then(mi5Database.manageRecipe);
     });
-
-  });
-
-  describe('test order handling', function(){
 
   });
 });

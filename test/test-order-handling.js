@@ -4,7 +4,7 @@ var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
 
-describe('Mi5 Order Interface', function () {
+describe('Orders', function () {
   var OrderDB = require('./../models/database-order').instance;
   var RecipeDB = require('./../models/database-recipe').instance;
 

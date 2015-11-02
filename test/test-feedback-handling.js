@@ -4,7 +4,7 @@ var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
 
-describe('Mi5 Feedback Interface', function () {
+describe('Feedback', function () {
   var Q = require('q');
   var FeedbackDB = require('./../models/database-feedback').instance;
   var OrderDB = require('./../models/database-order').instance;
@@ -240,6 +240,7 @@ describe('Mi5 Feedback Interface', function () {
     });
 
     it.skip('/enrichedCocktailData', function () {
+      // TODO
       return OrderDB.getOrderSave(mockFeedback.productId)
         .then(function (order) {
           return order;

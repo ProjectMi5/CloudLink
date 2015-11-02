@@ -139,7 +139,9 @@ describe('Test REST api', function() {
 
       request.get(options, function(err, res, body){
         assert.isNull(err);
-        assert.equal(body, '');
+
+        body = JSON.parse(body);
+        assert.equal(body[0].recipeId, 10051);
         done();
       });
     });
@@ -277,7 +279,7 @@ describe('Test REST api', function() {
         assert.isNull(err);
         assert.isDefined(body, 'body is defined');
         body = JSON.parse(body);
-        assert.equal(body.orderId, '1');
+        //assert.equal(body.orderId, '1'); // TODO a pending order does not have an orderID!
 
         done();
       });

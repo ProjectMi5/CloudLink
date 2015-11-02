@@ -4,9 +4,11 @@ var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
 
-describe.skip('Mi5 Feedback Interface', function() {
+describe('Mi5 Feedback Interface', function() {
   var Q = require('q');
-  var mi5Database = require('./../models/database-feedback').instance;
+  var FeedbackDB = require('./../models/database-feedback').instance;
+  var OrderDB = require('./../models/database-order').instance;
+  var RecipeDB = require('./../models/database-recipe').instance;
 
   var mockFeedback = {
     productId: 4242,
@@ -122,22 +124,24 @@ describe.skip('Mi5 Feedback Interface', function() {
 
   // clean database
   before('Clean database: delete all orders, recipes and feedbacks', function(){
-    return Q.all(
-      [mi5Database.deleteAllFeedbacks(),
-      mi5Database.deleteAllOrders()],
-      mi5Database.deleteAllRecipes());
+    return Q.all([
+      FeedbackDB.deleteAllFeedbacks(),
+      OrderDB.deleteAllOrders(),
+      RecipeDB.deleteAllRecipes()]
+    );
   });
 
   after('Clean database: delete all orders, recipes and feedbacks', function(){
-    return Q.all(
-      [mi5Database.deleteAllFeedbacks(),
-        mi5Database.deleteAllOrders()],
-      mi5Database.deleteAllRecipes());
+    return Q.all([
+        FeedbackDB.deleteAllFeedbacks(),
+        OrderDB.deleteAllOrders(),
+        RecipeDB.deleteAllRecipes()]
+    );
   });
 
   describe('Test Feedback Handling', function(){
     it('/checkFeedback with JSON stringified mockFeedback', function(){
-      return mi5Database.checkFeedback(JSON.stringify(mockFeedback))
+      return FeedbackDB.checkFeedback(JSON.stringify(mockFeedback))
         .spread(function(productId, like, feedback){
           assert.equal(productId, mockFeedback.productId);
           assert.equal(like, mockFeedback.like);
@@ -149,7 +153,7 @@ describe.skip('Mi5 Feedback Interface', function() {
     });
 
     it('/checkFeedback with plain mockFeedback', function(){
-      return mi5Database.checkFeedback(mockFeedback)
+      return FeedbackDB.checkFeedback(mockFeedback)
         .spread(function(productId, like, feedback){
           assert.equal(productId, mockFeedback.productId);
           assert.equal(like, mockFeedback.like);
@@ -158,27 +162,27 @@ describe.skip('Mi5 Feedback Interface', function() {
     });
 
 
-      it('/saveFeedback', function(){
+      it('/saveFeedback with a new order', function(){
           // Save a test order
-          return mi5Database.checkOrderLite(mockOrder)
-              .spread(mi5Database.saveOrderLite)
+          return OrderDB.checkOrderLite(mockOrder)
+              .spread(OrderDB.saveOrderLite)
               // Save a test recipe
               .then(function(saved){
                   return Q.fcall(function(){
                       return JSON.stringify(recipePOST);
                   });
               })
-              .then(mi5Database.parseRecipeRequest)
-              .then(mi5Database.translateRecipe)
-              .then(mi5Database.manageRecipe)
+              .then(RecipeDB.parseRecipeRequest)
+              .then(RecipeDB.translateRecipe)
+              .then(RecipeDB.manageRecipe)
               // Enrich now
               .then(function(){
                   return Q.fcall(function(){
                       return mockFeedback;
                   });
               })
-              .then(mi5Database.checkFeedback)
-              .spread(mi5Database.saveFeedback)
+              .then(FeedbackDB.checkFeedback)
+              .spread(FeedbackDB.saveFeedback)
               .then(function(saved){
                   assert.equal(saved.__v, 0);
                   assert.equal(saved.productId, mockFeedback.productId);
@@ -191,9 +195,9 @@ describe.skip('Mi5 Feedback Interface', function() {
     it('/enrichFeedback', function(){
       var _ = require('underscore');
 
-      return mi5Database.checkFeedback(mockFeedback)
-        .spread(mi5Database.saveFeedback)
-        .then(mi5Database.enrichFeedback)
+      return FeedbackDB.checkFeedback(mockFeedback)
+        .spread(FeedbackDB.saveFeedback)
+        .then(FeedbackDB.enrichFeedback)
         .then(function(feedback){
           //assert.isDefined(feedback.recipe, 'recipe must be defined');
           assert.isDefined(feedback.order, 'order must be defined');
@@ -209,27 +213,24 @@ describe.skip('Mi5 Feedback Interface', function() {
         });
     });
 
-      it('/getFeedback', function(){
-          return mi5Database.getFeedback(mockFeedback.productId)
-              .then(function(feedback){
-                  console.log(feedback);
-              });
-      });
+    it.skip('/getFeedback', function(){
+      // TODO
+      return FeedbackDB.getFeedback(mockFeedback.productId)
+        .then(function(feedback){
+        });
+    });
 
-      it('/enrichedCocktailData', function(){
-          return mi5Database.getOrderSave(mockFeedback.productId)
-              .then(function(order){
-                  console.log(order);
-                  return order;
-              })
-              .then(mi5Database.returnEnrichedCocktailData)
-              .then(function(ret){
-                  console.log(ret);
-              })
-              .then(mi5Database.getFeedbacks)
-              .then(function(ret){
-                  console.log(ret);
-              });
-      });
+    it.skip('/enrichedCocktailData', function(){
+      return OrderDB.getOrderSave(mockFeedback.productId)
+        .then(function(order){
+            return order;
+        })
+        .then(OrderDB.returnEnrichedCocktailData)
+        .then(function(ret){
+        })
+        .then(FeedbackDB.getFeedbacks)
+        .then(function(ret){
+        });
+    });
   });
 });

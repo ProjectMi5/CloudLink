@@ -107,7 +107,7 @@ describe('Mi5 Order Interface', function () {
           assert.equal(saved.recipeId, mockOrder.recipeId);
           //assert.equal(saved.parameters, mockOrder.parameters); // TODO: check fo an array comparison function
           assert.isDefined(saved._id);
-          console.log('{' +
+          console.log('Documentation: {' +
             'orderId: ' + saved.orderId + ', ' +
             'recipeId: ' + saved.recipeId + ', ' +
             'parameters: ' + saved.parameters + ', ' +

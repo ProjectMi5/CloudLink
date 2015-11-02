@@ -87,7 +87,6 @@ describe('Test REST api', function() {
   before(function(){
     var config = require('./../config');
     // Prepare the database
-    var mi5Database = require('./../models/database-feedback').instance;
     var RecipeDB = require('./../models/database-recipe').instance;
     var OrderDB = require('./../models/database-order').instance;
     RecipeDB.deleteAllRecipes();
@@ -137,9 +136,10 @@ describe('Test REST api', function() {
           'password':   config.basicAuthPW
         }
       };
+
       request.get(options, function(err, res, body){
-        var recipes = JSON.parse(body);
         assert.isNull(err);
+        assert.isEqual(body, '');
         done();
       });
     });
@@ -154,8 +154,8 @@ describe('Test REST api', function() {
           'password':   config.basicAuthPW
         }
       };
+
       request.post(options, function(err, res, body){
-        console.log(body);
         assert.isNull(err);
 
         body = JSON.parse(body);
@@ -174,9 +174,8 @@ describe('Test REST api', function() {
               'password':   config.basicAuthPW
           }
       };
+
       request.post(options, function(err, res, body){
-          console.log('\n');
-          console.log(err, body);
           assert.isNull(err);
           body = JSON.parse(body);
           assert.equal(body.status, 'ok');
@@ -193,8 +192,8 @@ describe('Test REST api', function() {
           'password':   config.basicAuthPW
         }
       };
+
       request.post(options, function(err, res, body){
-        console.log(body);
         assert.isNull(err);
 
         body = JSON.parse(body);
@@ -213,8 +212,8 @@ describe('Test REST api', function() {
           'password':   config.basicAuthPW
         }
       };
+
       request.post(options, function(err, res, body){
-        console.log(body);
         assert.isNull(err);
         assert.isDefined(body, 'body is defined');
         body = JSON.parse(body);
@@ -233,8 +232,8 @@ describe('Test REST api', function() {
           'password':   config.basicAuthPW
         }
       };
+
       request.post(options, function(err, res, body){
-        console.log(body);
         assert.isNull(err);
         assert.isDefined(body, 'body is defined');
         body = JSON.parse(body);
@@ -253,8 +252,8 @@ describe('Test REST api', function() {
           'password':   config.basicAuthPW
         }
       };
+
       request.post(options, function(err, res, body){
-        console.log(body);
         assert.isNull(err);
         assert.isDefined(body, 'body is defined');
         body = JSON.parse(body);
@@ -273,31 +272,13 @@ describe('Test REST api', function() {
           'password':   config.basicAuthPW
         }
       };
+
       request.post(options, function(err, res, body){
-        console.log(body);
         assert.isNull(err);
         assert.isDefined(body, 'body is defined');
         body = JSON.parse(body);
         assert.equal(body.orderId, '1');
 
-        done();
-      });
-    });
-
-    it.skip('/giveFeedback', function(done){
-      var options = {
-        url:  'http://localhost:'+config.HTTPPort+'/giveFeedback',
-        form: {feedback: JSON.stringify(mockFeedback)},
-        auth: {
-          'user': config.basicAuthUser,
-          'password':   config.basicAuthPW
-        }
-      };
-      request.post(options, function(err, res, body){
-        console.log('\n');
-        console.log(err, body);
-        assert.isNull(err);
-        assert.equal(body.status, 'ok');
         done();
       });
     });

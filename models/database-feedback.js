@@ -1,6 +1,5 @@
 var Q = require('q');
 var _ = require('underscore');
-var moment = require('moment');
 
 var config = require('./../config.js');
 var CONFIG = {};
@@ -76,7 +75,6 @@ FeedbackDB.prototype.getRecommendation = function(orderId){
  * @returns {*|promise}
  */
 FeedbackDB.prototype.checkFeedback = function(feedback) {
-  var self = instance;
   var deferred = Q.defer();
 
   //console.log('feedback', feedback);
@@ -112,11 +110,11 @@ FeedbackDB.prototype.saveFeedback = function(productId, like, feedback){
   var newFeedback = NewFeedback.saveQ();
 
   return newFeedback.then(function(feedback){
-          self.Order.updateQ({orderId: productId}, { $set: {reviewed: true}});
-      })
-      .then(function(){
-          return newFeedback;
-      });
+      return require('./database-order').instance.setReviewed(productId, true);
+    })
+    .then(function(){
+      return newFeedback;
+    });
 };
 
 FeedbackDB.prototype.getFeedbacks = function(){
@@ -186,6 +184,9 @@ FeedbackDB.prototype.enrichFeedback = function(feedback){
   var ret = {};
   var temp = {};
 
+  var OrderDB = require('./database-order').instance;
+  var RecipeDB = require('./database-recipe').instance;
+
   ret.productId = feedback.productId;
   ret.timestamp = feedback.timestamp;
   ret.order = {};
@@ -195,10 +196,10 @@ FeedbackDB.prototype.enrichFeedback = function(feedback){
 
   // create the amount and mixRatio only for cocktails
   if(true){
-    return self.getOrder(feedback.productId)
+    return OrderDB.getOrder(feedback.productId)
       .then(function(order){
         temp.order = order;
-        return self.getRecipe(order.recipeId);
+        return RecipeDB.getRecipe(order.recipeId);
       })
       .then(function(recipe){
         temp.recipe = recipe;

@@ -95,7 +95,6 @@ OrderDB.prototype.saveOrderLite = function(orderId, recipeId, userParameters){
 };
 
 OrderDB.prototype.checkOrder = function(order){
-  var self = instance;
   var deferred = Q.defer();
 
   var RecipeDB = require('./database-recipe').instance;
@@ -424,12 +423,11 @@ OrderDB.prototype.deleteAllOrders = function(){
 };
 
 OrderDB.prototype.checkBarcode = function(barcode){
-  var self = instance;
   console.log('check barcode');
   if(isNaN(barcode)){
     throw new Error("barcode is not a number");
   }
-  if ((barcode < 0) | (barcode>99999999)){
+  if ((barcode < 0) || (barcode>99999999)){
     throw new Error("barcode out of range");
   }
 
@@ -477,3 +475,14 @@ OrderDB.prototype.getOrderIdByBarcode = function(barcode){
   return deferred.promise;
 };
 
+/**
+ *
+ * @param orderid int
+ * @param reviewed bool
+ * @returns {*}
+ */
+OrderDB.prototype.setReviewed = function(orderid, reviewed){
+  var self = instance;
+
+  return instance.Order.updateQ({orderId: orderid}, { $set: {reviewed: reviewed}});
+};

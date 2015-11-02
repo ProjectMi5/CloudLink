@@ -5,7 +5,7 @@ chai.use(chaiAsPromised);
 
 
 describe.skip('Mi5 Order Interface', function () {
-  var mi5Database = require('./../models/mi5Database').instance;
+  var mi5Database = require('./../models/database-feedback').instance;
 
   var mockOrder = {
     orderId: 4243,

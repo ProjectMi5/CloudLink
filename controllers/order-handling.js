@@ -1,13 +1,13 @@
 var Q = require('q');
 
-var mi5Database = require('./../models/mi5Database').instance;
+var OrderDB = require('./../models/database-order').instance;
 
 OrderHandling = function () {
 };
 exports.OrderHandling = new OrderHandling();
 
 OrderHandling.prototype.getLastOrder = function (req, res) {
-  mi5Database.getLastOrder()
+  OrderDB.getLastOrder()
     .then(function (order) {
       console.log('getlastorder', order);
       res.json(order);
@@ -19,7 +19,7 @@ OrderHandling.prototype.getLastOrder = function (req, res) {
 };
 
 OrderHandling.prototype.getOrders = function (req, res) {
-  mi5Database.getOrders()
+  OrderDB.getOrders()
     .then(function (orders) {
       console.log('getOrders', orders);
       res.json(orders);
@@ -34,8 +34,8 @@ OrderHandling.prototype.saveOrder = function (req, res) {
   var order = JSON.parse(req.body.order);
   console.log(order);
 
-  mi5Database.checkOrderLite(order)
-    .spread(mi5Database.saveOrderLite)
+  OrderDB.checkOrderLite(order)
+    .spread(OrderDB.saveOrderLite)
     .then(function () {
       res.json({status: 'ok', description: 'order has been saved'});
     })
@@ -48,7 +48,7 @@ OrderHandling.prototype.placeOrder = function (req, res) {
   var order = JSON.parse(req.body.order);
   console.log(order);
 
-  mi5Database.placeOrder(order)
+  OrderDB.placeOrder(order)
     .then(function (order) {
       res.json({status: 'ok', description: 'order has been saved', orderId: order.orderId, orderStatus: order.status});
     })
@@ -62,7 +62,7 @@ OrderHandling.prototype.setBarcode = function (req, res) {
   var barcode = JSON.parse(req.body.barcode);
   console.log('Requested to set barcode of order ' + orderId + ' to ' + barcode);
 
-  mi5Database.setBarcode(orderId, barcode)
+  OrderDB.setBarcode(orderId, barcode)
     .then(function (feedback) {
       res.json({status: 'ok', description: 'barcode has been saved'});
     })
@@ -74,7 +74,7 @@ OrderHandling.prototype.setBarcode = function (req, res) {
 OrderHandling.prototype.getOrderIdByBarcode = function (req, res) {
   var barcode = JSON.parse(req.body.barcode);
 
-  mi5Database.getOrderIdByBarcode(barcode)
+  OrderDB.getOrderIdByBarcode(barcode)
     .then(function (orderId) {
       if (typeof orderId == 'undefined') {
         orderId = "";
@@ -98,7 +98,7 @@ OrderHandling.prototype.getOrderById = function (req, res) {
     return res.json({err: 'orderId is undefined'});
   }
 
-  mi5Database.getOrder(id)
+  OrderDB.getOrder(id)
     .then(function (order) {
       res.json(order);
     })
@@ -111,8 +111,8 @@ OrderHandling.prototype.getOrderById = function (req, res) {
 OrderHandling.prototype.getCocktailDataByOrderId = function (req, res) {
   var id = parseInt(req.body.id, 10);
 
-  mi5Database.getOrderSave(id)
-    .then(mi5Database.returnEnrichedCocktailData)
+  OrderDB.getOrderSave(id)
+    .then(OrderDB.returnEnrichedCocktailData)
     .then(function (ret) {
       res.json(ret);
     })

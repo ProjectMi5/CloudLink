@@ -1,5 +1,5 @@
 // Mi5 Database Model - MongoDB
-mi5Database = require('./../models/mi5Database').instance;
+mi5Database = require('./../models/database-feedback').instance;
 
 mi5Database.getLastTaskId().then(function(taskId){
   console.log('current taskId: ', taskId);

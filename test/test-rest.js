@@ -139,7 +139,7 @@ describe('Test REST api', function() {
 
       request.get(options, function(err, res, body){
         assert.isNull(err);
-        assert.isEqual(body, '');
+        assert.equal(body, '');
         done();
       });
     });

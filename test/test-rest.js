@@ -87,10 +87,12 @@ describe('Test REST api', function() {
   before(function(){
     var config = require('./../config');
     // Prepare the database
-    var mi5Database = require('./../models/mi5Database').instance;
-    mi5Database.deleteAllRecipes();
-    mi5Database.saveRecipe(recipeParsed);
-    mi5Database.deleteAllOrders();
+    var mi5Database = require('./../models/database-feedback').instance;
+    var RecipeDB = require('./../models/database-recipe').instance;
+    var OrderDB = require('./../models/database-order').instance;
+    RecipeDB.deleteAllRecipes();
+    RecipeDB.saveRecipe(recipeParsed);
+    OrderDB.deleteAllOrders();
 
     // Start webserver
     var express = require('express');
@@ -119,9 +121,8 @@ describe('Test REST api', function() {
 
   after(function(){
     // clean up database
-    var mi5Database = require('./../models/mi5Database').instance;
-    mi5Database.deleteAllRecipes();
-    mi5Database.deleteAllOrders();
+    require('./../models/database-recipe').instance.deleteAllRecipes();
+    require('./../models/database-order').instance.deleteAllOrders();
   });
 
   describe('Test REST', function(){

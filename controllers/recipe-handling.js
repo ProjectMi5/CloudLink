@@ -1,13 +1,13 @@
 var Q = require('q');
 
-var Recipe = require('./../models/mi5Database').instance;
+var RecipeDB = require('./../models/database-recipe').instance;
 
 RecipeHandling = function(){
 };
 exports.RecipeHandling = new RecipeHandling();
 
 RecipeHandling.prototype.getRecipes = function(req, res){
-  mi5Database.getRecipes()
+  RecipeDB.getRecipes()
     .then(function(recipes){
       console.log('/getRecipes called');
       res.json(recipes);
@@ -21,15 +21,15 @@ RecipeHandling.prototype.getRecipes = function(req, res){
 RecipeHandling.prototype.manageRecipe = function(req, res){
   var recipe = req.body.recipe;
 
-  mi5Database.parseRecipeRequest(recipe)
-    .then(mi5Database.translateRecipe)
-    .then(mi5Database.manageRecipe)
+  RecipeDB.parseRecipeRequest(recipe)
+    .then(RecipeDB.translateRecipe)
+    .then(RecipeDB.manageRecipe)
     .then(function(){
 
       // this chain is only to get the recipeId;
-      mi5Database.parseRecipeRequest(recipe)
-        .then(mi5Database.translateRecipe)
-        .then(mi5Database.extractRecipeId)
+      RecipeDB.parseRecipeRequest(recipe)
+        .then(RecipeDB.translateRecipe)
+        .then(RecipeDB.extractRecipeId)
         .then(function(recipeId){
           console.log('/manageRecipe succesfull', 'RecipeID:', recipeId );
           res.json({status: 'ok', description: 'recipe has been managed'})
@@ -43,7 +43,7 @@ RecipeHandling.prototype.manageRecipe = function(req, res){
 };
 
 RecipeHandling.prototype.deleteAllRecipes = function(req, res){
-  mi5Database.deleteAllRecipes()
+  RecipeDB.deleteAllRecipes()
     .then(function(){
       console.log('/deleteAllRecipes succesfull');
       res.json({status: 'ok', description: 'all recipes have been removed'});

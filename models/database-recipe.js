@@ -1,7 +1,7 @@
 var Q = require('q');
 var _ = require('underscore');
 
-Recipes = function() {
+RecipeDB = function() {
   this.mongoose = require('mongoose-q')();
 
   console.log('Mi5 - Database loaded');
@@ -23,14 +23,14 @@ Recipes = function() {
   });
   this.Recipe = this.mongoose.model('Recipe', recipeSchema);
 };
-var instance = new Recipes();
+var instance = new RecipeDB();
 exports.instance = instance;
 
 // ============================================================================================================
 // ==================================  recipes                         ========================================
 // ============================================================================================================
 
-Recipes.prototype.translateRecipe = function(recipe){
+RecipeDB.prototype.translateRecipe = function(recipe){
   var deferred = Q.defer();
 
   var mongoRecipe = {
@@ -45,11 +45,11 @@ Recipes.prototype.translateRecipe = function(recipe){
   return deferred.promise;
 };
 
-Recipes.prototype.extractRecipeId = function(recipe){
+RecipeDB.prototype.extractRecipeId = function(recipe){
   return recipe.recipeId;
 };
 
-Recipes.prototype.getRecipe = function(recipeId) {
+RecipeDB.prototype.getRecipe = function(recipeId) {
   var self = instance;
   var deferred = Q.defer();
 
@@ -62,7 +62,7 @@ Recipes.prototype.getRecipe = function(recipeId) {
   return deferred.promise;
 };
 
-Recipes.prototype.getRecipes = function(){
+RecipeDB.prototype.getRecipes = function(){
   var self = instance;
   var deferred = Q.defer();
 
@@ -75,13 +75,13 @@ Recipes.prototype.getRecipes = function(){
   return deferred.promise;
 };
 
-Recipes.prototype.parseRecipeRequest = function(recipe){
+RecipeDB.prototype.parseRecipeRequest = function(recipe){
   return Q.fcall(function(){
     return JSON.parse(recipe);
   });
 };
 
-Recipes.prototype.manageRecipe = function(recipe){
+RecipeDB.prototype.manageRecipe = function(recipe){
   var self = instance;
 
   return self.getRecipe(recipe.recipeId)
@@ -95,13 +95,13 @@ Recipes.prototype.manageRecipe = function(recipe){
     });
 };
 
-Recipes.prototype.updateRecipe = function(recipe){
+RecipeDB.prototype.updateRecipe = function(recipe){
   var self = instance;
 
   return self.Recipe.updateQ({recipeId: recipe.recipeId}, recipe);
 };
 
-Recipes.prototype.saveRecipe = function(recipe){
+RecipeDB.prototype.saveRecipe = function(recipe){
   var self = instance;
 
   var NewRecipe = new self.Recipe(recipe);
@@ -109,7 +109,7 @@ Recipes.prototype.saveRecipe = function(recipe){
   return NewRecipe.saveQ();
 };
 
-Recipes.prototype.deleteAllRecipes = function(){
+RecipeDB.prototype.deleteAllRecipes = function(){
   var self = instance;
 
   return Q.Promise(function(resolve, reject){

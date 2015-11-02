@@ -4,8 +4,9 @@ var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
 
-describe.skip('Mi5 Order Interface', function () {
-  var mi5Database = require('./../models/database-feedback').instance;
+describe('Mi5 Order Interface', function () {
+  var OrderDB = require('./../models/database-order').instance;
+  var RecipeDB = require('./../models/database-recipe').instance;
 
   var mockOrder = {
     orderId: 4243,
@@ -71,21 +72,21 @@ describe.skip('Mi5 Order Interface', function () {
 
   // clean database
   before('Clean database: delete all orders', function () {
-    return mi5Database.deleteAllOrders()
-      .then(mi5Database.deleteAllRecipes())
+    return OrderDB.deleteAllOrders()
+      .then(RecipeDB.deleteAllRecipes())
       .then(function () {
-        mi5Database.saveRecipe(recipeParsed)
+        RecipeDB.saveRecipe(recipeParsed)
       });
   });
 
   after('Clean database: delete all orders', function () {
-    return mi5Database.deleteAllOrders();
+    return OrderDB.deleteAllOrders();
   });
 
   describe('Test Order Handling', function () {
     it('/saveOrder', function () {
-      return mi5Database.checkOrderLite(mockOrder)
-        .spread(mi5Database.saveOrderLite)
+      return OrderDB.checkOrderLite(mockOrder)
+        .spread(OrderDB.saveOrderLite)
         .then(function (saved) {
           //console.log(saved);
           assert.equal(saved.__v, 0);
@@ -97,9 +98,9 @@ describe.skip('Mi5 Order Interface', function () {
     });
 
     it('/placeOrder', function () {
-      return mi5Database.checkOrder(mockOrder2)
-        .then(mi5Database.prepareOrder)
-        .then(mi5Database.saveOrder)
+      return OrderDB.checkOrder(mockOrder2)
+        .then(OrderDB.prepareOrder)
+        .then(OrderDB.saveOrder)
         .then(function (saved) {
           //console.log(saved);
           assert.equal(saved.__v, 0);
@@ -119,16 +120,14 @@ describe.skip('Mi5 Order Interface', function () {
             'estimatedTimeOfCompletion: ' + saved.estimatedTimeOfCompletion + ', ' +
             'orderedTimeOfCompletion: ' + saved.orderedTimeOfCompletion + ', ' +
             'barcode: ' + saved.barcode + ', ' +
-
             '}');
         })
         .catch(function (err) {
-          console.log('err: ' + err);
         });
     });
 
     it('/getOrder', function () {
-      return mi5Database.getOrder(mockOrder.orderId)
+      return OrderDB.getOrder(mockOrder.orderId)
         .then(function (order) {
           assert.equal(order.orderId, mockOrder.orderId);
           assert.equal(order.recipeId, mockOrder.recipeId);
@@ -137,22 +136,21 @@ describe.skip('Mi5 Order Interface', function () {
     });
 
     it('/setBarcode', function () {
-      return mi5Database.setBarcode(mockOrder.orderId, mockOrder2.barcode)
+      return OrderDB.setBarcode(mockOrder.orderId, mockOrder2.barcode)
         .then(function (feedback) {
-          console.log(feedback);
           assert.equal(feedback.ok, 1);
         });
     });
 
     it('/getBarcode', function () {
-      return mi5Database.getBarcode(mockOrder.orderId)
+      return OrderDB.getBarcode(mockOrder.orderId)
         .then(function (barcode) {
           assert.equal(barcode, mockOrder2.barcode);
         });
     });
 
     it('/getOrderIdByBarcode', function () {
-      return mi5Database.getOrderIdByBarcode(mockOrder2.barcode)
+      return OrderDB.getOrderIdByBarcode(mockOrder2.barcode)
         .then(function (orderId) {
           assert.equal(orderId, mockOrder.orderId);
         });

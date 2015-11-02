@@ -1,6 +1,6 @@
 var Q = require('q');
 
-var mi5Database = require('./../models/mi5Database').instance;
+var Recipe = require('./../models/mi5Database').instance;
 
 RecipeHandling = function(){
 };

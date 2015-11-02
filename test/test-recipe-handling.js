@@ -5,7 +5,7 @@ chai.use(chaiAsPromised);
 
 
 describe('Mi5 Specific interface', function() {
-  var mi5Database = require('./../models/mi5Database').instance;
+  var mi5Database = require('./../models/database-recipe').instance;
 
   // clean database
   before('Clean database: delete all recipes', function(){

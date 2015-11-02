@@ -1,6 +1,5 @@
 var Q = require('q');
 var _ = require('underscore');
-var assert = require('assert');
 var moment = require('moment');
 
 var config = require('./../config.js');
@@ -56,115 +55,9 @@ mi5database = function() {
     timestamp: { type: Date, default: Date.now }
   });
   this.Feedback = this.mongoose.model('Feedback', feedbackSchema);
-
-  var recipeSchema = this.mongoose.Schema({
-    recipeId  : Number,
-    name      : String,
-    description : String,
-    dummy     : Boolean,
-    userparameters : this.mongoose.Schema.Types.Mixed
-  });
-  this.Recipe = this.mongoose.model('Recipe', recipeSchema);
 };
 var instance = new mi5database();
 exports.instance = instance;
-
-// ============================================================================================================
-// ==================================  recipes                         ========================================
-// ============================================================================================================
-
-
-mi5database.prototype.translateRecipe = function(recipe){
-  var deferred = Q.defer();
-
-  var mongoRecipe = {
-    recipeId: recipe.RecipeID,
-    name: recipe.Name,
-    description: recipe.Description,
-    dummy: recipe.Dummy,
-    userparameters: recipe.userparameters
-  };
-
-  deferred.resolve(mongoRecipe);
-  return deferred.promise;
-};
-
-mi5database.prototype.extractRecipeId = function(recipe){
-  return recipe.recipeId;
-};
-
-mi5database.prototype.getRecipe = function(recipeId){
-  var self = instance;
-  var deferred = Q.defer();
-
-  self.Recipe.find({'recipeId': recipeId}).limit(1).exec(function(err, post){
-    if(err) deferred.reject(err);
-
-    deferred.resolve(post.pop()); //due to limit 1, there is only 1 entry in post[]
-  });
-
-  return deferred.promise;
-};
-
-mi5database.prototype.getRecipes = function(){
-  var self = instance;
-  var deferred = Q.defer();
-
-  self.Recipe.find().exec(function(err, post){
-    if(err) deferred.reject(err);
-
-    deferred.resolve(post);
-  });
-
-  return deferred.promise;
-};
-
-mi5database.prototype.parseRecipeRequest = function(recipe){
-  var self = instance;
-
-  return Q.fcall(function(){
-    return JSON.parse(recipe);
-  });
-};
-
-mi5database.prototype.manageRecipe = function(recipe){
-  var self = instance;
-
-  return self.getRecipe(recipe.recipeId)
-    .then(function(oldRecipe){
-      if(typeof oldRecipe == 'undefined'){ // no recipe found
-        return self.saveRecipe(recipe);
-      }
-      else {
-        return self.updateRecipe(recipe);
-      }
-    });
-};
-
-mi5database.prototype.updateRecipe = function(recipe){
-  var self = instance;
-
-  return self.Recipe.updateQ({recipeId: recipe.recipeId}, recipe);
-};
-
-mi5database.prototype.saveRecipe = function(recipe){
-  var self = instance;
-
-  var NewRecipe = new self.Recipe(recipe);
-  //console.log('new recipe saving:'+recipe);
-  return NewRecipe.saveQ();
-};
-
-mi5database.prototype.deleteAllRecipes = function(){
-  var self = this;
-
-  return Q.Promise(function(resolve, reject){
-    self.Recipe.remove(function(err){
-      if(!err) resolve();
-      else reject(err);
-    });
-  });
-};
 
 // ============================================================================================================
 // ==================================  Order                           ========================================

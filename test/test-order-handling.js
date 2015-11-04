@@ -180,10 +180,10 @@ describe('Orders', function () {
         });
     });
 
-    it('#reportOrderAsInProgress', function(){
+    it('#updateStatus - in progress', function(){
       return OrderDB.getLastOrderId()
         .then(function(orderId){
-          return OrderDB.reportOrderAsInProgress(orderId);
+          return OrderDB.updateStatus(orderId, 'in progress');
         })
         .then(function(result){
           assert.equal(result.status, 'ok');
@@ -191,28 +191,28 @@ describe('Orders', function () {
     });
 
     it('#reportOrderAsInProgress with wrong id', function(){
-      OrderDB.reportOrderAsInProgress(0) // no order with id 0 should exist
+      OrderDB.updateStatus(0, 'asdf') // no order with id 0 should exist
         .then(function(result){
           assert.equal(result.status, 'err');
         });
     });
 
-    it('#reportOrderAsDone', function(){
-      return OrderDB.getLastOrderId()
-        .then(function(orderId){
-          return OrderDB.reportOrderAsDone(orderId);
-        })
-        .then(function(result){
-          assert.equal(result.status, 'ok');
-        });
-    });
-
-    it('#reportOrderAsDone with wrong id', function(){
-      OrderDB.reportOrderAsDone(0) // no order with id 0 should exist
-      .then(function(result){
-        assert.equal(result.status, 'err');
-      });
-    });
+    //it('#reportOrderAsDone', function(){
+    //  return OrderDB.getLastOrderId()
+    //    .then(function(orderId){
+    //      return OrderDB.reportOrderAsDone(orderId);
+    //    })
+    //    .then(function(result){
+    //      assert.equal(result.status, 'ok');
+    //    });
+    //});
+    //
+    //it('#reportOrderAsDone with wrong id', function(){
+    //  OrderDB.reportOrderAsDone(0) // no order with id 0 should exist
+    //  .then(function(result){
+    //    assert.equal(result.status, 'err');
+    //  });
+    //});
 
   });
 });

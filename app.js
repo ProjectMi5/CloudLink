@@ -56,6 +56,8 @@ app.post('/getOrderById', OrderHandling.getOrderById);
 app.post('/setBarcode', OrderHandling.setBarcode);
 app.post('/getOrderIdByBarcode', OrderHandling.getOrderIdByBarcode);
 app.post('/getCocktailDataByOrderId', OrderHandling.getCocktailDataByOrderId);
+app.post('/getOrderByStatus', OrderHandling.getOrderByStatus);
+app.post('/updateOrderStatus', OrderHandling.updateOrderStatus);
 
 // Feedback
 app.post('/giveFeedback', FeedbackHandling.giveFeedback);

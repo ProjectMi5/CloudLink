@@ -183,7 +183,7 @@ OrderDB.prototype.prepareOrder = function(order){
     priority = self.returnPriority(marketPlaceId);
   }
 
-  status = 'pending approval';
+  status = 'pending';
 
   CONFIG.OrderHandling.withoutApproval.forEach(function(item){
     if(item == order.marketPlaceId){
@@ -508,31 +508,16 @@ OrderDB.prototype.getAcceptedOrders = function(){
   return self.getOrdersByStatus('accepted');
 };
 
-OrderDB.prototype.reportOrderAsInProgress = function(orderid){
+OrderDB.prototype.updateStatus = function(orderid, status){
   var self = instance;
 
-  return self.Order.updateQ({orderId: orderid}, { $set: {status: 'in progress'}})
+  return self.Order.updateQ({orderId: orderid}, { $set: {status: status}})
     .then(function(result){
       return Q.Promise(function(resolve, reject){
         if(result.nModified == 1){
-          resolve({status: 'ok', description: 'order with id ' + orderid + ' is now in progress'});
+          resolve({status: 'ok', description: 'order with id ' + orderid + ' is now ' + status});
         } else {
-          reject({status: 'err', description: 'no order has been modified, probably the orderId is wrong'});
-        }
-      });
-    });
-};
-
-OrderDB.prototype.reportOrderAsDone = function(orderid){
-  var self = instance;
-
-  return self.Order.updateQ({orderId: orderid}, { $set: {status: 'done'}})
-    .then(function(result){
-      return Q.Promise(function(resolve, reject){
-        if(result.nModified == 1){
-          resolve({status: 'ok', description: 'order with id ' + orderid + ' is now marked as done'});
-        } else {
-          reject({status: 'err', description: 'no order has been modified, probably the orderId is wrong'});
+          reject({status: 'err', description: 'no order has been modified, probably the orderId is wrong, or the status has not changed'});
         }
       });
     });

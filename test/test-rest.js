@@ -219,7 +219,7 @@ describe('Test REST api', function() {
         assert.isNull(err);
         assert.isDefined(body, 'body is defined');
         body = JSON.parse(body);
-        assert.equal(body.status, 'pending approval');
+        assert.equal(body.status, 'pending');
 
         done();
       });

@@ -30,6 +30,11 @@ OrderHandling.prototype.getOrders = function (req, res) {
     });
 };
 
+/**
+ * deprecated?
+ * @param req
+ * @param res
+ */
 OrderHandling.prototype.saveOrder = function (req, res) {
   var order = JSON.parse(req.body.order);
   console.log(order);
@@ -124,4 +129,42 @@ OrderHandling.prototype.getCocktailDataByOrderId = function (req, res) {
 
 OrderHandling.prototype.deleteAllOrders = function (req, res) {
   res.json({err: 'not yet implemented'});
+};
+
+OrderHandling.prototype.getOrderByStatus = function (req, res) {
+  var _ = require('underscore');
+
+  var status = req.body.status;
+
+  if(_.contains(OrderDB.getValidStates(), status)) {
+    OrderDB.getOrdersByStatus(status)
+      .then(function (ret) {
+        res.json(ret);
+      })
+      .catch(function (err) {
+        res.json(err);
+        console.log(err);
+      });
+  }
+};
+
+OrderHandling.prototype.updateOrderStatus = function (req, res) {
+  var _ = require('underscore');
+
+  var id = parseInt(req.body.id, 10);
+  var status = req.body.status;
+
+  if(_.contains(OrderDB.getValidStates(), status)) {
+    OrderDB.updateStatus(id, status)
+      .then(function (ret) {
+        res.json(ret);
+      })
+      .catch(function (err) {
+        res.json(err);
+        console.log(err);
+      });
+  } else {
+    res.json({status: 'err', description: 'the status is not valid'});
+  }
+
 };

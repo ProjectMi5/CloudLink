@@ -80,11 +80,11 @@ describe('Orders', function () {
   });
 
   after('Clean database: delete all orders', function () {
-    return OrderDB.deleteAllOrders();
+    //return OrderDB.deleteAllOrders();
   });
 
   describe('Test Order Handling', function () {
-    it('/saveOrder', function () {
+    it('#saveOrder', function () {
       return OrderDB.checkOrderLite(mockOrder)
         .spread(OrderDB.saveOrderLite)
         .then(function (saved) {
@@ -97,7 +97,7 @@ describe('Orders', function () {
         });
     });
 
-    it('/placeOrder', function () {
+    it('#placeOrder', function () {
       return OrderDB.checkOrder(mockOrder2)
         .then(OrderDB.prepareOrder)
         .then(OrderDB.saveOrder)
@@ -126,7 +126,7 @@ describe('Orders', function () {
         });
     });
 
-    it('/getOrder', function () {
+    it('#getOrder', function () {
       return OrderDB.getOrder(mockOrder.orderId)
         .then(function (order) {
           assert.equal(order.orderId, mockOrder.orderId);
@@ -135,25 +135,52 @@ describe('Orders', function () {
         });
     });
 
-    it('/setBarcode', function () {
+    it('#setBarcode', function () {
       return OrderDB.setBarcode(mockOrder.orderId, mockOrder2.barcode)
         .then(function (feedback) {
           assert.equal(feedback.ok, 1);
         });
     });
 
-    it('/getBarcode', function () {
+    it('#getBarcode', function () {
       return OrderDB.getBarcode(mockOrder.orderId)
         .then(function (barcode) {
           assert.equal(barcode, mockOrder2.barcode);
         });
     });
 
-    it('/getOrderIdByBarcode', function () {
+    it('#getOrderIdByBarcode', function () {
       return OrderDB.getOrderIdByBarcode(mockOrder2.barcode)
         .then(function (orderId) {
           assert.equal(orderId, mockOrder.orderId);
         });
     });
+
+    it('#acceptOrderById', function(){
+      return OrderDB.getLastOrderId()
+        .then(function(orderId){
+          return OrderDB.acceptOrderById(orderId);
+        })
+        .then(function(result){
+          assert.equal(result.status, 'ok');
+        });
+    });
+
+    it('#acceptOrderById with wrong orderId', function(){
+      var orderid = 0; // there should not be an order with this id
+
+      return OrderDB.acceptOrderById(orderid)
+        .catch(function(result){
+          assert.equal(result.status, 'err');
+        });
+    });
+
+    it('#getAcceptedOrders', function(){
+      return OrderDB.getAcceptedOrders()
+        .then(function(orders){
+          assert.isArray(orders);
+          console.log(orders);
+        });
+    })
   });
 });

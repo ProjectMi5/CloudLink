@@ -382,7 +382,7 @@ OrderDB.prototype.getOrders = function(){
 };
 
 /**
- * Returns a promised-order task object
+ * Returns the last highest order id
  *
  * @returns {*|promise}
  */
@@ -484,5 +484,26 @@ OrderDB.prototype.getOrderIdByBarcode = function(barcode){
 OrderDB.prototype.setReviewed = function(orderid, reviewed){
   var self = instance;
 
-  return instance.Order.updateQ({orderId: orderid}, { $set: {reviewed: reviewed}});
+  return self.Order.updateQ({orderId: orderid}, { $set: {reviewed: reviewed}});
+};
+
+OrderDB.prototype.acceptOrderById = function(orderid){
+  var self = instance;
+
+  return self.Order.updateQ({orderId: orderid}, { $set: {status: 'accepted'}})
+    .then(function(result){
+      return Q.Promise(function(resolve, reject){
+        if(result.nModified == 1){
+          resolve({status: 'ok'});
+        } else {
+          reject({status: 'err', description: 'no order has been modified'});
+        }
+      });
+    });
+};
+
+OrderDB.prototype.getAcceptedOrders = function(){
+  var self = instance;
+
+  return self.Order.findQ({status: 'accepted'});
 };

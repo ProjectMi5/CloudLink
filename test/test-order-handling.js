@@ -167,9 +167,7 @@ describe('Orders', function () {
     });
 
     it('#acceptOrderById with wrong orderId', function(){
-      var orderid = 0; // there should not be an order with this id
-
-      return OrderDB.acceptOrderById(orderid)
+      return OrderDB.acceptOrderById(0) // no order with id 0 should exist
         .catch(function(result){
           assert.equal(result.status, 'err');
         });
@@ -179,8 +177,42 @@ describe('Orders', function () {
       return OrderDB.getAcceptedOrders()
         .then(function(orders){
           assert.isArray(orders);
-          console.log(orders);
         });
-    })
+    });
+
+    it('#reportOrderAsInProgress', function(){
+      return OrderDB.getLastOrderId()
+        .then(function(orderId){
+          return OrderDB.reportOrderAsInProgress(orderId);
+        })
+        .then(function(result){
+          assert.equal(result.status, 'ok');
+        });
+    });
+
+    it('#reportOrderAsInProgress with wrong id', function(){
+      OrderDB.reportOrderAsInProgress(0) // no order with id 0 should exist
+        .then(function(result){
+          assert.equal(result.status, 'err');
+        });
+    });
+
+    it('#reportOrderAsDone', function(){
+      return OrderDB.getLastOrderId()
+        .then(function(orderId){
+          return OrderDB.reportOrderAsDone(orderId);
+        })
+        .then(function(result){
+          assert.equal(result.status, 'ok');
+        });
+    });
+
+    it('#reportOrderAsDone with wrong id', function(){
+      OrderDB.reportOrderAsDone(0) // no order with id 0 should exist
+      .then(function(result){
+        assert.equal(result.status, 'err');
+      });
+    });
+
   });
 });

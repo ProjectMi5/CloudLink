@@ -9,7 +9,7 @@ CONFIG.OrderHandling = config.OrderHandling;
 
 OrderDB = function() {
   this.mongoose = require('mongoose-q')();
-
+  this.validStates = ['pending', 'rejected', 'accepted', 'in progress', 'done', 'delivered', 'archived', 'aborted', 'failure'];
   console.log('Mi5 - Database loaded');
 
   // Connect to database - somehow not needed?
@@ -496,7 +496,7 @@ OrderDB.prototype.acceptOrderById = function(orderid){
         if(result.nModified == 1){
           resolve({status: 'ok'});
         } else {
-          reject({status: 'err', description: 'no order has been modified'});
+          reject({status: 'err', description: 'no order has been modified, probably the orderId is wrong'});
         }
       });
     });
@@ -505,5 +505,56 @@ OrderDB.prototype.acceptOrderById = function(orderid){
 OrderDB.prototype.getAcceptedOrders = function(){
   var self = instance;
 
-  return self.Order.findQ({status: 'accepted'});
+  return self.getOrdersByStatus('accepted');
 };
+
+OrderDB.prototype.reportOrderAsInProgress = function(orderid){
+  var self = instance;
+
+  return self.Order.updateQ({orderId: orderid}, { $set: {status: 'in progress'}})
+    .then(function(result){
+      return Q.Promise(function(resolve, reject){
+        if(result.nModified == 1){
+          resolve({status: 'ok', description: 'order with id ' + orderid + ' is now in progress'});
+        } else {
+          reject({status: 'err', description: 'no order has been modified, probably the orderId is wrong'});
+        }
+      });
+    });
+};
+
+OrderDB.prototype.reportOrderAsDone = function(orderid){
+  var self = instance;
+
+  return self.Order.updateQ({orderId: orderid}, { $set: {status: 'done'}})
+    .then(function(result){
+      return Q.Promise(function(resolve, reject){
+        if(result.nModified == 1){
+          resolve({status: 'ok', description: 'order with id ' + orderid + ' is now marked as done'});
+        } else {
+          reject({status: 'err', description: 'no order has been modified, probably the orderId is wrong'});
+        }
+      });
+    });
+};
+
+OrderDB.prototype.getOrdersByStatus = function(status){
+  var self = instance;
+
+  if (_.contains(self.validStates, status)){
+    return self.Order.findQ({status: status})
+  } else {
+    return Q.Promise(function(resolve, reject){
+      reject({status: 'err', description: 'the given status is not a valid status'});
+    })
+  }
+};
+
+/**
+ * @sync
+ * @returns {Array}
+ */
+OrderDB.prototype.getValidStates = function(){
+  var self = instance;
+  return self.validStates;
+}

@@ -487,34 +487,13 @@ OrderDB.prototype.setReviewed = function(orderid, reviewed){
   return self.Order.updateQ({orderId: orderid}, { $set: {reviewed: reviewed}});
 };
 
-OrderDB.prototype.acceptOrderById = function(orderid){
-  var self = instance;
-
-  return self.Order.updateQ({orderId: orderid}, { $set: {status: 'accepted'}})
-    .then(function(result){
-      return Q.Promise(function(resolve, reject){
-        if(result.nModified == 1){
-          resolve({status: 'ok'});
-        } else {
-          reject({status: 'err', description: 'no order has been modified, probably the orderId is wrong'});
-        }
-      });
-    });
-};
-
-OrderDB.prototype.getAcceptedOrders = function(){
-  var self = instance;
-
-  return self.getOrdersByStatus('accepted');
-};
-
 OrderDB.prototype.updateStatus = function(orderid, status){
   var self = instance;
 
   return self.Order.updateQ({orderId: orderid}, { $set: {status: status}})
     .then(function(result){
       return Q.Promise(function(resolve, reject){
-        if(result.nModified == 1){
+        if(result.ok == 1){
           resolve({status: 'ok', description: 'order with id ' + orderid + ' is now ' + status});
         } else {
           reject({status: 'err', description: 'no order has been modified, probably the orderId is wrong, or the status has not changed'});

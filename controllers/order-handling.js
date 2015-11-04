@@ -131,7 +131,7 @@ OrderHandling.prototype.deleteAllOrders = function (req, res) {
   res.json({err: 'not yet implemented'});
 };
 
-OrderHandling.prototype.getOrderByStatus = function (req, res) {
+OrderHandling.prototype.getOrdersByStatus = function (req, res) {
   var _ = require('underscore');
 
   var status = req.body.status;

@@ -156,30 +156,6 @@ describe('Orders', function () {
         });
     });
 
-    it('#acceptOrderById', function(){
-      return OrderDB.getLastOrderId()
-        .then(function(orderId){
-          return OrderDB.acceptOrderById(orderId);
-        })
-        .then(function(result){
-          assert.equal(result.status, 'ok');
-        });
-    });
-
-    it('#acceptOrderById with wrong orderId', function(){
-      return OrderDB.acceptOrderById(0) // no order with id 0 should exist
-        .catch(function(result){
-          assert.equal(result.status, 'err');
-        });
-    });
-
-    it('#getAcceptedOrders', function(){
-      return OrderDB.getAcceptedOrders()
-        .then(function(orders){
-          assert.isArray(orders);
-        });
-    });
-
     it('#updateStatus - in progress', function(){
       return OrderDB.getLastOrderId()
         .then(function(orderId){
@@ -190,29 +166,20 @@ describe('Orders', function () {
         });
     });
 
-    it('#reportOrderAsInProgress with wrong id', function(){
-      OrderDB.updateStatus(0, 'asdf') // no order with id 0 should exist
-        .then(function(result){
+    it('#updateStatus asdf with wrong id', function(){
+      return OrderDB.updateStatus(0, 'asdf') // no order with id 0 should exist
+        .catch(function(result){
           assert.equal(result.status, 'err');
         });
     });
 
-    //it('#reportOrderAsDone', function(){
-    //  return OrderDB.getLastOrderId()
-    //    .then(function(orderId){
-    //      return OrderDB.reportOrderAsDone(orderId);
-    //    })
-    //    .then(function(result){
-    //      assert.equal(result.status, 'ok');
-    //    });
-    //});
-    //
-    //it('#reportOrderAsDone with wrong id', function(){
-    //  OrderDB.reportOrderAsDone(0) // no order with id 0 should exist
-    //  .then(function(result){
-    //    assert.equal(result.status, 'err');
-    //  });
-    //});
+    it('#getOrdersByStatus in progress', function(){
+      return OrderDB.getOrdersByStatus('in progress')
+        .then(function(result){
+          assert.isArray(result);
+          console.log(result);
+        });
+    })
 
   });
 });

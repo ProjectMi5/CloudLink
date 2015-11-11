@@ -35,6 +35,8 @@ OrderDB = function() {
     , orderedTimeOfCompletion    : this.mongoose.Schema.Types.Date
     , taskId                     : Number
     , barcode                    : Number
+    , timeOfCompletion           : this.mongoose.Schema.Types.Date
+    , lastUpdate                 : this.mongoose.Schema.Types.Date
   });
   this.Order = this.mongoose.model('Order', orderSchema);
 };
@@ -163,7 +165,7 @@ OrderDB.prototype.prepareOrder = function(order){
   var marketPlaceId = order.marketPlaceId;
   var customerName = order.customerName;
   var priority = parseInt(order.priority, 10);
-  var status;
+  var status = 'pending';
   var orderedTimeOfCompletion = order.orderedTimeOfCompletion;
 
   // set undefined variables
@@ -182,14 +184,6 @@ OrderDB.prototype.prepareOrder = function(order){
   if(isNaN(priority)){
     priority = self.returnPriority(marketPlaceId);
   }
-
-  status = 'pending';
-
-  CONFIG.OrderHandling.withoutApproval.forEach(function(item){
-    if(item == order.marketPlaceId){
-      status = 'accepted';
-    }
-  });
 
 
   // create OrderId

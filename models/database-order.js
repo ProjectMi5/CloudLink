@@ -575,14 +575,14 @@ OrderDB.prototype.getOrdersFiltered = function(status, createdSince, lastUpdateS
     if(!(createdSince instanceof Date)){
       deferred.reject(createdSince+' is not a valid date.');
     }
-    query.date = createdSince;
+    query.date = {"$gte": createdSince};
   }
 
   if (lastUpdateSince != null){
     if(!(lastUpdateSince instanceof Date)){
       deferred.reject(lastUpdateSince+' is not a valid date.');
     }
-    query.lastUpdate = lastUpdateSince;
+    query.lastUpdate = {"$gte": lastUpdateSince};
   }
 
   if(filter != ['*']){

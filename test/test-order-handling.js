@@ -18,7 +18,7 @@ describe('Orders', function () {
     recipeId: 10051,
     parameters: [40, 100, 80, 20],
     marketPlaceId: 'EU',
-    customerName: 'Frau Fröhlich',
+    customerName: 'Frau Frï¿½hlich',
     orderedTimeOfCompletion: '2015-09-07T09:21:14.382Z',
     barcode: '12345678'
   };
@@ -107,6 +107,7 @@ describe('Orders', function () {
           assert.equal(saved.recipeId, mockOrder.recipeId);
           //assert.equal(saved.parameters, mockOrder.parameters); // TODO: check fo an array comparison function
           assert.isDefined(saved._id);
+          var update = saved.lastUpdate;
           console.log('Documentation: {' +
             'orderId: ' + saved.orderId + ', ' +
             'recipeId: ' + saved.recipeId + ', ' +
@@ -120,6 +121,7 @@ describe('Orders', function () {
             'estimatedTimeOfCompletion: ' + saved.estimatedTimeOfCompletion + ', ' +
             'orderedTimeOfCompletion: ' + saved.orderedTimeOfCompletion + ', ' +
             'barcode: ' + saved.barcode + ', ' +
+            'lastUpdate: ' + update.getMinutes()+' '+update.getSeconds()+' '+update.getMilliseconds() + ', ' +
             '}');
         })
         .catch(function (err) {

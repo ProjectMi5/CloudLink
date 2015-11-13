@@ -39,7 +39,25 @@ OrderDB = function() {
     , lastUpdate                 : this.mongoose.Schema.Types.Date
   });
   this.Order = this.mongoose.model('Order', orderSchema);
+
+  /* make sure lastUpdate will be written
+     unfortunately, update is not supported.
+   */
+  orderSchema.pre('save', function(next){
+    this.lastUpdate = new Date();
+    console.log('A document is being saved.');
+    next();
+  });
+
+  orderSchema.pre('update', function(){
+    console.log('Yay, orderSchema.pre("update") did work!'); //unfortunately, it does not.
+  });
+
+
 };
+
+
+
 var instance = new OrderDB();
 exports.instance = instance;
 
@@ -418,28 +436,47 @@ OrderDB.prototype.deleteAllOrders = function(){
 
 OrderDB.prototype.checkBarcode = function(barcode){
   console.log('check barcode');
+  var self = instance;
+  var deferred = Q.defer();
+
   if(isNaN(barcode)){
-    throw new Error("barcode is not a number");
+    deferred.reject("barcode is not a number");
   }
   if ((barcode < 0) || (barcode>99999999)){
-    throw new Error("barcode out of range");
+    deferred.reject("barcode out of range");
   }
 
+  self.getOrderIdByBarcode(barcode)
+      .then(function(id){
+        if(id != ''){
+          deferred.reject("barcode already exists");
+        } else {
+          console.log('true');
+          deferred.resolve(true);
+        }
+      });
+
+  return deferred.promise;
 };
 
 OrderDB.prototype.setBarcode = function(orderId, barcode){
   var self = instance;
+  var deferred = Q.defer();
 
-  return self.getOrderSave(orderId)
+  self.getOrderSave(orderId)
     .then(function(order){
-      self.checkBarcode(barcode);
-      if(typeof order.barcode == 'undefined'){
-        order.barcode = barcode;
-        return self.Order.updateQ({orderId: orderId}, { $set: {barcode: barcode}});
-      } else {
-        throw new Error("barcode is already set to " + order.barcode);
+      if(typeof order.barcode != 'undefined'){
+        deferred.reject("barcode is already set to " + order.barcode);
       }
+      console.log(order.barcode);
+    })
+    .then(self.checkBarcode(barcode))
+    .done(function(){
+      console.log('again');
+      deferred.resolve(self.Order.updateQ({orderId: orderId}, { $set: {barcode: barcode, lastUpdate: new Date()}}));
     });
+
+  return deferred.promise;
 };
 
 OrderDB.prototype.getBarcode = function(orderId){
@@ -478,13 +515,13 @@ OrderDB.prototype.getOrderIdByBarcode = function(barcode){
 OrderDB.prototype.setReviewed = function(orderid, reviewed){
   var self = instance;
 
-  return self.Order.updateQ({orderId: orderid}, { $set: {reviewed: reviewed}});
+  return self.Order.updateQ({orderId: orderid}, { $set: {reviewed: reviewed, lastUpdate: new Date()}});
 };
 
 OrderDB.prototype.updateStatus = function(orderid, status){
   var self = instance;
 
-  return self.Order.updateQ({orderId: orderid}, { $set: {status: status}})
+  return self.Order.updateQ({orderId: orderid}, { $set: {status: status, lastUpdate: new Date()}})
     .then(function(result){
       return Q.Promise(function(resolve, reject){
         if(result.n == 1){
@@ -515,4 +552,4 @@ OrderDB.prototype.getOrdersByStatus = function(status){
 OrderDB.prototype.getValidStates = function(){
   var self = instance;
   return self.validStates;
-}
+};

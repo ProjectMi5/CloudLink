@@ -6,6 +6,8 @@ var config = require('./../config.js');
 var CONFIG = {};
 CONFIG.DatabaseHost = config.MongoDBHost;
 CONFIG.OrderHandling = config.OrderHandling;
+CONFIG.Cocktails = config.Cocktails; // Array with RecipeIds of Cocktails
+CONFIG.Cookies = config.Cookies;     // Array with RecipeIds of Cookies
 
 OrderDB = function() {
   this.mongoose = require('mongoose-q')();
@@ -316,8 +318,13 @@ OrderDB.prototype.getOrderSave = function(orderId){
 OrderDB.prototype.returnEnrichedCocktailData = function(order){
   console.log(order);
   var self = instance;
-  var ret = {};
 
+  // check if order is a cocktail
+  if(CONFIG.Cocktails.indexOf(order.recipeId) < 0){
+    return  Q.Promise(function(resolve, reject){reject('The order you picked is not a Cocktail.')});
+  }
+
+  var ret = {};
   // timestamp
   ret.timestamp = order.date;
 
@@ -329,8 +336,6 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
     ret.recipe.name = recipe.name;
     return recipe;
   });
-
-  // to do: ensure this is a cocktail
 
   // order part
   ret.order = {};

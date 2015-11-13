@@ -137,6 +137,14 @@ describe('Orders', function () {
         });
     });
 
+    it('#getOrders', function () {
+      return OrderDB.getOrders()
+          .then(function (orders) {
+            console.log(orders);
+            //assert.equal(order.parameters, mockOrder.parameters); // TODO: check for an array comparison function
+          });
+    });
+
     it('#setBarcode', function () {
       return OrderDB.setBarcode(mockOrder.orderId, mockOrder2.barcode)
         .then(function (feedback) {

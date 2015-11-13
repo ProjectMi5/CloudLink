@@ -285,7 +285,7 @@ OrderDB.prototype.getOrder = function(orderId){
   var self = instance;
   var deferred = Q.defer();
 
-  self.Order.find({'orderId': orderId}).limit(1).exec(function(err, post){
+  self.Order.find({'orderId': orderId}, '-_id -__v').limit(1).exec(function(err, post){
     if(err) deferred.reject(err);
 
     //if(typeof post == 'undefined') deferred.reject('no order with orderId '+orderId+' found.');
@@ -384,7 +384,7 @@ OrderDB.prototype.getOrders = function(){
   var self = instance;
   var deferred = Q.defer();
 
-  self.Order.find().limit().exec(function(err, post){
+  self.Order.find({},'-_id -__v').limit().exec(function(err, post){
     if(err) deferred.reject(err);
 
     deferred.resolve(post);
@@ -537,7 +537,7 @@ OrderDB.prototype.getOrdersByStatus = function(status){
   var self = instance;
 
   if (_.contains(self.validStates, status)){
-    return self.Order.findQ({status: status})
+    return self.Order.findQ({status: status},'-_id -__v')
   } else {
     return Q.Promise(function(resolve, reject){
       reject({status: 'err', description: 'the given status is not a valid status'});

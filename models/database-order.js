@@ -545,9 +545,63 @@ OrderDB.prototype.getOrdersByStatus = function(status){
     return self.Order.findQ({status: status},'-_id -__v')
   } else {
     return Q.Promise(function(resolve, reject){
-      reject({status: 'err', description: 'the given status is not a valid status'});
+      reject({status: 'err', description: status + ' is not a valid status'});
     })
   }
+};
+
+/**
+ * getFilteredOrdersByStatus
+ * @param status is an Array
+ * @returns orders
+ */
+
+
+OrderDB.prototype.getOrdersFiltered = function(status, createdSince, lastUpdateSince, filter){
+  var self = instance;
+  var deferred = Q.defer();
+  var query = {};
+
+  if (status != null){
+    status.forEach(function(item){
+      if(self.validStates.indexOf(item)<0){
+        deferred.reject(item+' is not a valid status.');
+      }
+    });
+    query.status = {$in: status};
+  }
+
+  if (createdSince != null){
+    if(!(createdSince instanceof Date)){
+      deferred.reject(createdSince+' is not a valid date.');
+    }
+    query.date = createdSince;
+  }
+
+  if (lastUpdateSince != null){
+    if(!(lastUpdateSince instanceof Date)){
+      deferred.reject(lastUpdateSince+' is not a valid date.');
+    }
+    query.lastUpdate = lastUpdateSince;
+  }
+
+  if(filter != ['*']){
+    var array = [];
+    if(filter.indexOf('Cocktails') > -1){
+      array.push(CONFIG.Cocktails);
+    }
+    if(filter.indexOf('Cookies') > -1){
+      array.push(CONFIG.Cookies);
+    }
+    query.recipeId = {$in: array};
+  }
+
+
+  self.Order.findQ(query,'-_id -__v', function(err, result){
+    deferred.resolve(result);
+  });
+
+  return deferred.promise;
 };
 
 /**

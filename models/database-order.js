@@ -588,14 +588,14 @@ OrderDB.prototype.getOrdersFiltered = function(status, createdSince, lastUpdateS
   }
 
   if((filter != null)&&(typeof filter != 'undefined')){
-    var array = [];
+    var arr = [];
     if(filter.indexOf('Cocktails') > -1){
-      array.push(CONFIG.Cocktails);
+      arr = _.union(arr, CONFIG.Cocktails);
     }
     if(filter.indexOf('Cookies') > -1){
-      array.push(CONFIG.Cookies);
+      arr = _.union(arr,CONFIG.Cookies);
     }
-    query.recipeId = {$in: array};
+    query.recipeId = {$in: arr};
   }
 
 

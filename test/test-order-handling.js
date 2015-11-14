@@ -192,7 +192,7 @@ describe('Orders', function () {
     });
 
     it('#getOrdersFiltered', function(){
-      return OrderDB.getOrdersFiltered(null, null, null, null)
+      return OrderDB.getOrdersFiltered(null, null, null, ['Cocktails'])
         .then(function(result){
           assert.isArray(result);
           console.log(result);

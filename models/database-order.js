@@ -572,20 +572,20 @@ OrderDB.prototype.getOrdersFiltered = function(status, createdSince, lastUpdateS
   }
 
   if (createdSince != null){
-    if(!(createdSince instanceof Date)){
+    if(!(createdSince instanceof Date) || isNaN(createdSince.getTime())){
       deferred.reject(createdSince+' is not a valid date.');
     }
     query.date = {"$gte": createdSince};
   }
 
   if (lastUpdateSince != null){
-    if(!(lastUpdateSince instanceof Date)){
+    if(!(lastUpdateSince instanceof Date) || isNaN(lastUpdateSince.getTime())){
       deferred.reject(lastUpdateSince+' is not a valid date.');
     }
     query.lastUpdate = {"$gte": lastUpdateSince};
   }
 
-  if((filter != ['*'])&&(filter != null)){
+  if(filter != null){
     var array = [];
     if(filter.indexOf('Cocktails') > -1){
       array.push(CONFIG.Cocktails);

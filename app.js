@@ -46,6 +46,7 @@ app.post('/pushMessage', DeviceHandling.pushMessage);
 app.get('/getRecipes', RecipeHandling.getRecipes);
 app.post('/manageRecipe', RecipeHandling.manageRecipe);
 app.get('/deleteAllRecipes', RecipeHandling.deleteAllRecipes); //deactivate later maybe
+app.get('/loadDefaultRecipes', RecipeHandling.loadDefaultRecipes); // Debug function
 
 // Orders
 app.get('/getLastOrder', OrderHandling.getLastOrder);

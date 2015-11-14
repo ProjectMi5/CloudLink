@@ -207,6 +207,8 @@ OrderHandling.prototype.updateOrderStatus = function (req, res) {
   var id = parseInt(req.body.id, 10);
   var status = req.body.status;
 
+  console.log('/updateOrderStatus', id, status);
+
   if(_.contains(OrderDB.getValidStates(), status)) {
     OrderDB.updateStatus(id, status)
       .then(function (ret) {

@@ -585,7 +585,7 @@ OrderDB.prototype.getOrdersFiltered = function(status, createdSince, lastUpdateS
     query.lastUpdate = {"$gte": lastUpdateSince};
   }
 
-  if(filter != ['*']){
+  if((filter != ['*'])&&(filter != null)){
     var array = [];
     if(filter.indexOf('Cocktails') > -1){
       array.push(CONFIG.Cocktails);

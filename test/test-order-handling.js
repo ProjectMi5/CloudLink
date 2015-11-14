@@ -189,7 +189,16 @@ describe('Orders', function () {
           assert.isArray(result);
           console.log(result);
         });
-    })
+    });
+
+    it('#getOrdersFiltered', function(){
+      return OrderDB.getOrdersFiltered(null, null, null, null)
+        .then(function(result){
+          assert.isArray(result);
+          console.log(result);
+        });
+    });
+
 
   });
 });

@@ -572,18 +572,18 @@ OrderDB.prototype.getOrdersFiltered = function(status, createdSince, lastUpdateS
   }
 
   if ((createdSince != null)&&(typeof createdSince != 'undefined')){
-    if(!(createdSince instanceof Date) || isNaN(createdSince.getTime())){
+    createdSince = new Date(createdSince);
+    if(isNaN(createdSince.getTime())){
       deferred.reject(createdSince+' is not a valid date.');
     }
-    createdSince = new Date(createdSince);
     query.date = {"$gte": createdSince};
   }
 
   if ((lastUpdateSince != null)&&(typeof lastUpdateSince != 'undefined')){
-    if(!(lastUpdateSince instanceof Date) || isNaN(lastUpdateSince.getTime())){
+    lastUpdateSince = new Date(lastUpdateSince);
+    if(isNaN(lastUpdateSince.getTime())){
       deferred.reject(lastUpdateSince+' is not a valid date.');
     }
-    lastUpdateSince = new Date(lastUpdateSince);
     query.lastUpdate = {"$gte": lastUpdateSince};
   }
 

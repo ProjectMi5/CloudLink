@@ -124,8 +124,45 @@ OrderHandling.prototype.getCocktailDataByOrderId = function (req, res) {
     .catch(function (err) {
       res.json({err: err});
       console.log(err);
-    })
+    });
 };
+
+OrderHandling.prototype.getActiveOrders = function (req, res){
+  OrderDB.getOrdersFiltered(['accepted', 'in progress'], null, null, ['Cocktails', 'Cookies'])
+    .then(function(ret){
+      res.json(ret);
+    })
+    .catch(function(err){
+      res.json({err: err});
+      console.log(err);
+    });
+};
+
+OrderHandling.prototype.getOrdersSince = function (req, res){
+  var date = new Date(req.body.date);
+  OrderDB.getOrdersFiltered(null, date, null, ['Cocktails', 'Cookies'])
+    .then(function(ret){
+      res.json(ret);
+    })
+    .catch(function(err){
+      res.json({err: err});
+      console.log(err);
+    });
+
+};
+
+OrderHandling.prototype.getOrdersUpdatedSince = function (req, res){
+  var date = new Date(req.body.date);
+  OrderDB.getOrdersFiltered(null, null, date, ['Cocktails', 'Cookies'])
+    .then(function(ret){
+      res.json(ret);
+    })
+    .catch(function(err){
+      res.json({err: err});
+      console.log(err);
+    });
+};
+
 
 OrderHandling.prototype.deleteAllOrders = function (req, res) {
   res.json({err: 'not yet implemented'});

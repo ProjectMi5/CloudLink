@@ -562,7 +562,7 @@ OrderDB.prototype.getOrdersFiltered = function(status, createdSince, lastUpdateS
   var deferred = Q.defer();
   var query = {};
 
-  if (status != null){
+  if ((status != null)&&(typeof status != 'undefined')){
     status.forEach(function(item){
       if(self.validStates.indexOf(item)<0){
         deferred.reject(item+' is not a valid status.');
@@ -571,21 +571,21 @@ OrderDB.prototype.getOrdersFiltered = function(status, createdSince, lastUpdateS
     query.status = {$in: status};
   }
 
-  if (createdSince != null){
+  if ((createdSince != null)&&(typeof createdSince != 'undefined')){
     if(!(createdSince instanceof Date) || isNaN(createdSince.getTime())){
       deferred.reject(createdSince+' is not a valid date.');
     }
     query.date = {"$gte": createdSince};
   }
 
-  if (lastUpdateSince != null){
+  if ((lastUpdateSince != null)&&(typeof lastUpdateSince != 'undefined')){
     if(!(lastUpdateSince instanceof Date) || isNaN(lastUpdateSince.getTime())){
       deferred.reject(lastUpdateSince+' is not a valid date.');
     }
     query.lastUpdate = {"$gte": lastUpdateSince};
   }
 
-  if(filter != null){
+  if((filter != null)&&(typeof filter != 'undefined')){
     var array = [];
     if(filter.indexOf('Cocktails') > -1){
       array.push(CONFIG.Cocktails);

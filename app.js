@@ -61,6 +61,7 @@ app.post('/updateOrderStatus', OrderHandling.updateOrderStatus);
 app.get('/getActiveOrders', OrderHandling.getActiveOrders);
 app.post('/getOrdersSince', OrderHandling.getOrdersSince);
 app.post('/getOrdersUpdatedSince', OrderHandling.getOrdersUpdatedSince);
+app.post('/getOrdersFiltered', OrderHandling.getOrdersFiltered);
 
 // Feedback
 app.post('/giveFeedback', FeedbackHandling.giveFeedback);

@@ -139,7 +139,7 @@ OrderHandling.prototype.getActiveOrders = function (req, res){
 };
 
 OrderHandling.prototype.getOrdersSince = function (req, res){
-  var date = new Date(req.body.timestamp);
+  var date = req.body.timestamp;
   OrderDB.getOrdersFiltered(null, date, null, ['Cocktails', 'Cookies'])
     .then(function(ret){
       res.json(ret);
@@ -152,7 +152,7 @@ OrderHandling.prototype.getOrdersSince = function (req, res){
 };
 
 OrderHandling.prototype.getOrdersUpdatedSince = function (req, res){
-  var date = new Date(req.body.timestamp);
+  var date = req.body.timestamp;
   OrderDB.getOrdersFiltered(null, null, date, ['Cocktails', 'Cookies'])
     .then(function(ret){
       res.json(ret);
@@ -165,8 +165,8 @@ OrderHandling.prototype.getOrdersUpdatedSince = function (req, res){
 
 OrderHandling.prototype.getOrdersFiltered = function (req, res){
   var status = req.body.status;
-  var createdSince = new Date(req.body.createdSince);
-  var updatedSince = new Date(req.body.updatedSince);
+  var createdSince = req.body.createdSince;
+  var updatedSince = req.body.updatedSince;
   var type = req.body.type;
 
   OrderDB.getOrdersFiltered(status, createdSince, updatedSince, type)

@@ -575,6 +575,7 @@ OrderDB.prototype.getOrdersFiltered = function(status, createdSince, lastUpdateS
     if(!(createdSince instanceof Date) || isNaN(createdSince.getTime())){
       deferred.reject(createdSince+' is not a valid date.');
     }
+    createdSince = new Date(createdSince);
     query.date = {"$gte": createdSince};
   }
 
@@ -582,6 +583,7 @@ OrderDB.prototype.getOrdersFiltered = function(status, createdSince, lastUpdateS
     if(!(lastUpdateSince instanceof Date) || isNaN(lastUpdateSince.getTime())){
       deferred.reject(lastUpdateSince+' is not a valid date.');
     }
+    lastUpdateSince = new Date(lastUpdateSince);
     query.lastUpdate = {"$gte": lastUpdateSince};
   }
 

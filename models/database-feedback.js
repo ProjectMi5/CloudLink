@@ -90,9 +90,9 @@ FeedbackDB.prototype.checkFeedback = function(feedback) {
 
   var productId = parseInt(feedback.productId, 10);
   var like = !!feedback.like; // !! is equivalent to a boolean cast
-  var feedback = String(feedback.feedback);
+  var feed = String(feedback.feedback);
 
-  deferred.resolve([productId, like, feedback]);
+  deferred.resolve([productId, like, feed]);
 
   return deferred.promise;
 };

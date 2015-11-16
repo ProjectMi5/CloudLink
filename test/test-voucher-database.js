@@ -17,16 +17,10 @@ describe('Voucher', function () {
     it('#update', function () {
     });
 
-    it('#validate', function(){
-    });
-
-    it('#invalidate', function(){
-    });
-
     it('#delete', function(){
     });
 
-    it('#isStillValid', function(){
+    it('#get', function(){
     });
 
   });

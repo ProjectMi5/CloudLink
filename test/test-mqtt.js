@@ -6,7 +6,7 @@ var mqtt = require('mqtt');
 //var assert = require('chai').assert;
 var expect = require('chai').expect;
 
-describe('MQTT Connection test', function(){
+describe.skip('MQTT Connection test', function(){
   describe('config.MQTTHost should be defined through config.js', function(){
      it('should be a string and start with mqtt://', function(){
          expect(config.MQTTHost).to.be.a('string');

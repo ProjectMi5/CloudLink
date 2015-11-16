@@ -550,11 +550,12 @@ OrderDB.prototype.updateOrder = function(req){
   delete req.orderId;
   req.lastUpdate = new Date();
 
-  return self.Order.updateQ({orderId: orderid}, { $set: req})
+  return self.Order.updateQ({orderId: orderId}, { $set: req})
     .then(function(result){
       return Q.Promise(function(resolve, reject){
         if(result.n == 1){
-          resolve({status: 'ok', description: 'order with id ' + orderid + ' is now ' + status});
+          resolve({status: 'ok', description: 'order with id ' + orderId + 'was updated with: '
+            + JSON.stringify(req)});
         } else {
           reject({status: 'err', description: 'no order has been modified, probably the orderId is wrong, or the status has not changed'});
         }

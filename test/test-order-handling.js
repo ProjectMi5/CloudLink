@@ -176,6 +176,16 @@ describe('Orders', function () {
         });
     });
 
+    it('#updateOrder', function(){
+      return OrderDB.getLastOrderId()
+        .then(function(orderId){
+          return OrderDB.updateOrder({orderId: orderId, status: 'accepted'});
+        })
+        .then(function(result){
+          assert.equal(result.status, 'ok');
+        });
+    });
+
     it('#updateStatus asdf with wrong id', function(){
       return OrderDB.updateStatus(0, 'asdf') // no order with id 0 should exist
         .catch(function(result){

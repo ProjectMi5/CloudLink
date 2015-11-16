@@ -241,7 +241,7 @@ OrderHandling.prototype.updateOrder = function (req, res) {
 
   console.log('/updateOrder', req);
 
-  OrderDB.updateStatus(req)
+  OrderDB.updateOrder(req)
     .then(function (ret) {
       res.json(ret);
     })

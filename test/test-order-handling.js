@@ -176,10 +176,28 @@ describe('Orders', function () {
         });
     });
 
-    it('#updateOrder', function(){
+    it('#updateOrder: set a new status', function(){
       return OrderDB.getLastOrderId()
         .then(function(orderId){
-          return OrderDB.updateOrder({orderId: orderId, status: 'accepted'});
+          var newOrder = {
+            orderId: orderId,
+            status: 'accepted'
+          };
+          return OrderDB.updateOrder(newOrder);
+    })
+        .then(function(result){
+          assert.equal(result.status, 'ok');
+        });
+    });
+
+    it('#updateOrder: set estimatedTimeOfCompletion', function(){
+      return OrderDB.getLastOrderId()
+        .then(function(orderId){
+          var newOrder = {
+            orderId: orderId,
+            estimatedTimeOfCompletion: '2015-11-16T19:05:06+01:00'
+          };
+          return OrderDB.updateOrder(newOrder);
         })
         .then(function(result){
           assert.equal(result.status, 'ok');

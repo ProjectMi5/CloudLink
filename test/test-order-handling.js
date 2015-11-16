@@ -192,7 +192,12 @@ describe('Orders', function () {
     });
 
     it('#getOrdersFiltered', function(){
-      return OrderDB.getOrdersFiltered(null, null, null, ['Cocktails'])
+      var ix = ['Cocktails', 'Cookies'];
+      var filter = {
+        type: ix.toString(),
+        limit: 1
+      };
+      return OrderDB.getOrdersFiltered(filter)
         .then(function(result){
           assert.isArray(result);
           console.log(result);

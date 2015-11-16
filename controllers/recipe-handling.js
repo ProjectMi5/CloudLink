@@ -1,10 +1,12 @@
 var Q = require('q');
+var _ = require('underscore');
 
 var RecipeDB = require('./../models/database-recipe').instance;
 
 RecipeHandling = function(){
 };
-exports.RecipeHandling = new RecipeHandling();
+var instance =  new RecipeHandling();
+exports.RecipeHandling = instance;
 
 RecipeHandling.prototype.getRecipes = function(req, res){
   RecipeDB.getRecipes()
@@ -21,6 +23,7 @@ RecipeHandling.prototype.getRecipes = function(req, res){
 RecipeHandling.prototype.manageRecipe = function(req, res){
   var recipe = req.body.recipe;
 
+  console.log('managing recipe', recipe);
   RecipeDB.parseRecipeRequest(recipe)
     .then(RecipeDB.translateRecipe)
     .then(RecipeDB.manageRecipe)
@@ -52,4 +55,48 @@ RecipeHandling.prototype.deleteAllRecipes = function(req, res){
       res.json({err: err});
       console.log('deleteAllRecipes err:',err);
     })
+};
+
+/**
+ * experimental feature only for localhost loading recipes
+ * @param req
+ * @param res
+ */
+RecipeHandling.prototype.loadDefaultRecipes = function(req, res){
+  var recipes = require('./../test/mocks/getRecipes');
+
+  console.log('/loadDefaultRecipes');
+
+  _.each(recipes, function(recipePost){
+    //console.log(recipePost);
+    var recipe = JSON.stringify({
+      RecipeID: recipePost.recipeId,
+      Name: recipePost.name,
+      Dummy: false,
+      Description: recipePost.description,
+      userparameters: recipePost.userparameters
+    });
+    manageRecipe(recipe);
+  });
+};
+
+var manageRecipe = function(recipe) {
+  return RecipeDB.parseRecipeRequest(recipe)
+    .then(RecipeDB.translateRecipe)
+    .then(RecipeDB.manageRecipe)
+    .then(function () {
+
+      // this chain is only to get the recipeId;
+      RecipeDB.parseRecipeRequest(recipe)
+        .then(RecipeDB.translateRecipe)
+        .then(RecipeDB.extractRecipeId)
+        .then(function (recipeId) {
+          console.log('/manageRecipe succesfull', 'RecipeID:', recipeId);
+        })
+        .catch(console.log);
+
+    })
+    .catch(function (err) {
+      console.log('manageRecipe err:', err);
+    });
 };

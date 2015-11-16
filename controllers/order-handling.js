@@ -237,7 +237,7 @@ OrderHandling.prototype.updateOrderStatus = function (req, res) {
 };
 
 OrderHandling.prototype.updateOrder = function (req, res) {
-  req = req.body;
+  req = req.body.order;
 
   console.log('/updateOrder', req);
 

@@ -128,7 +128,8 @@ OrderHandling.prototype.getCocktailDataByOrderId = function (req, res) {
 };
 
 OrderHandling.prototype.getActiveOrders = function (req, res){
-  OrderDB.getOrdersFiltered(['accepted', 'in progress'], null, null, ['Cocktails', 'Cookies'])
+  var filter = {status: ['accepted', 'in progress'], types: ['Cocktails', 'Cookies']};
+  OrderDB.getOrdersFiltered(filter)
     .then(function(ret){
       res.json(ret);
     })
@@ -139,8 +140,9 @@ OrderHandling.prototype.getActiveOrders = function (req, res){
 };
 
 OrderHandling.prototype.getOrdersSince = function (req, res){
-  var date = req.body.timestamp;
-  OrderDB.getOrdersFiltered(null, date, null, ['Cocktails', 'Cookies'])
+  var filter = {createdSince: req.body.timestamp,types: ['Cocktails', 'Cookies']};
+
+  OrderDB.getOrdersFiltered(filter)
     .then(function(ret){
       res.json(ret);
     })
@@ -152,8 +154,8 @@ OrderHandling.prototype.getOrdersSince = function (req, res){
 };
 
 OrderHandling.prototype.getOrdersUpdatedSince = function (req, res){
-  var date = req.body.timestamp;
-  OrderDB.getOrdersFiltered(null, null, date, ['Cocktails', 'Cookies'])
+  var filter = {updatedSince: req.body.timestamp,types: ['Cocktails', 'Cookies']};
+  OrderDB.getOrdersFiltered(filter)
     .then(function(ret){
       res.json(ret);
     })
@@ -164,12 +166,16 @@ OrderHandling.prototype.getOrdersUpdatedSince = function (req, res){
 };
 
 OrderHandling.prototype.getOrdersFiltered = function (req, res){
-  var status = req.body.status;
-  var createdSince = req.body.createdSince;
-  var updatedSince = req.body.updatedSince;
-  var type = req.body.type;
+  var filter = {
+    status: req.body.status,
+    createdSince: req.body.createdSince,
+    updatedSince: req.body.updatedSince,
+    type: req.body.type,
+    limit: req.body.limit
+  };
 
-  OrderDB.getOrdersFiltered(status, createdSince, updatedSince, type)
+
+  OrderDB.getOrdersFiltered(filter)
     .then(function(ret){
       res.json(ret);
     })

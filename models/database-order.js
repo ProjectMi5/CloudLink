@@ -552,17 +552,23 @@ OrderDB.prototype.getOrdersByStatus = function(status){
 
 /**
  * getFilteredOrdersByStatus
- * @param status is an Array
+ * @param filter with possible attributes {status, createdSince, updatedSince, type, marketPlaceId, limit}
  * @returns orders
  */
 
 
-OrderDB.prototype.getOrdersFiltered = function(status, createdSince, lastUpdateSince, filter){
+OrderDB.prototype.getOrdersFiltered = function(filter){
   var self = instance;
   var deferred = Q.defer();
   var query = {};
 
-  if ((status != null)&&(typeof status != 'undefined')){
+  var status = filter.status;
+  var createdSince = filter.createdSince;
+  var lastUpdateSince = filter.updatedSince;
+  var types = filter.type;
+  var limit = parseInt(filter.limit,10);
+
+  if (typeof status != 'undefined'){
     status.forEach(function(item){
       if(self.validStates.indexOf(item)<0){
         deferred.reject(item+' is not a valid status.');
@@ -571,7 +577,7 @@ OrderDB.prototype.getOrdersFiltered = function(status, createdSince, lastUpdateS
     query.status = {$in: status};
   }
 
-  if ((createdSince != null)&&(typeof createdSince != 'undefined')){
+  if (typeof createdSince != 'undefined'){
     createdSince = new Date(createdSince);
     if(isNaN(createdSince.getTime())){
       deferred.reject(createdSince+' is not a valid date.');
@@ -579,7 +585,7 @@ OrderDB.prototype.getOrdersFiltered = function(status, createdSince, lastUpdateS
     query.date = {"$gte": createdSince};
   }
 
-  if ((lastUpdateSince != null)&&(typeof lastUpdateSince != 'undefined')){
+  if (typeof lastUpdateSince != 'undefined'){
     lastUpdateSince = new Date(lastUpdateSince);
     if(isNaN(lastUpdateSince.getTime())){
       deferred.reject(lastUpdateSince+' is not a valid date.');
@@ -587,19 +593,24 @@ OrderDB.prototype.getOrdersFiltered = function(status, createdSince, lastUpdateS
     query.lastUpdate = {"$gte": lastUpdateSince};
   }
 
-  if((filter != null)&&(typeof filter != 'undefined')){
+  if(typeof types != 'undefined'){
     var arr = [];
-    if(filter.indexOf('Cocktails') > -1){
+    if(types.indexOf('Cocktails') > -1){
       arr = _.union(arr, CONFIG.Cocktails);
     }
-    if(filter.indexOf('Cookies') > -1){
+    if(types.indexOf('Cookies') > -1){
       arr = _.union(arr,CONFIG.Cookies);
     }
     query.recipeId = {$in: arr};
   }
 
+  if (isNaN(limit)){
+    limit = {};
+  }
 
-  self.Order.findQ(query,'-_id -__v', function(err, result){
+
+  self.Order.find(query,'-_id -__v').sort({'estimatedTimeOfCompletion': -1}).limit(limit).exec(function(err, result){
+    if(err) deferred.reject(err);
     deferred.resolve(result);
   });
 

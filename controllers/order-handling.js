@@ -62,6 +62,12 @@ OrderHandling.prototype.placeOrder = function (req, res) {
     });
 };
 
+OrderHandling.prototype.placeOrderQR = function (req, res){
+  console.log(req.params.voucher);
+  console.log(req.params);
+  res.json({status: 'ok'});
+};
+
 OrderHandling.prototype.setBarcode = function (req, res) {
   var orderId = JSON.parse(req.body.id);
   var barcode = JSON.parse(req.body.barcode);
@@ -227,5 +233,21 @@ OrderHandling.prototype.updateOrderStatus = function (req, res) {
   } else {
     res.json({status: 'err', description: 'the status is not valid'});
   }
+
+};
+
+OrderHandling.prototype.updateOrder = function (req, res) {
+  req = req.body;
+
+  console.log('/updateOrder', req);
+
+  OrderDB.updateStatus(req)
+    .then(function (ret) {
+      res.json(ret);
+    })
+    .catch(function (err) {
+      res.json(err);
+      console.log(err);
+    });
 
 };

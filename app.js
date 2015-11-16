@@ -32,6 +32,8 @@ app.get('/helloWorld', function (req, res) {
     console.log('Hello World!');
     res.send('Hello World!');
 });
+// placeOrder without authentification
+app.get('/QR/:voucher/:humanReadable', OrderHandling.placeOrderQR);
 
 // Basic authentification
 // !!Every route below this line requires authentification then !!
@@ -63,6 +65,7 @@ app.get('/getActiveOrders', OrderHandling.getActiveOrders);
 app.post('/getOrdersSince', OrderHandling.getOrdersSince);
 app.post('/getOrdersUpdatedSince', OrderHandling.getOrdersUpdatedSince);
 app.post('/getOrdersFiltered', OrderHandling.getOrdersFiltered);
+app.post('/updateOrder', OrderHandling.updateOrder);
 
 // Feedback
 app.post('/giveFeedback', FeedbackHandling.giveFeedback);

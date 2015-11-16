@@ -538,6 +538,32 @@ OrderDB.prototype.updateStatus = function(orderid, status){
     });
 };
 
+
+/**
+ *
+ * @param req object with attributes orderId,
+ * @returns {*}
+ */
+OrderDB.prototype.updateOrder = function(req){
+  var self = instance;
+  var orderId = parseInt(req.orderId, 10);
+  delete req.orderId;
+  req.lastUpdate = new Date();
+
+  return self.Order.updateQ({orderId: orderid}, { $set: req})
+    .then(function(result){
+      return Q.Promise(function(resolve, reject){
+        if(result.n == 1){
+          resolve({status: 'ok', description: 'order with id ' + orderid + ' is now ' + status});
+        } else {
+          reject({status: 'err', description: 'no order has been modified, probably the orderId is wrong, or the status has not changed'});
+        }
+      });
+    });
+};
+
+
+
 OrderDB.prototype.getOrdersByStatus = function(status){
   var self = instance;
 

@@ -104,11 +104,12 @@ describe('Test REST api', function() {
     var RecipeHandling  = require('./../controllers/recipe-handling').RecipeHandling;
     var OrderHandling = require('./../controllers/order-handling').OrderHandling;
 
-    // Recipes
+    // Recipes&Orders
     app.get('/getRecipes', RecipeHandling.getRecipes);
     app.post('/saveOrder', OrderHandling.saveOrder);
     app.post('/placeOrder', OrderHandling.placeOrder);
     app.post('/getOrderById', OrderHandling.getOrderById);
+    app.get('/QR/:voucher/:humanReadable', OrderHandling.placeOrderQR);
     app.post('/setBarcode', OrderHandling.setBarcode);
     app.post('/getOrderIdByBarcode', OrderHandling.getOrderIdByBarcode);
     app.post('/getCocktailDataByOrderId', OrderHandling.getCocktailDataByOrderId);
@@ -196,6 +197,25 @@ describe('Test REST api', function() {
       };
 
       request.post(options, function(err, res, body){
+        assert.isNull(err);
+
+        body = JSON.parse(body);
+        assert.equal(body.status, 'ok');
+
+        done();
+      });
+    });
+
+    it('/QR/id123/hello', function(done){
+      var options = {
+        url:  'http://localhost:'+config.HTTPPort+'/QR/id123/hello',
+        auth: {
+          'user': config.basicAuthUser,
+          'password':   config.basicAuthPW
+        }
+      };
+
+      request.get(options, function(err, res, body){
         assert.isNull(err);
 
         body = JSON.parse(body);

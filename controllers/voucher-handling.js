@@ -9,7 +9,7 @@ var instance =  new VoucherHandling();
 exports.VoucherHandling = instance;
 
 VoucherHandling.prototype.saveVoucher = function(req, res){
-  var voucher = req.body.voucher;
+  var voucher = JSON.parse(req.body.voucher);
 
   console.log('A vew voucher is being saved', voucher);
   VoucherDB.getVoucher(voucher.identifier)
@@ -49,7 +49,7 @@ VoucherHandling.prototype.getVouchers = function(req, res){
 };
 
 VoucherHandling.prototype.getVoucherById = function(req, res){
-  var identifier = req.body.identifier;
+  var identifier = JSON.parse(req.body.identifier);
 
   VoucherDB.getVoucher(identifier)
     .then(function(voucher){
@@ -68,7 +68,7 @@ VoucherHandling.prototype.getVoucherById = function(req, res){
 };
 
 VoucherHandling.prototype.getVouchersForRecipeId = function(req, res){
-  req = req.body;
+  req = JSON.parse(req.body);
 
   VoucherDB.getVouchersForRecipeId(req)
     .then(function(vouchers){
@@ -82,7 +82,7 @@ VoucherHandling.prototype.getVouchersForRecipeId = function(req, res){
 };
 
 VoucherHandling.prototype.manageVoucher = function(req, res){
-  var voucher = req.body.voucher;
+  var voucher = JSON.parse(req.body.voucher);
 
   console.log('managing voucher', voucher);
   VoucherDB.parseVoucherRequest(voucher)
@@ -99,7 +99,7 @@ VoucherHandling.prototype.manageVoucher = function(req, res){
 };
 
 VoucherHandling.prototype.updateVoucher = function(req, res){
-  var voucher = req.body.voucher;
+  var voucher = JSON.parse(req.body.voucher);
 
   console.log('updating voucher', voucher);
   VoucherDB.updateVoucher(voucher)

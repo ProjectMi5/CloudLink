@@ -26,6 +26,7 @@ var DeviceHandling  = require('./controllers/device-handling').DeviceHandling;
 var RecipeHandling  = require('./controllers/recipe-handling').RecipeHandling;
 var OrderHandling   = require('./controllers/order-handling').OrderHandling;
 var FeedbackHandling= require('./controllers/feedback-handling').FeedbackHandling;
+var VoucherHandling = require('./controllers/voucher-handling').VoucherHandling;
 
 // Routes: No authentification
 app.get('/helloWorld', function (req, res) {
@@ -68,11 +69,10 @@ app.post('/getOrdersFiltered', OrderHandling.getOrdersFiltered);
 app.post('/updateOrder', OrderHandling.updateOrder);
 
 // Vouchers
-app.get('/getVouchers', OrderHandling.getVouchers);
-app.post('/saveVoucher', OrderHandling.saveVoucher);
-app.post('/getVoucherById', OrderHandling.getVoucherById);
-app.post('/getVouchersForRecipeId', OrderHandling.getVouchersForRecipeId);
-app.post('/updateVoucher', OrderHandling.setBarcode);
+app.get('/getVouchers', VoucherHandling.getVouchers);
+app.post('/saveVoucher', VoucherHandling.saveVoucher);
+app.post('/getVoucherById', VoucherHandling.getVoucherById);
+app.post('/getVouchersForRecipeId', VoucherHandling.getVouchersForRecipeId);
 
 // Feedback
 app.post('/giveFeedback', FeedbackHandling.giveFeedback);

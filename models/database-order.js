@@ -476,9 +476,12 @@ OrderDB.prototype.setBarcode = function(orderId, barcode){
       console.log(order.barcode);
     })
     .then(self.checkBarcode(barcode))
-    .done(function(){
+    .then(function(){
       console.log('again');
       deferred.resolve(self.Order.updateQ({orderId: orderId}, { $set: {barcode: barcode, lastUpdate: new Date()}}));
+    })
+    .catch(function(err){
+      deferred.reject(err);
     });
 
   return deferred.promise;

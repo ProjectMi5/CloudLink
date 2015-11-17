@@ -22,7 +22,6 @@ VoucherHandling.prototype.saveVoucher = function(req, res){
         return deferred.promise;
       }
     })
-    .then(VoucherDB.parseVoucherRequest(voucher))
     .then(VoucherDB.translateVoucher)
     .then(VoucherDB.saveVoucher)
     .then(function(){

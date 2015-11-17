@@ -1,7 +1,7 @@
 var Q = require('q');
 var _ = require('underscore');
 
-RecipeDB = function() {
+VoucherDB = function() {
   this.mongoose = require('mongoose-q')();
 
   console.log('Mi5 - Database loaded');
@@ -16,44 +16,48 @@ RecipeDB = function() {
 
   var voucherSchema = this.mongoose.Schema({
     identifier  : String,
-    recipeId      : Number,
-    parameters : this.mongoose.Schema.Types.Mixed,
-    valid     : Boolean,
+    recipeId    : Number,
+    parameters  : this.mongoose.Schema.Types.Mixed,
+    valid       : { type: Boolean, default: true },
     humanReadable : String
   });
   this.Voucher = this.mongoose.model('Voucher', voucherSchema);
 };
-var instance = new RecipeDB();
+var instance = new VoucherDB();
 exports.instance = instance;
 
 // ============================================================================================================
-// ==================================  recipes                         ========================================
+// ==================================  vouchers                         ========================================
 // ============================================================================================================
 
-RecipeDB.prototype.translateRecipe = function(recipe){
+VoucherDB.prototype.saveVoucher = function(voucher){
+  var self = instance;
+
+  var NewVoucher = new self.Voucher(voucher);
+  //console.log('new voucher saving:'+voucher);
+  return NewVoucher.saveQ();
+};
+
+VoucherDB.prototype.translateVoucher = function(voucher){
   var deferred = Q.defer();
 
-  var mongoRecipe = {
-    recipeId: recipe.RecipeID,
-    name: recipe.Name,
-    description: recipe.Description,
-    dummy: recipe.Dummy,
-    userparameters: recipe.userparameters
+  var mongoVoucher = {
+    identifier: voucher.identifier,
+    recipeId: voucher.recipeId,
+    parameters: voucher.parameters,
+    valid: voucher.valid,
+    humanReadable: voucher.humanReadable
   };
 
-  deferred.resolve(mongoRecipe);
+  deferred.resolve(mongoVoucher);
   return deferred.promise;
 };
 
-RecipeDB.prototype.extractRecipeId = function(recipe){
-  return recipe.recipeId;
-};
-
-RecipeDB.prototype.getRecipe = function(recipeId) {
+VoucherDB.prototype.getVoucher = function(identifier) {
   var self = instance;
   var deferred = Q.defer();
 
-  self.Recipe.find({'recipeId': recipeId}).limit(1).exec(function (err, post) {
+  self.Voucher.find({'identifier': identifier}).limit(1).exec(function (err, post) {
     if (err) deferred.reject(err);
 
     deferred.resolve(post.pop()); //due to limit 1, there is only 1 entry in post[]
@@ -62,11 +66,22 @@ RecipeDB.prototype.getRecipe = function(recipeId) {
   return deferred.promise;
 };
 
-RecipeDB.prototype.getRecipes = function(){
+/**
+ *
+ * @param req is an object with attributes recipeId, limit
+ * @returns {*|promise}
+ */
+VoucherDB.prototype.getVouchersForRecipeId = function(req){
   var self = instance;
   var deferred = Q.defer();
+  var recipeId = parseInt(req.recipeId,10);
+  var limit = parseInt(req.limit,10);
 
-  self.Recipe.find().exec(function(err, post){
+  if (isNaN(limit)){
+    limit = {};
+  }
+
+  self.Voucher.find({'recipeId': req.recipeId}).limit(limit).exec(function(err, post){
     if(err) deferred.reject(err);
 
     deferred.resolve(post);
@@ -75,45 +90,67 @@ RecipeDB.prototype.getRecipes = function(){
   return deferred.promise;
 };
 
-RecipeDB.prototype.parseRecipeRequest = function(recipe){
+VoucherDB.prototype.getVouchers = function(){
+  var self = instance;
+  var deferred = Q.defer();
+
+  self.Voucher.find().exec(function(err, post){
+    if(err) deferred.reject(err);
+
+    deferred.resolve(post);
+  });
+
+  return deferred.promise;
+};
+
+
+VoucherDB.prototype.parseVoucherRequest = function(voucher){
   return Q.fcall(function(){
-    return JSON.parse(recipe);
+    return JSON.parse(voucher);
   });
 };
 
-RecipeDB.prototype.manageRecipe = function(recipe){
+VoucherDB.prototype.manageVoucher = function(voucher){
   var self = instance;
 
-  return self.getRecipe(recipe.recipeId)
-    .then(function(oldRecipe){
-      if(typeof oldRecipe == 'undefined'){ // no recipe found
-        return self.saveRecipe(recipe);
+  return self.getVoucher(voucher.identifier)
+    .then(function(oldVoucher) {
+      if(typeof oldVoucher == 'undefined'){ // no voucher found
+        return self.saveVoucher(voucher);
       }
       else {
-        return self.updateRecipe(recipe);
+        return self.updateVoucher(voucher);
       }
     });
 };
 
-RecipeDB.prototype.updateRecipe = function(recipe){
+VoucherDB.prototype.updateVoucher = function(req){
+  console.log(req);
   var self = instance;
+  var identifier = req.identifier;
+  delete req.identifier;
 
-  return self.Recipe.updateQ({recipeId: recipe.recipeId}, recipe);
+
+  return self.Voucher.updateQ({identifier: identifier}, { $set: req})
+    .then(function(result){
+      console.log(result);
+      return Q.Promise(function(resolve, reject){
+        if(result.n == 1){
+          resolve({status: 'ok', description: 'voucher with id ' + identifier + 'was updated with: '
+          + JSON.stringify(req)});
+        } else {
+          reject({status: 'err', description: 'no voucher has been modified, probably the identifier is wrong, or the status has not changed'});
+        }
+      });
+    });
 };
 
-RecipeDB.prototype.saveRecipe = function(recipe){
-  var self = instance;
 
-  var NewRecipe = new self.Recipe(recipe);
-  //console.log('new recipe saving:'+recipe);
-  return NewRecipe.saveQ();
-};
-
-RecipeDB.prototype.deleteAllRecipes = function(){
+VoucherDB.prototype.deleteAllVouchers = function(){
   var self = instance;
 
   return Q.Promise(function(resolve, reject){
-    self.Recipe.remove(function(err){
+    self.Voucher.remove(function(err){
       if(!err) resolve();
       else reject(err);
     });

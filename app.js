@@ -67,6 +67,13 @@ app.post('/getOrdersUpdatedSince', OrderHandling.getOrdersUpdatedSince);
 app.post('/getOrdersFiltered', OrderHandling.getOrdersFiltered);
 app.post('/updateOrder', OrderHandling.updateOrder);
 
+// Vouchers
+app.get('/getVouchers', OrderHandling.getVouchers);
+app.post('/saveVoucher', OrderHandling.saveVoucher);
+app.post('/getVoucherById', OrderHandling.getVoucherById);
+app.post('/getVouchersForRecipeId', OrderHandling.getVouchersForRecipeId);
+app.post('/updateVoucher', OrderHandling.setBarcode);
+
 // Feedback
 app.post('/giveFeedback', FeedbackHandling.giveFeedback);
 app.get('/getFeedbacks', FeedbackHandling.getFeedbacks);

@@ -4,7 +4,7 @@ var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
 
-describe('Recipes', function() {
+describe.skip('Recipes', function() {
   var mi5Database = require('./../models/database-recipe').instance;
 
   // clean database

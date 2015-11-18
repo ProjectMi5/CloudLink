@@ -73,14 +73,13 @@ OrderHandling.prototype.placeOrderQR = function (req, res){
         deferred.reject('Your identifier seems to be missing in our database. Try another one!');
         return deferred.promise;
       } else if (voucher.valid == true) {
-        return voucher;
+        return OrderDB.placeOrder({recipeId: voucher.recipeId, parameters: voucher.parameters});
       } else {
         var deferred = Q.defer();
         deferred.reject('Your identifier is invalid!');
         return deferred.promise;
       }
     })
-    .then(OrderDB.placeOrder({recipeId: voucher.recipeId, parameters: voucher.parameters}))
     .then(function(order){
       res.json({status: 'ok', description: 'order has been saved', orderId: order.orderId, orderStatus: order.status});
     })

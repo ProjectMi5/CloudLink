@@ -641,6 +641,9 @@ OrderDB.prototype.getOrdersFiltered = function(filter){
 
   self.Order.find(query,'-_id -__v').sort({'estimatedTimeOfCompletion': -1}).limit(limit).exec(function(err, result){
     if(err) deferred.reject(err);
+    result.forEach(function(item){
+      item.recipeName = 'Funny Recipe Name';
+    });
     deferred.resolve(result);
   });
 

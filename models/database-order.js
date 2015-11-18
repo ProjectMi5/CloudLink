@@ -34,32 +34,24 @@ OrderDB = function() {
     , priority                   : Number
     , status                     : String
     , reviewed                   : { type: Boolean, default: false }
-    , estimatedTimeOfCompletion  : this.mongoose.Schema.Types.Date
-    , orderedTimeOfCompletion    : this.mongoose.Schema.Types.Date
+    , estimatedTimeOfCompletion  : Date
+    , orderedTimeOfCompletion    : Date
     , taskId                     : Number
     , barcode                    : Number
-    , timeOfCompletion           : this.mongoose.Schema.Types.Date
-    , lastUpdate                 : this.mongoose.Schema.Types.Date
+    , timeOfCompletion           : Date
+    , lastUpdate                 : Date
   });
   this.Order = this.mongoose.model('Order', orderSchema);
 
-  /* make sure lastUpdate will be written
-     unfortunately, update is not supported.
+  /**
+   * add the timestamp for lastUpdate for every save request
    */
   orderSchema.pre('save', function(next){
     this.lastUpdate = new Date();
     console.log('A document is being saved.');
     next();
   });
-
-  orderSchema.pre('update', function(){
-    console.log('Yay, orderSchema.pre("update") did work!'); //unfortunately, it does not.
-  });
-
-
 };
-
-
 
 var instance = new OrderDB();
 exports.instance = instance;
@@ -384,7 +376,6 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
     });
   });
 
-  console.log(recipe,order);
   // append feedback and return
   if(order.reviewed){
     return temp2.then(self.getFeedback(order.orderId))
@@ -675,9 +666,6 @@ OrderDB.prototype.getOrdersFiltered = function(filter){
 
   self.Order.find(query,'-_id -__v').sort({'estimatedTimeOfCompletion': -1}).limit(limit).exec(function(err, result){
     if(err) deferred.reject(err);
-    //var finalArray = _.map(result, function(item){
-    //  item.recipeName = 'Funny Recipe Name';
-    //  console.log(item);
     deferred.resolve(result);
   });
 

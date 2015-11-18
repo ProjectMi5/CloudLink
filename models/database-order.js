@@ -544,21 +544,26 @@ OrderDB.prototype.updateStatus = function(orderid, status){
 
 /**
  *
- * @param req object with attributes orderId,
+ * @param order object with orderId and other attributes
  * @returns {*}
  */
-OrderDB.prototype.updateOrder = function(req){
+OrderDB.prototype.updateOrder = function(order){
   var self = instance;
-  var orderId = parseInt(req.orderId, 10);
-  delete req.orderId;
-  req.lastUpdate = new Date();
+  var orderId = parseInt(order.orderId, 10);
+  delete order.orderId;
+  var finishTime = order.estimatedTimeOfCompletion;
+  if(typeof finishTime != 'undefined'){
+    order.estimatedTimeOfCompletion = new Date(finishTime);
+  }
 
-  return self.Order.updateQ({orderId: orderId}, { $set: req})
+  order.lastUpdate = new Date();
+
+  return self.Order.updateQ({orderId: orderId}, { $set: order})
     .then(function(result){
       return Q.Promise(function(resolve, reject){
         if(result.n == 1){
           resolve({status: 'ok', description: 'order with id ' + orderId + 'was updated with: '
-            + JSON.stringify(req)});
+            + JSON.stringify(order)});
         } else {
           reject({status: 'err', description: 'no order has been modified, probably the orderId is wrong, or the status has not changed'});
         }

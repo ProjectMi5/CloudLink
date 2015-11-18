@@ -26,6 +26,7 @@ OrderDB = function() {
   var orderSchema = this.mongoose.Schema({
     orderId                      : Number
     , recipeId                   : Number
+    , recipeName                 : String
     , parameters                 : [Number]
     , date                       : { type: Date, default: Date.now }
     , marketPlaceId              : String
@@ -33,12 +34,12 @@ OrderDB = function() {
     , priority                   : Number
     , status                     : String
     , reviewed                   : { type: Boolean, default: false }
-    , estimatedTimeOfCompletion  : this.mongoose.Schema.type.Date
-    , orderedTimeOfCompletion    : this.mongoose.Schema.type.Date
+    , estimatedTimeOfCompletion  : this.mongoose.Schema.Types.Date
+    , orderedTimeOfCompletion    : this.mongoose.Schema.Types.Date
     , taskId                     : Number
     , barcode                    : Number
-    , timeOfCompletion           : this.mongoose.Schema.type.Date
-    , lastUpdate                 : this.mongoose.Schema.type.Date
+    , timeOfCompletion           : this.mongoose.Schema.Types.Date
+    , lastUpdate                 : this.mongoose.Schema.Types.Date
   });
   this.Order = this.mongoose.model('Order', orderSchema);
 
@@ -166,6 +167,7 @@ OrderDB.prototype.checkOrder = function(order){
         deferred.reject('number of parameters (' + parameters.length + ') does not fit recipe requirements ('+
           recipe.userparameters.length + ' parameters)');
       }
+      order.recipeName = recipe.name;
       deferred.resolve(order);
     })
     .catch(function(err){
@@ -181,6 +183,7 @@ OrderDB.prototype.prepareOrder = function(order){
   var deferred = Q.defer();
 
   var recipeId = parseInt(order.recipeId, 10);
+  var recipeName = order.recipeName;
   var parameters = order.parameters;
   var marketPlaceId = order.marketPlaceId;
   var customerName = order.customerName;
@@ -214,6 +217,7 @@ OrderDB.prototype.prepareOrder = function(order){
       order = {
         orderId:                  id,
         recipeId:                 recipeId,
+        recipeName:               recipeName,
         parameters:               parameters,
         marketPlaceId:            marketPlaceId,
         customerName:             customerName,
@@ -331,7 +335,19 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
   // recipe part
   ret.recipe = {};
   ret.recipe.id = order.recipeId;
-  var recipe = require('./database-recipe').instance.getRecipe(order.recipeId);
+  var recipe = require('./database-recipe').instance.getRecipe(order.recipeId)
+    .then(function(recipe){
+      // remove "Identifier assignment" from Recipe userparameters
+      var parameters = recipe.userparameters;
+      parameters = _.map(parameters, function(item){
+        console.log(item);
+        if(item.Name != "Identifier assignment / Barcode"){
+          return item;
+        }
+      });
+      recipe.userparameters = parameters;
+      return recipe;
+    });
   var temp1 = recipe.then(function(recipe){
     ret.recipe.name = recipe.name;
     return recipe;
@@ -368,6 +384,7 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
     });
   });
 
+  console.log(recipe,order);
   // append feedback and return
   if(order.reviewed){
     return temp2.then(self.getFeedback(order.orderId))
@@ -477,7 +494,7 @@ OrderDB.prototype.setBarcode = function(orderId, barcode){
     })
     .then(self.checkBarcode(barcode))
     .then(function(){
-      console.log('again');
+      console.log('set Barcode '+barcode+' of order '+orderId);
       deferred.resolve(self.Order.updateQ({orderId: orderId}, { $set: {barcode: barcode, lastUpdate: new Date()}}));
     })
     .catch(function(err){
@@ -587,7 +604,7 @@ OrderDB.prototype.getOrdersByStatus = function(status){
 
 /**
  * getFilteredOrdersByStatus
- * @param filter with possible attributes {status, createdSince, updatedSince, type, marketPlaceId, limit}
+ * @param filter with possible attributes {status, createdSince, updatedSince, type, marketPlaceId, limit, reatedBefore}
  * @returns orders
  */
 
@@ -599,7 +616,9 @@ OrderDB.prototype.getOrdersFiltered = function(filter){
 
   var status = filter.status;
   var createdSince = filter.createdSince;
+  var createdBefore = filter.createdBefore;
   var lastUpdateSince = filter.updatedSince;
+  //var updatedBefore = filter.updatedBefore;
   var type = filter.type;
   var limit = parseInt(filter.limit,10);
 
@@ -612,12 +631,22 @@ OrderDB.prototype.getOrdersFiltered = function(filter){
     query.status = {$in: status};
   }
 
+  query.date = {};
+
   if (typeof createdSince != 'undefined'){
     createdSince = new Date(createdSince);
     if(isNaN(createdSince.getTime())){
       deferred.reject(createdSince+' is not a valid date.');
     }
-    query.date = {"$gte": createdSince};
+    query.date.$gte =  createdSince;
+  }
+
+  if (typeof createdBefore != 'undefined'){
+    createdBefore = new Date(createdBefore);
+    if(isNaN(createdBefore.getTime())){
+      deferred.reject(createdBefore+' is not a valid date.');
+    }
+    query.date.$lte = createdBefore;
   }
 
   if (typeof lastUpdateSince != 'undefined'){
@@ -646,9 +675,9 @@ OrderDB.prototype.getOrdersFiltered = function(filter){
 
   self.Order.find(query,'-_id -__v').sort({'estimatedTimeOfCompletion': -1}).limit(limit).exec(function(err, result){
     if(err) deferred.reject(err);
-    _.map(result, function(item){
-      return item.recipeName = 'Funny Recipe Name';
-    })
+    //var finalArray = _.map(result, function(item){
+    //  item.recipeName = 'Funny Recipe Name';
+    //  console.log(item);
     deferred.resolve(result);
   });
 

@@ -91,7 +91,7 @@ OrderHandling.prototype.placeOrderQR = function (req, res){
 OrderHandling.prototype.setBarcode = function (req, res) {
   var orderId = JSON.parse(req.body.id);
   var barcode = JSON.parse(req.body.barcode);
-  console.log('Requested to set barcode of order ' + orderId + ' to ' + barcode);
+  console.log('/setBarcode of order ' + orderId + ' to ' + barcode);
 
   OrderDB.setBarcode(orderId, barcode)
     .then(function (feedback) {
@@ -103,7 +103,11 @@ OrderHandling.prototype.setBarcode = function (req, res) {
 };
 
 OrderHandling.prototype.getOrderIdByBarcode = function (req, res) {
-  var barcode = JSON.parse(req.body.barcode);
+  var barcode = parseInt(req.body.barcode,10);
+  console.log('/getOrderIdByBarcode '+barcode);
+  if(isNaN(barcode)){
+    return res.json({status: 'err', description: 'No valid barcode.'});
+  }
 
   OrderDB.getOrderIdByBarcode(barcode)
     .then(function (orderId) {
@@ -121,6 +125,7 @@ OrderHandling.prototype.getOrderIdByBarcode = function (req, res) {
 
 OrderHandling.prototype.getOrderById = function (req, res) {
   var id = parseInt(req.body.id, 10);
+  console.log('/getOrderById '+id);
   if(isNaN(id)){
     return res.json({err: 'orderId is not a number'});
   }
@@ -141,6 +146,7 @@ OrderHandling.prototype.getOrderById = function (req, res) {
 
 OrderHandling.prototype.getCocktailDataByOrderId = function (req, res) {
   var id = parseInt(req.body.id, 10);
+  console.log('/getCocktailDataByOrderId id '+id);
 
   OrderDB.getOrderSave(id)
     .then(OrderDB.returnEnrichedCocktailData)
@@ -154,6 +160,7 @@ OrderHandling.prototype.getCocktailDataByOrderId = function (req, res) {
 };
 
 OrderHandling.prototype.getActiveOrders = function (req, res){
+  console.log('/getActiveOrders');
   var filter = {status: ['accepted', 'in progress'], type: ['Cocktails', 'Cookies']};
   OrderDB.getOrdersFiltered(filter)
     .then(function(ret){
@@ -166,7 +173,11 @@ OrderHandling.prototype.getActiveOrders = function (req, res){
 };
 
 OrderHandling.prototype.getOrdersSince = function (req, res){
-  var filter = {createdSince: req.body.timestamp,type: ['Cocktails', 'Cookies']};
+  console.log('/getOrdersSince '+req.body.timestamp);
+  var filter = {
+    status: ['accepted', 'in progress','done'],
+    createdSince: req.body.timestamp,
+    type: ['Cocktails', 'Cookies']};
 
   OrderDB.getOrdersFiltered(filter)
     .then(function(ret){
@@ -180,7 +191,12 @@ OrderHandling.prototype.getOrdersSince = function (req, res){
 };
 
 OrderHandling.prototype.getOrdersUpdatedSince = function (req, res){
-  var filter = {updatedSince: req.body.timestamp,type: ['Cocktails', 'Cookies']};
+  console.log('/getOrdersUpdatedSince ' + req.body.timestamp);
+  var filter = {
+    status: ['accepted', 'in progress','done'],
+    updatedSince: req.body.timestamp,
+    createdBefore: req.body.timestamp,
+    type: ['Cocktails', 'Cookies']};
 
   OrderDB.getOrdersFiltered(filter)
     .then(function(ret){
@@ -193,6 +209,7 @@ OrderHandling.prototype.getOrdersUpdatedSince = function (req, res){
 };
 
 OrderHandling.prototype.getOrdersFiltered = function (req, res){
+  console.log('/getOrdersFiltered ' + JSON.stringify(req.body.filter));
   var filter = {
     status: req.body.status,
     createdSince: req.body.createdSince,

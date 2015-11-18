@@ -154,7 +154,7 @@ OrderHandling.prototype.getCocktailDataByOrderId = function (req, res) {
 };
 
 OrderHandling.prototype.getActiveOrders = function (req, res){
-  var filter = {status: ['accepted', 'in progress'], types: ['Cocktails', 'Cookies']};
+  var filter = {status: ['accepted', 'in progress'], type: ['Cocktails', 'Cookies']};
   OrderDB.getOrdersFiltered(filter)
     .then(function(ret){
       res.json(ret);
@@ -166,7 +166,7 @@ OrderHandling.prototype.getActiveOrders = function (req, res){
 };
 
 OrderHandling.prototype.getOrdersSince = function (req, res){
-  var filter = {createdSince: req.body.timestamp,types: ['Cocktails', 'Cookies']};
+  var filter = {createdSince: req.body.timestamp,type: ['Cocktails', 'Cookies']};
 
   OrderDB.getOrdersFiltered(filter)
     .then(function(ret){
@@ -180,7 +180,8 @@ OrderHandling.prototype.getOrdersSince = function (req, res){
 };
 
 OrderHandling.prototype.getOrdersUpdatedSince = function (req, res){
-  var filter = {updatedSince: req.body.timestamp,types: ['Cocktails', 'Cookies']};
+  var filter = {updatedSince: req.body.timestamp,type: ['Cocktails', 'Cookies']};
+
   OrderDB.getOrdersFiltered(filter)
     .then(function(ret){
       res.json(ret);

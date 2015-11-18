@@ -210,10 +210,13 @@ OrderHandling.prototype.getOrdersUpdatedSince = function (req, res){
 
 OrderHandling.prototype.getOrdersFiltered = function (req, res){
   console.log('/getOrdersFiltered ' + JSON.stringify(req.body.filter));
+  console.log(filter);
   var filter = {
     status: req.body.status,
     createdSince: req.body.createdSince,
+    createdBefore: req.body.createdBefore,
     updatedSince: req.body.updatedSince,
+    updatedBefore: req.body.updatedBefore,
     type: req.body.type,
     limit: req.body.limit
   };

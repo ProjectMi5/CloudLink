@@ -605,64 +605,92 @@ OrderDB.prototype.getOrdersFiltered = function(filter){
   var deferred = Q.defer();
   var query = {};
 
-  var status = filter.status;
-  var createdSince = filter.createdSince;
-  var createdBefore = filter.createdBefore;
-  var lastUpdateSince = filter.updatedSince;
-  //var updatedBefore = filter.updatedBefore;
-  var type = filter.type;
-  var limit = parseInt(filter.limit,10);
+  console.log(filter);
 
-  if (typeof status != 'undefined'){
-    status.forEach(function(item){
-      if(self.validStates.indexOf(item)<0){
-        deferred.reject(item+' is not a valid status.');
+  if (typeof filter != 'undefined'){
+    var status = filter.status;
+    var createdSince = filter.createdSince;
+    var createdBefore = filter.createdBefore;
+    var lastUpdateSince = filter.updatedSince;
+    var updatedBefore = filter.updatedBefore;
+    var type = filter.type;
+    var limit = parseInt(filter.limit,10);
+
+    if (typeof status != 'undefined'){
+      status.forEach(function(item){
+        if(self.validStates.indexOf(item)<0){
+          deferred.reject(item+' is not a valid status.');
+        }
+      });
+      query.status = {$in: status};
+    }
+
+    var date = {};
+    var setDate = false;
+
+    if (typeof createdSince != 'undefined'){
+      createdSince = new Date(createdSince);
+      if(isNaN(createdSince.getTime())){
+        deferred.reject(createdSince+' is not a valid date.');
       }
-    });
-    query.status = {$in: status};
-  }
-
-  query.date = {};
-
-  if (typeof createdSince != 'undefined'){
-    createdSince = new Date(createdSince);
-    if(isNaN(createdSince.getTime())){
-      deferred.reject(createdSince+' is not a valid date.');
+      date.$gte = createdSince;
+      setDate = true;
     }
-    query.date.$gte =  createdSince;
-  }
 
-  if (typeof createdBefore != 'undefined'){
-    createdBefore = new Date(createdBefore);
-    if(isNaN(createdBefore.getTime())){
-      deferred.reject(createdBefore+' is not a valid date.');
+    if (typeof createdBefore != 'undefined'){
+      createdBefore = new Date(createdBefore);
+      if(isNaN(createdBefore.getTime())){
+        deferred.reject(createdBefore+' is not a valid date.');
+      }
+      date.$lte = createdBefore;
+      setDate = true;
     }
-    query.date.$lte = createdBefore;
-  }
 
-  if (typeof lastUpdateSince != 'undefined'){
-    lastUpdateSince = new Date(lastUpdateSince);
-    if(isNaN(lastUpdateSince.getTime())){
-      deferred.reject(lastUpdateSince+' is not a valid date.');
+    if(setDate){
+      query.date = date;
     }
-    query.lastUpdate = {"$gte": lastUpdateSince};
-  }
 
-  if(typeof type != 'undefined'){
-    var arr = [];
-    if(type.indexOf('Cocktails') > -1){
-      arr = _.union(arr, CONFIG.Cocktails);
+    var lastUpdate = {};
+    var setLastUpdate = false;
+
+    if (typeof updatedBefore != 'undefined'){
+      updatedBefore = new Date(updatedBefore);
+      if(isNaN(updatedBefore.getTime())){
+        deferred.reject(updatedBefore+' is not a valid date.');
+      }
+      lastUpdate.$lte = updatedBefore;
+      setLastUpdate = true;
     }
-    if(type.indexOf('Cookies') > -1){
-      arr = _.union(arr,CONFIG.Cookies);
+
+    if (typeof lastUpdateSince != 'undefined'){
+      lastUpdateSince = new Date(lastUpdateSince);
+      if(isNaN(lastUpdateSince.getTime())){
+        deferred.reject(lastUpdateSince+' is not a valid date.');
+      }
+      lastUpdate.$gte = lastUpdateSince;
+      setLastUpdate = true;
     }
-    query.recipeId = {$in: arr};
-  }
 
-  if (isNaN(limit)){
-    limit = {};
-  }
+    if(setLastUpdate){
+      query.lastUpdate = lastUpdate;
+    }
 
+    if(typeof type != 'undefined'){
+      var arr = [];
+      if(type.indexOf('Cocktails') > -1){
+        arr = _.union(arr, CONFIG.Cocktails);
+      }
+      if(type.indexOf('Cookies') > -1){
+        arr = _.union(arr,CONFIG.Cookies);
+      }
+      query.recipeId = {$in: arr};
+    }
+
+    if (isNaN(limit)){
+      limit = {};
+    }
+  }
+  console.log(query);
 
   self.Order.find(query,'-_id -__v').sort({'estimatedTimeOfCompletion': -1}).limit(limit).exec(function(err, result){
     if(err) deferred.reject(err);

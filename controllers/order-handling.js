@@ -74,6 +74,10 @@ OrderHandling.prototype.placeOrderQR = function (req, res){
         return deferred.promise;
       } else if (voucher.valid == true) {
         return voucher;
+      } else {
+        var deferred = Q.defer();
+        deferred.reject('Your identifier is invalid!');
+        return deferred.promise;
       }
     })
     .then(OrderDB.placeOrder({recipeId: voucher.recipeId, parameters: voucher.parameters}))

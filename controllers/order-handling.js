@@ -69,7 +69,9 @@ OrderHandling.prototype.placeOrderQR = function (req, res){
   VoucherDB.getVoucher(req.params.identifier)
     .then(function(voucher) {
       if (typeof voucher == 'undefined') {
-        return Q.defer().reject('Your identifier seems to be missing in our database. Try another one!');
+        var deferred = Q.defer();
+        deferred.reject('Your identifier seems to be missing in our database. Try another one!');
+        return deferred.promise;
       } else if (voucher.valid == true) {
         return voucher;
       }

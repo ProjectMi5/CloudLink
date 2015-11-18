@@ -34,7 +34,7 @@ app.get('/helloWorld', function (req, res) {
     res.send('Hello World!');
 });
 // placeOrder without authentification
-app.get('/QR/:voucher/:humanReadable', OrderHandling.placeOrderQR);
+app.get('/QR/:identifier/:humanReadable', OrderHandling.placeOrderQR);
 
 // Basic authentification
 // !!Every route below this line requires authentification then !!

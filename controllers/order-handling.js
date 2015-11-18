@@ -1,6 +1,7 @@
 var Q = require('q');
 
 var OrderDB = require('./../models/database-order').instance;
+var VoucherDB = require('./../models/database-voucher').instance;
 
 OrderHandling = function () {
 };
@@ -63,9 +64,23 @@ OrderHandling.prototype.placeOrder = function (req, res) {
 };
 
 OrderHandling.prototype.placeOrderQR = function (req, res){
-  console.log(req.params.voucher);
-  console.log(req.params);
-  res.json({status: 'ok'});
+  console.log('/QR Request to place an order:',req.params);
+
+  VoucherDB.getVoucher(req.params.identifier)
+    .then(function(voucher) {
+      if (typeof voucher == 'undefined') {
+        return Q.defer().reject('Your identifier seems to be missing in our database. Try another one!');
+      } else if (voucher.valid == true) {
+        return voucher;
+      }
+    })
+    .then(OrderDB.placeOrder({recipeId: voucher.recipeId, parameters: voucher.parameters}))
+    .then(function(order){
+      res.json({status: 'ok', description: 'order has been saved', orderId: order.orderId, orderStatus: order.status});
+    })
+    .catch(function(err){
+      res.json({status: 'err', description: err});
+    });
 };
 
 OrderHandling.prototype.setBarcode = function (req, res) {

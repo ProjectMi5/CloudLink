@@ -63,7 +63,7 @@ describe('Voucher', function () {
 
   describe('Voucher Handler', function () {
     it('#getVoucherById', function () {
- 
+
     });
 
     it('#update', function () {

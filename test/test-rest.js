@@ -3,7 +3,7 @@ var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
-describe.skip('Test REST api', function() {
+describe('Test REST api', function() {
 
   // Mock-Data
   var recipePOST = {

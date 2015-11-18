@@ -18,7 +18,7 @@ VoucherHandling.prototype.saveVoucher = function(req, res){
         return voucher;
       } else {
         var deferred = Q.defer();
-        deferred.reject('A voucher with identifier '+voucher.identifier*' already exists.');
+        deferred.reject('A voucher with identifier '+voucher.identifier+' already exists.');
         return deferred.promise;
       }
     })
@@ -48,7 +48,7 @@ VoucherHandling.prototype.getVouchers = function(req, res){
 };
 
 VoucherHandling.prototype.getVoucherById = function(req, res){
-  var identifier = JSON.parse(req.body.identifier);
+  var identifier = req.body.identifier.toString();
 
   VoucherDB.getVoucher(identifier)
     .then(function(voucher){

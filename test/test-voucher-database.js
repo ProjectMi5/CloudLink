@@ -6,6 +6,7 @@ chai.use(chaiAsPromised);
 
 describe('Voucher', function () {
   var VoucherDB = require('./../models/database-voucher').instance;
+  var VoucherHandling = require('./../controllers/voucher-handling').VoucherHandling;
   var mockVoucher1 = {
     identifier: 'mwaoiejfroas8eoiero932u98oeaijflksadnfhwareoi',
     recipeId: '1051',
@@ -44,14 +45,36 @@ describe('Voucher', function () {
         })
     });
 
-    it('#delete', function(){
+    it('#getVoucher', function(){
+      return VoucherDB.getVoucher(mockVoucher1.identifier)
+        .then(function(res){
+          console.log(res);
+        })
     });
 
-    it('#get', function(){
+    it('#getVouchers', function(){
       return VoucherDB.getVouchers()
         .then(function(result){
           console.log(result);
         });
+    });
+
+  });
+
+  describe('Voucher Handler', function () {
+    it('#getVoucherById', function () {
+ 
+    });
+
+    it('#update', function () {
+
+    });
+
+    it('#delete', function(){
+    });
+
+    it('#get', function(){
+
     });
 
   });

@@ -57,8 +57,11 @@ VoucherDB.prototype.getVoucher = function(identifier) {
   var self = instance;
   var deferred = Q.defer();
 
+  console.log('Here I am',identifier);
+
   self.Voucher.find({'identifier': identifier}).limit(1).exec(function (err, post) {
     if (err) deferred.reject(err);
+    console.log(post);
 
     deferred.resolve(post.pop()); //due to limit 1, there is only 1 entry in post[]
   });

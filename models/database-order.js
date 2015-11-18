@@ -33,12 +33,12 @@ OrderDB = function() {
     , priority                   : Number
     , status                     : String
     , reviewed                   : { type: Boolean, default: false }
-    , estimatedTimeOfCompletion  : this.mongoose.Schema.Types.Date
-    , orderedTimeOfCompletion    : this.mongoose.Schema.Types.Date
+    , estimatedTimeOfCompletion  : this.mongoose.Schema.type.Date
+    , orderedTimeOfCompletion    : this.mongoose.Schema.type.Date
     , taskId                     : Number
     , barcode                    : Number
-    , timeOfCompletion           : this.mongoose.Schema.Types.Date
-    , lastUpdate                 : this.mongoose.Schema.Types.Date
+    , timeOfCompletion           : this.mongoose.Schema.type.Date
+    , lastUpdate                 : this.mongoose.Schema.type.Date
   });
   this.Order = this.mongoose.model('Order', orderSchema);
 
@@ -600,7 +600,7 @@ OrderDB.prototype.getOrdersFiltered = function(filter){
   var status = filter.status;
   var createdSince = filter.createdSince;
   var lastUpdateSince = filter.updatedSince;
-  var types = filter.type;
+  var type = filter.type;
   var limit = parseInt(filter.limit,10);
 
   if (typeof status != 'undefined'){
@@ -628,12 +628,12 @@ OrderDB.prototype.getOrdersFiltered = function(filter){
     query.lastUpdate = {"$gte": lastUpdateSince};
   }
 
-  if(typeof types != 'undefined'){
+  if(typeof type != 'undefined'){
     var arr = [];
-    if(types.indexOf('Cocktails') > -1){
+    if(type.indexOf('Cocktails') > -1){
       arr = _.union(arr, CONFIG.Cocktails);
     }
-    if(types.indexOf('Cookies') > -1){
+    if(type.indexOf('Cookies') > -1){
       arr = _.union(arr,CONFIG.Cookies);
     }
     query.recipeId = {$in: arr};

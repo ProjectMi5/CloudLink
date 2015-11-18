@@ -57,9 +57,8 @@ VoucherDB.prototype.getVoucher = function(identifier) {
   var self = instance;
   var deferred = Q.defer();
 
-  console.log('Here I am',identifier);
 
-  self.Voucher.find({'identifier': identifier}).limit(1).exec(function (err, post) {
+  self.Voucher.find({'identifier': identifier}, '-_id -__v').limit(1).exec(function (err, post) {
     if (err) deferred.reject(err);
     console.log(post);
 
@@ -84,7 +83,7 @@ VoucherDB.prototype.getVouchersForRecipeId = function(req){
     limit = {};
   }
 
-  self.Voucher.find({'recipeId': req.recipeId}).limit(limit).exec(function(err, post){
+  self.Voucher.find({'recipeId': req.recipeId}, '-_id -__v').limit(limit).exec(function(err, post){
     if(err) deferred.reject(err);
 
     deferred.resolve(post);
@@ -97,7 +96,7 @@ VoucherDB.prototype.getVouchers = function(){
   var self = instance;
   var deferred = Q.defer();
 
-  self.Voucher.find().exec(function(err, post){
+  self.Voucher.find({},'-_id -__v').exec(function(err, post){
     if(err) deferred.reject(err);
 
     deferred.resolve(post);

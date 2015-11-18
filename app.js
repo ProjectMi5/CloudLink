@@ -27,6 +27,7 @@ var RecipeHandling  = require('./controllers/recipe-handling').RecipeHandling;
 var OrderHandling   = require('./controllers/order-handling').OrderHandling;
 var FeedbackHandling= require('./controllers/feedback-handling').FeedbackHandling;
 var VoucherHandling = require('./controllers/voucher-handling').VoucherHandling;
+var MachineDataHandling = require('./controllers/machine-data-handling').MachineDataHandling;
 
 // Routes: No authentification
 app.get('/helloWorld', function (req, res) {
@@ -78,6 +79,9 @@ app.post('/getVouchersForRecipeId', VoucherHandling.getVouchersForRecipeId);
 // Feedback
 app.post('/giveFeedback', FeedbackHandling.giveFeedback);
 app.get('/getFeedbacks', FeedbackHandling.getFeedbacks);
+
+// Machine Data
+app.get('/hasStandstill', MachineDataHandling.hasStandstill);
 
 // Start web-server
 app.listen(config.HTTPPort);

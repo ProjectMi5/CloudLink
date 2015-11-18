@@ -125,7 +125,7 @@ describe('Test REST api', function() {
     require('./../models/database-order').instance.deleteAllOrders();
   });
 
-  describe('Test REST', function(){
+  describe('Test Mocked REST', function(){
     var config = require('./../config');
     var request = require('request');
 

@@ -69,7 +69,8 @@ VoucherHandling.prototype.getVoucherById = function(req, res){
 VoucherHandling.prototype.getVouchersForRecipeId = function(req, res){
   var query = {
     recipeId: parseInt(req.body.recipeId, 10),
-    limit: parseInt(req.body.limit, 10)
+    limit: parseInt(req.body.limit, 10),
+    valid: true
   };
 
   VoucherDB.getVouchersForRecipeId(query)

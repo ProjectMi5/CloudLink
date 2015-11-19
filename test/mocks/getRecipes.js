@@ -3,52 +3,6 @@
  */
 var recipes = [
   {
-    "userparameters": [
-      {
-        "Unit": "ml",
-        "Step": 0,
-        "Name": "Total Liquid Amount",
-        "MinValue": 10,
-        "MaxValue": 200,
-        "Dummy": false,
-        "Description": "Gives the total fluid amount in the glass",
-        "Default": 200
-      },
-      {
-        "Unit": "ml",
-        "Step": 0,
-        "Name": "Maracuja Juice",
-        "MinValue": 1,
-        "MaxValue": 100,
-        "Dummy": false,
-        "Description": "Maracuja Juice",
-        "Default": 50
-      },
-      {
-        "Unit": "ml",
-        "Step": 0,
-        "Name": "Orange Juice",
-        "MinValue": 1,
-        "MaxValue": 100,
-        "Dummy": false,
-        "Description": "Orange Juice",
-        "Default": 35
-      },
-      {
-        "Unit": "ml",
-        "Step": 0,
-        "Name": "Grenadine Syrup",
-        "MinValue": 1,
-        "MaxValue": 50,
-        "Dummy": false,
-        "Description": "Grenadine Syrup",
-        "Default": 15
-      }
-    ],
-    "_id": "563a68d61f19f23506e6a7b4",
-    "__v": 0
-  },
-  {
     "recipeId": 10010,
     "name": "XTS Test Recipe",
     "description": "This recipe lets the XTS transport and block/unblock on 3 different stations",

@@ -81,8 +81,8 @@ RecipeHandling.prototype.loadDefaultRecipes = function(req, res){
   });
 
   Promise.all(recipePromises)
-    .then(function() {
-      res.json({status: 'ok', description: 'all recipes have been loaded in the database'});
+    .then(function(results) {
+      res.json({status: 'ok', description: 'all recipes have been loaded in the database', results: results});
     })
     .catch(function(){
       res.json({status: 'err', description: 'error loading def recipes', err: err});
@@ -90,20 +90,14 @@ RecipeHandling.prototype.loadDefaultRecipes = function(req, res){
 }
 
 var manageRecipe = function(recipe) {
+  var recipe = recipe;
   return RecipeDB.parseRecipeRequest(recipe)
     .then(RecipeDB.translateRecipe)
     .then(RecipeDB.manageRecipe)
-    .then(function () {
-
-      // this chain is only to get the recipeId;
-      RecipeDB.parseRecipeRequest(recipe)
-        .then(RecipeDB.translateRecipe)
-        .then(RecipeDB.extractRecipeId)
-        .then(function (recipeId) {
-          console.log('/manageRecipe succesfull', 'RecipeID:', recipeId);
-        })
-        .catch(console.log);
-
+    .then(function (){
+      recipe = JSON.parse(recipe); // beware of inconsistency in recipe on database and from showcase mi5
+      console.log('/manageRecipe successful', 'RecipeID:', recipe.RecipeID);
+      return {status: 'ok', description: 'recipe has been pushed', recipe: recipe};
     })
     .catch(function (err) {
       console.log('manageRecipe err:', err);

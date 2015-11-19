@@ -82,7 +82,7 @@ RecipeHandling.prototype.loadDefaultRecipes = function(req, res){
 
   Promise.all(recipePromises)
     .then(function() {
-      res.json({status: 'ok', description: 'all recipes have been lodaed in the database'});
+      res.json({status: 'ok', description: 'all recipes have been loaded in the database'});
     })
     .catch(function(){
       res.json({status: 'err', description: 'error loading def recipes', err: err});

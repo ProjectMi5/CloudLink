@@ -67,6 +67,7 @@ RecipeHandling.prototype.loadDefaultRecipes = function(req, res){
 
   console.log('/loadDefaultRecipes');
 
+  var recipePromises =[]
   _.each(recipes, function(recipePost){
     //console.log(recipePost);
     var recipe = JSON.stringify({
@@ -76,9 +77,17 @@ RecipeHandling.prototype.loadDefaultRecipes = function(req, res){
       Description: recipePost.description,
       userparameters: recipePost.userparameters
     });
-    manageRecipe(recipe);
+    recipePromises.push(manageRecipe(recipe));
   });
-};
+
+  Promise.all(recipePromises)
+    .then(function() {
+      res.json({status: 'ok', description: 'all recipes have been lodaed in the database'});
+    })
+    .catch(function(){
+      res.json({status: 'err', description: 'error loading def recipes', err: err});
+    });
+}
 
 var manageRecipe = function(recipe) {
   return RecipeDB.parseRecipeRequest(recipe)

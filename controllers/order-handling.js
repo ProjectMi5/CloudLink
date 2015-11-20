@@ -8,9 +8,10 @@ OrderHandling = function () {
 exports.OrderHandling = new OrderHandling();
 
 OrderHandling.prototype.getLastOrder = function (req, res) {
+  console.log('/getLastOrder');
   OrderDB.getLastOrder()
     .then(function (order) {
-      console.log('getlastorder', order);
+      console.log('/getLastOrder', order);
       res.json(order);
     })
     .catch(function (err) {
@@ -20,6 +21,7 @@ OrderHandling.prototype.getLastOrder = function (req, res) {
 };
 
 OrderHandling.prototype.getOrders = function (req, res) {
+  console.log('/getOrders');
   OrderDB.getOrders()
     .then(function (orders) {
       console.log('getOrders', orders);
@@ -37,6 +39,7 @@ OrderHandling.prototype.getOrders = function (req, res) {
  * @param res
  */
 OrderHandling.prototype.saveOrder = function (req, res) {
+  console.log('/saveOrder '+JSON.stringify(req.body.order));
   var order = JSON.parse(req.body.order);
   console.log(order);
 
@@ -51,6 +54,7 @@ OrderHandling.prototype.saveOrder = function (req, res) {
 };
 
 OrderHandling.prototype.placeOrder = function (req, res) {
+  console.log('/placeOrder '+JSON.stringify(req.body.order));
   var order = JSON.parse(req.body.order);
   console.log(order);
 
@@ -64,7 +68,7 @@ OrderHandling.prototype.placeOrder = function (req, res) {
 };
 
 OrderHandling.prototype.placeOrderQR = function (req, res){
-  console.log('/Get Request to place an order:',req.params);
+  console.log('/placeOrderQR:',req.params);
 
   VoucherDB.getVoucher(req.params.identifier)
     .then(function(voucher) {
@@ -89,7 +93,7 @@ OrderHandling.prototype.placeOrderQR = function (req, res){
 };
 
 OrderHandling.prototype.placeOrderGet = function (req, res){
-  console.log('/Get Request to place an order:',req.params);
+  console.log('/placeOrderGet',req.params);
 
   var order = {
     recipeId: parseInt(req.params.recipeId,10),

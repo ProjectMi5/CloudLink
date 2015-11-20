@@ -247,7 +247,7 @@ FeedbackDB.prototype.enrichFeedback = function(feedback){
         return ret;
       });
   } else {
-    return self.getOrder(feedback.productId)
+    return OrderDB.getOrder(feedback.productId)
       .then(function(order){
         ret.order = order;
         return self.getRecipe(order.recipeId);

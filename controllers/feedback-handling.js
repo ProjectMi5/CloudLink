@@ -7,7 +7,6 @@ var gcm = require('./../models/google-cloud-messaging.js');
 
 FeedbackHandling = function(){
 };
-exports.FeedbackHandling = new FeedbackHandling();
 
 FeedbackHandling.prototype.giveFeedback = function(req, res){
   var feedback = req.body.feedback;
@@ -51,3 +50,5 @@ FeedbackHandling.prototype.getFeedbacks = function(req, res){
       res.json({status: 'err', description: err});
     });
 };
+
+exports.FeedbackHandling = new FeedbackHandling();

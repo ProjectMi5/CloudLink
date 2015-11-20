@@ -605,8 +605,6 @@ OrderDB.prototype.getOrdersFiltered = function(filter){
   var deferred = Q.defer();
   var query = {};
 
-  console.log(filter);
-
   if (typeof filter != 'undefined'){
     var status = filter.status;
     var createdSince = filter.createdSince;
@@ -690,7 +688,6 @@ OrderDB.prototype.getOrdersFiltered = function(filter){
       limit = {};
     }
   }
-  console.log(query);
 
   self.Order.find(query,'-_id -__v').sort({'estimatedTimeOfCompletion': -1}).limit(limit).exec(function(err, result){
     if(err) deferred.reject(err);

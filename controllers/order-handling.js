@@ -169,12 +169,12 @@ OrderHandling.prototype.getCocktailDataByOrderId = function (req, res) {
     .then(OrderDB.returnEnrichedCocktailData)
     .then(function (ret) {
       res.json(ret);
-    })
-    .catch(function (err) {
-      console.log('error chatched');
-      res.json({err: err});
-      console.log(err);
     });
+    //.catch(function (err) {
+    //  console.log('error chatched');
+    //  res.json({err: err});
+    //  console.log(err);
+    //});
 };
 
 OrderHandling.prototype.getActiveOrders = function (req, res){

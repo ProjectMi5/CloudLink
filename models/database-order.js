@@ -349,7 +349,8 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
   intermediateTotal = intermediateTotal - order.parameters[0]; //parameters[0] = total amount
 
 
-  return require('./database-recipe').instance.getRecipe(order.recipeId)
+  var RecipeDB = require('./database-recipe').instance;
+  return RecipeDB.getRecipe(order.recipeId)
     .then(function(recipe){
       // remove "Identifier assignment" from Recipe userparameters
       var parameters = recipe.userparameters;

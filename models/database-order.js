@@ -331,12 +331,14 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
     .then(function(recipe){
       // remove "Identifier assignment" from Recipe userparameters
       var parameters = recipe.userparameters;
+      console.log(parameters);
       //parameters = _.map(parameters, function(item){
       //  console.log(item);
       //  if(item.Name != "Identifier assignment / Barcode"){
       //    return item;
       //  }
       //});
+      console.log('using _.without');
       parameters = _.without(parameters, _.findWhere(parameters, {Name: 'Identifier assignment / Barcode'}));
       recipe.userparameters = parameters;
       return recipe;

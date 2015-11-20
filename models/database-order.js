@@ -312,105 +312,95 @@ OrderDB.prototype.getOrderSave = function(orderId){
 };
 
 OrderDB.prototype.returnEnrichedCocktailData = function(order){
-  try{
-    console.log(order);
-    var self = instance;
+  console.log(order);
+  var self = instance;
 
-    console.log('this');
-    // check if order is a cocktail
-    if(CONFIG.Cocktails.indexOf(order.recipeId) < 0){
-      return  Q.Promise(function(resolve, reject){reject('The order you picked is not a Cocktail.')});
-    }
+  console.log('this');
+  // check if order is a cocktail
+  if(CONFIG.Cocktails.indexOf(order.recipeId) < 0){
+    return  Q.Promise(function(resolve, reject){reject('The order you picked is not a Cocktail.')});
+  }
 
-    console.log('that');
+  console.log('that');
 
-    var ret = {};
-    // timestamp
-    ret.timestamp = order.date;
+  var ret = {};
+  // timestamp
+  ret.timestamp = order.date;
 
-    // recipe part
-    ret.recipe = {};
-    ret.recipe.id = order.recipeId;
-    var recipe = require('./database-recipe').instance.getRecipe(order.recipeId)
-      .then(function(recipe){
-        console.log('threcipe');
-        // remove "Identifier assignment" from Recipe userparameters
-        var parameters = recipe.userparameters;
-        console.log(parameters);
-        //parameters = _.map(parameters, function(item){
-        //  console.log(item);
-        //  if(item.Name != "Identifier assignment / Barcode"){
-        //    return item;
-        //  }
-        //});
-        console.log('using _.without');
-        parameters = _.without(parameters, _.findWhere(parameters, {Name: 'Identifier assignment / Barcode'}));
-        recipe.userparameters = parameters;
+  // recipe part
+  ret.recipe = {};
+  ret.recipe.id = order.recipeId;
 
-        console.log('that after');
-        return recipe;
-      })
-      .catch(console.log);
-    var temp1 = recipe.then(function(recipe){
+  // order part
+  ret.order = {};
+  ret.order.customerName = order.customerName;
+  ret.order.marketPlaceId = order.marketPlaceId;
+  ret.order.priority = order.priority;
+  ret.order.status = order.status;
+  ret.order.estimatedTimeOfCompletion = order.estimatedTimeOfCompletion;
+  ret.order.mixRatio = {};
+  ret.order.mixRatio.ingredientName = [];
+  ret.order.mixRatio.ratio = [];
+
+  // calculate mix ratio
+  var intermediateTotal = _.reduce(order.parameters, function (memo, num) {
+    return memo + num;
+  }, 0);
+  intermediateTotal = intermediateTotal - order.parameters[0]; //parameters[0] = total amount
+
+
+  return require('./database-recipe').instance.getRecipe(order.recipeId)
+    .then(function(recipe){
+      console.log('threcipe');
+      // remove "Identifier assignment" from Recipe userparameters
+      var parameters = recipe.userparameters;
+      console.log(parameters);
+      //parameters = _.map(parameters, function(item){
+      //  console.log(item);
+      //  if(item.Name != "Identifier assignment / Barcode"){
+      //    return item;
+      //  }
+      //});
+      console.log('using _.without');
+      parameters = _.without(parameters, _.findWhere(parameters, {Name: 'Identifier assignment / Barcode'}));
+      recipe.userparameters = parameters;
+
+      console.log('that after');
+      return recipe;
+    })
+    .then(function(recipe){
       ret.recipe.name = recipe.name;
       return recipe;
-    });
-
-    // order part
-    ret.order = {};
-    ret.order.customerName = order.customerName;
-    ret.order.marketPlaceId = order.marketPlaceId;
-    ret.order.priority = order.priority;
-    ret.order.status = order.status;
-    ret.order.estimatedTimeOfCompletion = order.estimatedTimeOfCompletion;
-    ret.order.mixRatio = {};
-    ret.order.mixRatio.ingredientName = [];
-    ret.order.mixRatio.ratio = [];
-
-    // calculate mix ratio
-    var intermediateTotal = _.reduce(order.parameters, function (memo, num) {
-      return memo + num;
-    }, 0);
-    intermediateTotal = intermediateTotal - order.parameters[0]; //parameters[0] = total amount
-    var temp2 = temp1.then(function(recipe){
+    })
+    .then(function(recipe){
       var el = 0;
       console.log('calculating ratios');
-      try{
-        _.each(recipe.userparameters, function (parameter) {
-          if (el == 0) {
-            // Total Amount
-            ret.order.amount = order.parameters[el];
-          } else {
-            ret.order.mixRatio.ingredientName.push(parameter.Name);
-            // Ratio for other liquids
-            ret.order.mixRatio.ratio.push(order.parameters[el] / intermediateTotal);
-          }
-          el = el + 1;
-        });
-      } catch (err){
-        console.log('error in calculating ratios', err);
+      _.each(recipe.userparameters, function (parameter) {
+        if (el == 0) {
+          // Total Amount
+          ret.order.amount = order.parameters[el];
+        } else {
+          ret.order.mixRatio.ingredientName.push(parameter.Name);
+          // Ratio for other liquids
+          ret.order.mixRatio.ratio.push(order.parameters[el] / intermediateTotal);
+        }
+        el = el + 1;
+      });
+      return recipe;
+    })
+    .then(function(recipe){
+      if(order.reviewed){
+        return self.getFeedback(order.orderId)
+          .then(function(feedback){
+            console.log('feedback: '+feedback);
+            ret.feedback = feedback;
+            return ret;
+          });
+      } else {
+        ret.feedback = "";
+        return ret;
       }
     });
-  }
-  catch(err){
-    console.log(' now the error is above');
-  }
-
-  // append feedback and return
-  if(order.reviewed){
-    return temp2.then(self.getFeedback(order.orderId))
-      .then(function(feedback){
-        console.log('feedback: '+feedback);
-        ret.feedback = feedback;
-        return ret;
-      });
-  } else {
-    return temp2.then(function(){
-      ret.feedback = "";
-      return ret;
-    });
-  }
-
 };
 
 OrderDB.prototype.getOrders = function(){

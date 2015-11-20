@@ -315,13 +315,10 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
   console.log(order);
   var self = instance;
 
-  console.log('this');
   // check if order is a cocktail
   if(CONFIG.Cocktails.indexOf(order.recipeId) < 0){
     return  Q.Promise(function(resolve, reject){reject('The order you picked is not a Cocktail.')});
   }
-
-  console.log('that');
 
   var ret = {};
   // timestamp
@@ -390,7 +387,6 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
           .then(function(feedback){
             console.log('feedback: '+feedback);
             ret.feedback = feedback;
-            console.log('order.reviewed - ret', ret);
             return ret;
           });
       } else {

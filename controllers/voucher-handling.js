@@ -11,7 +11,7 @@ exports.VoucherHandling = instance;
 VoucherHandling.prototype.saveVoucher = function(req, res){
   var voucher = JSON.parse(req.body.voucher);
 
-  console.log('A vew voucher is being saved', voucher);
+  console.log('/saveVoucher', JSON.stringify(voucher));
   VoucherDB.getVoucher(voucher.identifier)
     .then(function(result){
       if (typeof result == 'undefined'){
@@ -30,7 +30,7 @@ VoucherHandling.prototype.saveVoucher = function(req, res){
     })
     .catch(function(err){
       res.json({err: err});
-      console.log('manageVoucher err:',err);
+      console.log('/saveVoucher err:',err);
     });
 };
 

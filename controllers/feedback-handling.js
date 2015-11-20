@@ -8,6 +8,13 @@ var gcm = require('./../models/google-cloud-messaging.js');
 FeedbackHandling = function(){
 };
 
+/**
+ * Feedback is given to a cocktail
+ *
+ * the feedback is sent to the watch
+ * @param req
+ * @param res
+ */
 FeedbackHandling.prototype.giveFeedback = function(req, res){
   var feedback = req.body.feedback;
 

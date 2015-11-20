@@ -233,11 +233,15 @@ FeedbackDB.prototype.enrichFeedback = function(feedback){
             // Total Amount
             ret.order.amount = temp.order.parameters[el];
           } else {
-            temp.mixRatio.ingredientName.push(parameter.Name);
-            // Ratio for other liquids
-            temp.mixRatio.ratio.push(temp.order.parameters[el]/intermediateTotal);
+            // Do not add if ingridient Name is Barcode
+            if(parameter.Name != 'Identifier assignment / Barcode'){
+              temp.mixRatio.ingredientName.push(parameter.Name);
+              // Ratio for other liquids
+              temp.mixRatio.ratio.push(temp.order.parameters[el]/intermediateTotal);
+            } else {
+              //nothing
+            }
           }
-
           el = el + 1;
         });
         ret.order.mixRatio = temp.mixRatio;

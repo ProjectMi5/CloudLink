@@ -51,4 +51,27 @@ FeedbackHandling.prototype.getFeedbacks = function(req, res){
     });
 };
 
+FeedbackHandling.prototype.giveRecommendation = function(req, res){
+  var recommendation = JSON.parse(req.body.recommendation);
+  console.log('/giveRecommendation POST');
+
+  var mqtt = require('mqtt');
+  var config = require('./../config');
+  var client  = mqtt.connect(config.MQTTHost);
+  client.on('connect', function () {
+    console.log('publish', recommendation);
+    client.publish('/mi5/showcase/cocktail/operator/recommendation', JSON.stringify(recommendation));
+  });
+
+  mi5Database.saveRecommendation(recommendation)
+    .then(function(result){
+      console.log('giveRecom. save successfull');
+      res.json(result);
+    })
+    .catch(function(err){
+      console.log('giveRecom err', err)
+      res.json({status: 'err', description: err});
+    });
+};
+
 exports.FeedbackHandling = new FeedbackHandling();

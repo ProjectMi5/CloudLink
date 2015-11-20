@@ -83,6 +83,7 @@ app.post('/getVouchersForRecipeId', VoucherHandling.getVouchersForRecipeId);
 
 // Feedback
 app.post('/giveFeedback', FeedbackHandling.giveFeedback);
+app.post('/giveRecommendation', FeedbackHandling.giveRecommendation);
 app.get('/getFeedbacks', FeedbackHandling.getFeedbacks);
 
 // Machine Data
@@ -129,7 +130,7 @@ client.on('message', function (topic, message) {
         console.log('received an upstream message:');
         //console.log(message);
         message = JSON.parse(message);
-	console.log(message);
+	      console.log(message);
 
         // Check if it is a upstream-demo-message
         if(typeof message.data.watchout != 'undefined'){

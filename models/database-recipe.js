@@ -56,6 +56,7 @@ RecipeDB.prototype.getRecipe = function(recipeId) {
   console.log('/getRecipe');
   self.Recipe.find({'recipeId': recipeId}).limit(1).exec(function (err, post) {
     if (err) {
+      console.log('somehow we have an err in /getrecipe?');
       deferred.reject(err);
       return;
     }

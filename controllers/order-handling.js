@@ -165,7 +165,7 @@ OrderHandling.prototype.getCocktailDataByOrderId = function (req, res) {
   var id = parseInt(req.body.id, 10);
   console.log('/getCocktailDataByOrderId id '+id);
 
-  OrderDB.getOrderSave(id)
+  OrderDB.getOrder(id)
     .then(OrderDB.returnEnrichedCocktailData)
     .then(function (ret) {
       res.json(ret);

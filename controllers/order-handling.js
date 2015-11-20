@@ -171,6 +171,7 @@ OrderHandling.prototype.getCocktailDataByOrderId = function (req, res) {
       res.json(ret);
     })
     .catch(function (err) {
+      console.log('error chatched');
       res.json({err: err});
       console.log(err);
     });

@@ -355,11 +355,11 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
       var parameters = recipe.userparameters;
       parameters = _.without(parameters, _.findWhere(parameters, {Name: 'Identifier assignment / Barcode'}));
       recipe.userparameters = parameters;
-      return Q.fcall(function(){return recipe});
+      return recipe
     })
     .then(function(recipe){
       ret.recipe.name = recipe.name;
-      return Q.fcall(function(){return recipe});
+      return recipe
     })
     .then(function(recipe){
       var el = 0;
@@ -374,7 +374,7 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
         }
         el = el + 1;
       });
-      return Q.fcall(function(){return recipe});
+      return recipe
     })
     .then(function(){
       if(order.reviewed){
@@ -382,10 +382,12 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
           .then(function(feedback){
             console.log('feedback: '+feedback);
             ret.feedback = feedback;
+            console.log('order.reviewed - ret', ret);
             return ret;
           });
       } else {
         ret.feedback = "";
+        console.log('feedback -- , ret', ret);
         return ret;
       }
     });

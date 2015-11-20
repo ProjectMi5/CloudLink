@@ -16,6 +16,7 @@ VoucherDB = function() {
 
   var voucherSchema = this.mongoose.Schema({
     identifier    : String,
+    date          : { type: Date, default: Date.now },
     recipeId      : Number,
     marketPlaceId : String,
     parameters    : [Number],

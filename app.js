@@ -76,9 +76,10 @@ app.post('/updateOrder', OrderHandling.updateOrder);
 
 // Vouchers
 app.get('/getVouchers', VoucherHandling.getVouchers);
+app.get('/deleteAllVouchers', VoucherHandling.deleteAllVouchers);
 app.post('/saveVoucher', VoucherHandling.saveVoucher);
 app.post('/updateVoucher', VoucherHandling.updateVoucher);
-app.post('/getVoucherById', VoucherHandling.getVoucherById);
+app.post('/getVoucherById', VoucherHandling.getVoucher);
 app.post('/getVouchersForRecipeId', VoucherHandling.getVouchersForRecipeId);
 
 // Feedback

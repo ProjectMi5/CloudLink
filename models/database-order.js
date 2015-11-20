@@ -363,18 +363,23 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
     })
     .then(function(recipe){
       var el = 0;
-      _.each(recipe.userparameters, function (parameter) {
-        if (el == 0) {
-          // Total Amount
-          ret.order.amount = order.parameters[el];
-        } else {
-          ret.order.mixRatio.ingredientName.push(parameter.Name);
-          // Ratio for other liquids
-          ret.order.mixRatio.ratio.push(order.parameters[el] / intermediateTotal);
-        }
-        el = el + 1;
-      });
-      return recipe
+      try{
+        _.each(recipe.userparameters, function (parameter) {
+          if (el == 0) {
+            // Total Amount
+            ret.order.amount = order.parameters[el];
+          } else {
+            ret.order.mixRatio.ingredientName.push(parameter.Name);
+            // Ratio for other liquids
+            ret.order.mixRatio.ratio.push(order.parameters[el] / intermediateTotal);
+          }
+          el = el + 1;
+        });
+        return recipe
+      }
+      catch(err){
+        console.log('try/catch', err);
+      }
     })
     .then(function(){
       if(order.reviewed){

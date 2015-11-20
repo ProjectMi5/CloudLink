@@ -315,10 +315,13 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
   console.log(order);
   var self = instance;
 
+  console.log('this');
   // check if order is a cocktail
   if(CONFIG.Cocktails.indexOf(order.recipeId) < 0){
     return  Q.Promise(function(resolve, reject){reject('The order you picked is not a Cocktail.')});
   }
+
+  console.log('that');
 
   var ret = {};
   // timestamp
@@ -329,6 +332,7 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
   ret.recipe.id = order.recipeId;
   var recipe = require('./database-recipe').instance.getRecipe(order.recipeId)
     .then(function(recipe){
+      console.log('threcipe');
       // remove "Identifier assignment" from Recipe userparameters
       var parameters = recipe.userparameters;
       console.log(parameters);
@@ -342,7 +346,8 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
       parameters = _.without(parameters, _.findWhere(parameters, {Name: 'Identifier assignment / Barcode'}));
       recipe.userparameters = parameters;
       return recipe;
-    });
+    })
+    .catch(console.log);
   var temp1 = recipe.then(function(recipe){
     ret.recipe.name = recipe.name;
     return recipe;

@@ -154,10 +154,10 @@ OrderDB.prototype.checkOrder = function(order){
       if(typeof recipe == 'undefined'){
         deferred.reject('recipe with id '+ recipeId + ' does not exist');
       }
-      if(parameters.length != recipe.userparameters.length){
-        deferred.reject('number of parameters (' + parameters.length + ') does not fit recipe requirements ('+
-          recipe.userparameters.length + ' parameters)');
-      }
+      //if(parameters.length != recipe.userparameters.length){
+      //  deferred.reject('number of parameters (' + parameters.length + ') does not fit recipe requirements ('+
+      //    recipe.userparameters.length + ' parameters)');
+      //}
       order.recipeName = recipe.name;
       deferred.resolve(order);
     })

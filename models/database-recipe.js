@@ -53,9 +53,14 @@ RecipeDB.prototype.getRecipe = function(recipeId) {
   var self = instance;
   var deferred = Q.defer();
 
+  console.log('/getRecipe');
   self.Recipe.find({'recipeId': recipeId}).limit(1).exec(function (err, post) {
-    if (err) deferred.reject(err);
+    if (err) {
+      deferred.reject(err);
+      return;
+    }
 
+    console.log('/no error in getrecipe');
     deferred.resolve(post.pop()); //due to limit 1, there is only 1 entry in post[]
   });
 

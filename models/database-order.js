@@ -351,30 +351,18 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
 
   return require('./database-recipe').instance.getRecipe(order.recipeId)
     .then(function(recipe){
-      console.log('threcipe');
       // remove "Identifier assignment" from Recipe userparameters
       var parameters = recipe.userparameters;
-      console.log(parameters);
-      //parameters = _.map(parameters, function(item){
-      //  console.log(item);
-      //  if(item.Name != "Identifier assignment / Barcode"){
-      //    return item;
-      //  }
-      //});
-      console.log('using _.without');
       parameters = _.without(parameters, _.findWhere(parameters, {Name: 'Identifier assignment / Barcode'}));
       recipe.userparameters = parameters;
-
-      console.log('that after');
-      return recipe;
+      return Q.fcall(function(){return recipe});
     })
     .then(function(recipe){
       ret.recipe.name = recipe.name;
-      return recipe;
+      return Q.fcall(function(){return recipe});
     })
     .then(function(recipe){
       var el = 0;
-      console.log('calculating ratios');
       _.each(recipe.userparameters, function (parameter) {
         if (el == 0) {
           // Total Amount
@@ -386,9 +374,9 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
         }
         el = el + 1;
       });
-      return recipe;
+      return Q.fcall(function(){return recipe});
     })
-    .then(function(recipe){
+    .then(function(){
       if(order.reviewed){
         return self.getFeedback(order.orderId)
           .then(function(feedback){

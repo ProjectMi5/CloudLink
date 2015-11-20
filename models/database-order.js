@@ -345,6 +345,8 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
       console.log('using _.without');
       parameters = _.without(parameters, _.findWhere(parameters, {Name: 'Identifier assignment / Barcode'}));
       recipe.userparameters = parameters;
+
+      console.log('that after');
       return recipe;
     })
     .catch(console.log);

@@ -135,7 +135,7 @@ FeedbackDB.prototype.getFeedback = function(orderId){
   var deferred = Q.defer();
   console.log('getFeedback', orderId);
 
-  self.Feedback.find({'productId': orderId}).limit(1).exec(function(err, post){
+  self.Feedback.find({'productId': orderId},'-_id -__v').limit(1).exec(function(err, post){
       if(err) deferred.reject(err);
 
       deferred.resolve(post.pop());

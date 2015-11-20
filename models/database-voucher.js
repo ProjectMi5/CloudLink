@@ -17,7 +17,7 @@ VoucherDB = function() {
   var voucherSchema = this.mongoose.Schema({
     identifier  : String,
     recipeId    : Number,
-    parameters  : this.mongoose.Schema.Types.Mixed,
+    parameters  : [Number],
     valid       : { type: Boolean, default: true },
     humanReadable : String
   });
@@ -44,10 +44,11 @@ VoucherDB.prototype.translateVoucher = function(voucher){
   var mongoVoucher = {
     identifier: voucher.identifier,
     recipeId: voucher.recipeId,
-    parameters: voucher.parameters,
+    parameters: JSON.parse(voucher.parameters),
     valid: voucher.valid,
     humanReadable: voucher.humanReadable
   };
+
 
   deferred.resolve(mongoVoucher);
   return deferred.promise;
@@ -60,7 +61,6 @@ VoucherDB.prototype.getVoucher = function(identifier) {
 
   self.Voucher.find({'identifier': identifier}, '-_id -__v').limit(1).exec(function (err, post) {
     if (err) deferred.reject(err);
-    console.log(post);
 
     deferred.resolve(post.pop()); //due to limit 1, there is only 1 entry in post[]
   });

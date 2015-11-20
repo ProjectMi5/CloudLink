@@ -129,13 +129,12 @@ OrderDB.prototype.checkOrder = function(order){
     deferred.reject('recipeId is undefined');
   }
 
-  if(!_.isArray(order.parameters)){
-    deferred.reject('parameters is not an array')
+  // e.g. recipe 10001 one round doesnt have parameters
+  if(order.parameters){
+    order.parameters.forEach(function(parameter){
+      parameters.push(parseInt(parameter, 10));
+    });
   }
-
-  order.parameters.forEach(function(parameter){
-    parameters.push(parseInt(parameter, 10));
-  });
 
   // the following inputs are accepted to be 'undefined':
   //  marketPlaceId, customerName, priority, orderedTimeOfCompletion

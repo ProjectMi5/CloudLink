@@ -15,10 +15,11 @@ VoucherDB = function() {
   console.log('Database connected');
 
   var voucherSchema = this.mongoose.Schema({
-    identifier  : String,
-    recipeId    : Number,
-    parameters  : [Number],
-    valid       : { type: Boolean, default: true },
+    identifier    : String,
+    recipeId      : Number,
+    marketPlaceId : String,
+    parameters    : [Number],
+    valid         : { type: Boolean, default: true },
     humanReadable : String
   });
   this.Voucher = this.mongoose.model('Voucher', voucherSchema);
@@ -44,11 +45,10 @@ VoucherDB.prototype.translateVoucher = function(voucher){
   var mongoVoucher = {
     identifier: voucher.identifier,
     recipeId: voucher.recipeId,
+    marketPlaceId: voucher.marketPlaceId,
     parameters: JSON.parse(voucher.parameters),
-    valid: voucher.valid,
     humanReadable: voucher.humanReadable
   };
-
 
   deferred.resolve(mongoVoucher);
   return deferred.promise;
@@ -110,20 +110,6 @@ VoucherDB.prototype.parseVoucherRequest = function(voucher){
   return Q.fcall(function(){
     return JSON.parse(voucher);
   });
-};
-
-VoucherDB.prototype.manageVoucher = function(voucher){
-  var self = instance;
-
-  return self.getVoucher(voucher.identifier)
-    .then(function(oldVoucher) {
-      if(typeof oldVoucher == 'undefined'){ // no voucher found
-        return self.saveVoucher(voucher);
-      }
-      else {
-        return self.updateVoucher(voucher);
-      }
-    });
 };
 
 VoucherDB.prototype.updateVoucher = function(req){

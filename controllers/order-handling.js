@@ -100,10 +100,10 @@ OrderHandling.prototype.placeOrderGet = function (req, res){
 
   OrderDB.placeOrder(order)
     .then(function(order){
-      res.json({status: 'ok', description: 'order has been saved', orderId: order.orderId, orderStatus: order.status});
+      res.render('placeOrderSuccess',{title: 'OK', orderId: order.orderId, message: 'order has been saved with orderId '+order.orderId});
     })
     .catch(function(err){
-      res.json({status: 'err', description: err});
+      res.render('placeOrderSuccess',{title: 'ERR', message:  err.toString()});
     });
 };
 

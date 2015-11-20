@@ -22,6 +22,10 @@ var basicAuth = require('basic-auth-connect');
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
 
+// View engine
+app.set('views', './views');
+app.set('view engine', 'jade');
+
 var DeviceHandling  = require('./controllers/device-handling').DeviceHandling;
 var RecipeHandling  = require('./controllers/recipe-handling').RecipeHandling;
 var OrderHandling   = require('./controllers/order-handling').OrderHandling;

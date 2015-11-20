@@ -364,17 +364,22 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
   intermediateTotal = intermediateTotal - order.parameters[0]; //parameters[0] = total amount
   var temp2 = temp1.then(function(recipe){
     var el = 0;
-    _.each(recipe.userparameters, function (parameter) {
-      if (el == 0) {
-        // Total Amount
-        ret.order.amount = order.parameters[el];
-      } else {
-        ret.order.mixRatio.ingredientName.push(parameter.Name);
-        // Ratio for other liquids
-        ret.order.mixRatio.ratio.push(order.parameters[el] / intermediateTotal);
-      }
-      el = el + 1;
-    });
+    console.log('calculating ratios');
+    try{
+      _.each(recipe.userparameters, function (parameter) {
+        if (el == 0) {
+          // Total Amount
+          ret.order.amount = order.parameters[el];
+        } else {
+          ret.order.mixRatio.ingredientName.push(parameter.Name);
+          // Ratio for other liquids
+          ret.order.mixRatio.ratio.push(order.parameters[el] / intermediateTotal);
+        }
+        el = el + 1;
+      });
+    } catch (err){
+      console.log('error in calculating ratios', err);
+    }
   });
 
   // append feedback and return

@@ -350,6 +350,7 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
 
 
   var RecipeDB = require('./database-recipe').instance;
+  var FeedbackDB = require('./../models/database-feedback').instance;
   return RecipeDB.getRecipe(order.recipeId)
     .then(function(recipe){
       // remove "Identifier assignment" from Recipe userparameters
@@ -385,7 +386,7 @@ OrderDB.prototype.returnEnrichedCocktailData = function(order){
     })
     .then(function(){
       if(order.reviewed){
-        return self.getFeedback(order.orderId)
+        return FeedbackDB.getFeedback(order.orderId)
           .then(function(feedback){
             console.log('feedback: '+feedback);
             ret.feedback = feedback;

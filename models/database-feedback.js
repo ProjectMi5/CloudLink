@@ -131,16 +131,17 @@ FeedbackDB.prototype.getFeedbacks = function(){
 };
 
 FeedbackDB.prototype.getFeedback = function(orderId){
-    var self = instance;
-    var deferred = Q.defer();
+  var self = instance;
+  var deferred = Q.defer();
+  console.log('getFeedback', orderId);
 
-    self.Feedback.find({'productId': orderId}).limit(1).exec(function(err, post){
-        if(err) deferred.reject(err);
+  self.Feedback.find({'productId': orderId}).limit(1).exec(function(err, post){
+      if(err) deferred.reject(err);
 
-        deferred.resolve(post.pop());
-    });
+      deferred.resolve(post.pop());
+  });
 
-    return deferred.promise;
+  return deferred.promise;
 };
 
 FeedbackDB.prototype.getLastRecommendationId = function(){

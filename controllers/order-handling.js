@@ -64,7 +64,7 @@ OrderHandling.prototype.placeOrder = function (req, res) {
 };
 
 OrderHandling.prototype.placeOrderQR = function (req, res){
-  console.log('/QR Request to place an order:',req.params);
+  console.log('/Get Request to place an order:',req.params);
 
   VoucherDB.getVoucher(req.params.identifier)
     .then(function(voucher) {
@@ -80,6 +80,25 @@ OrderHandling.prototype.placeOrderQR = function (req, res){
         return deferred.promise;
       }
     })
+    .then(function(order){
+      res.json({status: 'ok', description: 'order has been saved', orderId: order.orderId, orderStatus: order.status});
+    })
+    .catch(function(err){
+      res.json({status: 'err', description: err});
+    });
+};
+
+OrderHandling.prototype.placeOrderGet = function (req, res){
+  console.log('/Get Request to place an order:',req.params);
+
+  var order = {
+    recipeId: parseInt(req.params.recipeId,10),
+    parameters: JSON.parse(req.params.parameters),
+    marketPlaceId: req.params.marketPlaceId
+  };
+  console.log('order',order);
+
+  OrderDB.placeOrder(order)
     .then(function(order){
       res.json({status: 'ok', description: 'order has been saved', orderId: order.orderId, orderStatus: order.status});
     })
@@ -119,8 +138,6 @@ OrderHandling.prototype.getOrderIdByBarcode = function (req, res) {
     .catch(function (err) {
       res.json({status: 'err', description: err});
     });
-
-
 };
 
 OrderHandling.prototype.getOrderById = function (req, res) {

@@ -1,11 +1,12 @@
 {
   "name": "CloudLink",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Links an MQTT broker to the GCM Push service according to Showcase Mi5 specifications",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "grunt"
+    "test": "grunt",
+    "useLocalEnvironment": "set TEST=1 && node app.js"
   },
   "keywords": [
     "cloud",

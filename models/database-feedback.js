@@ -109,11 +109,13 @@ FeedbackDB.prototype.saveFeedback = function(productId, like, feedback){
   var NewFeedback = new self.Feedback(feedback);
   var newFeedback = NewFeedback.saveQ();
 
+  var OrderDB = require('./database-order').instance;
+
   return newFeedback.then(function(feedback){
-      return require('./database-order').instance.setReviewed(productId, true);
+      return OrderDB.setReviewed(productId, true);
     })
     .then(function(){
-      return newFeedback;
+      return feedback; // route the feedback through
     });
 };
 

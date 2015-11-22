@@ -65,7 +65,6 @@ app.get('/getLastOrder', OrderHandling.getLastOrder);
 app.get('/getOrders', OrderHandling.getOrders);
 app.post('/saveOrder', OrderHandling.saveOrder);
 app.post('/placeOrder', OrderHandling.placeOrder);
-app.get('/placeOrder', OrderHandling.placeOrderGet);
 app.get('/placeOrder/:recipeId/:parameters/:marketPlaceId', OrderHandling.placeOrderGet);
 app.post('/getOrderById', OrderHandling.getOrderById);
 app.post('/setBarcode', OrderHandling.setBarcode);

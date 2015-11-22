@@ -41,6 +41,9 @@ app.get('/helloWorld', function (req, res) {
     console.log('Hello World!');
     res.send('Hello World!');
 });
+app.get('/test', function(req, res){
+  res.sendfile('public/assets/views/placeOrderQRFeedback/OrderFeedback.html', {root: __dirname});
+});
 // placeOrder without authentification
 app.get('/QR/:identifier/:humanReadable', OrderHandling.placeOrderQR);
 

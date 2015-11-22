@@ -1,0 +1,77 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:100,300|Advent+Pro:100,300);
+
+body {
+	font-family: 'Lato', sans-serif;
+	font-weight: 300;
+	background-color: #CCCCCC;
+}
+
+.wrapper {
+	margin-left: auto;
+	margin-right: auto;
+	background-color: white;
+}
+
+.headline {
+	font-weight: 100;
+	padding: 2.5em;
+	background-color: #0069B3;
+}
+
+.content {
+	padding: 2.5em;
+	color: #434344;
+	font-size: 1.5em
+}
+
+.resdescrpt {
+	width: 75%;
+	float: left;
+}
+
+.headline h1 {
+	font-family: 'Advent Pro', sans serif;
+	color: white;
+	font-weight: 300;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.checkmark {
+	width: 25%;
+	font-family: Capitals, sans-serif;
+	font-weight: 400;
+	color: #0069B3;
+	font-size: 2.7em;
+	float: right;
+	margin-left: auto;
+	margin-right: 0;
+	text-align: right;
+}
+
+.orderId {
+	display: block;
+	margin-top: 2em;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 0.5em;
+	font-size: 3em;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+	font-family: 'Advent Pro', sans-serif;
+	font-weight: 100;
+	text-align: center;
+	border-top: 1px solid #0069B3;
+	border-bottom: 1px solid #0069B3
+	
+	
+}
+
+
+@media (min-width: 760px) {
+	.wrapper {
+		box-shadow: 0 0 20px black;
+		max-width: 28em;
+	}
+	
+}

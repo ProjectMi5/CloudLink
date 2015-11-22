@@ -11,7 +11,17 @@ MachineDataHandling.prototype.hasStandstill = function(req, res){
 };
 
 MachineDataHandling.prototype.reportMachineStatus = function(req, res){
-  console.log('/setStandstill '+JSON.stringify(req.body.standstill));
-  hasStandstill = JSON.parse(req.body.standstill);
-  res.json({"standstill": hasStandstill});
+  console.log('/setStandstill '+JSON.stringify(req.body.status));
+  status = JSON.parse(req.body.status);
+  if(status == 'out of order'){
+    hasStandstill = true;
+    res.json({"status": "ok","description": "Set machine status to "+status});
+  } else if (status == 'working'){
+    hasStandstill = false;
+    res.json({"status": "ok", "description": "Set machine status to "+status});
+  } else {
+    res.json({"err": "unknown status"});
+  }
+
+
 };

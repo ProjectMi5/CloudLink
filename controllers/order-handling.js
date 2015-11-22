@@ -109,10 +109,13 @@ OrderHandling.prototype.placeOrderGet = function (req, res){
 
   OrderDB.placeOrder(order)
     .then(function(order){
-      res.render('placeOrderSuccess',{title: 'OK', orderId: order.orderId, message: 'order has been saved with orderId '+order.orderId});
+      res.render('feedbackQR', {resdescrpt: 'Your Cocktail was successfully ordered',
+        check: '&#x2714;', orderId: order.orderId,
+        orderdescrpt: 'You can use the ID above to identify your Cocktail!'});
     })
     .catch(function(err){
-      res.render('placeOrderSuccess',{title: 'ERR', message:  err.toString()});
+      res.render('feedbackQR', {resdescrpt: err.toString(), check: '&#x2716', orderId: '',
+        orderdescrpt: ''});
     });
 };
 

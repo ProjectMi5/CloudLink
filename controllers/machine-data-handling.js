@@ -21,7 +21,7 @@ MachineDataHandling.prototype.reportMachineStatus = function(req, res){
     hasStandstill = false;
     res.json({"status": "ok", "description": "Set machine status to "+status});
   } else {
-    res.json({"err": "unknown status"});
+    res.json({"status": "err", "description": "unknown status"});
   }
 
 

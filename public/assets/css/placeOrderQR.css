@@ -69,7 +69,7 @@ body {
 
 @viewport {
     width: device-width;
-    zoom: 2;
+    zoom: 0.5;
 }
 
 @media screen and (min-width: 760px) {

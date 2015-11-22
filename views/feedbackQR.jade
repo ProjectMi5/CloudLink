@@ -1,0 +1,28 @@
+doctype html
+html
+  head
+    title Watchout
+
+    link(href='https://fonts.googleapis.com/css?family=Lato:100,300|Advent+Pro:100,300', rel='stylesheet', type='text/css')
+
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js')
+
+    link(rel='stylesheet', href='/assets/css/placeOrderQR.css', type='text/css')
+  body
+    .wrapper
+      .headline
+        h1 WATCHOUT
+
+      .content
+        .response
+          .resdescrpt!= resdescrpt
+
+          .checkmark &#x2714;
+
+        .order
+          .orderId 00167
+
+          .orderdescrpt!= orderdescrpt
+
+    script(type='text/javascript').
+      //something here

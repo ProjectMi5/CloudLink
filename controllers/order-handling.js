@@ -85,10 +85,10 @@ OrderHandling.prototype.placeOrderQR = function (req, res){
       }
     })
     .then(function(order){
-      res.json({status: 'ok', description: 'order has been saved', orderId: order.orderId, orderStatus: order.status});
+      res.render('feedbackQR', {resdescrpt: order.status, orderdescrpt: 'Do something.'});
     })
     .catch(function(err){
-      res.json({status: 'err', description: err});
+      res.render('feedbackQR', {resdescrpt: order.status, orderdescrpt: err.toString()});
     });
 };
 

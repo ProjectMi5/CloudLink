@@ -41,6 +41,7 @@ app.get('/helloWorld', function (req, res) {
     console.log('Hello World!');
     res.send('Hello World!');
 });
+
 // placeOrder without authentification
 app.get('/QR/:identifier/:humanReadable', OrderHandling.placeOrderQR);
 

@@ -69,9 +69,10 @@ body {
 
 @viewport {
     width: device-width;
+    zoom: 2;
 }
 
-@media (min-width: 760px) {
+@media screen and (min-width: 760px) {
 	.wrapper {
 		box-shadow: 0 0 20px black;
 		max-width: 28em;

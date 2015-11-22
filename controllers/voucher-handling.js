@@ -99,6 +99,20 @@ VoucherHandling.prototype.updateVoucher = function(req, res){
     });
 };
 
+
+VoucherHandling.prototype.validateAllVouchers = function(req, res){
+  console.log('/validateAllVouchers');
+  VoucherDB.validateAllVouchers()
+    .then(function(){
+      console.log('/validateAllVouchers successfull');
+      res.json({status: 'ok', description: 'vouchers have been validated'})
+    })
+    .catch(function(err){
+      res.json({err: err});
+      console.log('err in validating all vouchers:',err);
+    });
+};
+
 VoucherHandling.prototype.deleteAllVouchers = function(req, res){
   VoucherDB.deleteAllVouchers()
     .then(function(){

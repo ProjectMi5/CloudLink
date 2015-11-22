@@ -85,6 +85,7 @@ app.post('/saveVoucher', VoucherHandling.saveVoucher);
 app.post('/updateVoucher', VoucherHandling.updateVoucher);
 app.post('/getVoucherById', VoucherHandling.getVoucherById);
 app.post('/getVouchersForRecipeId', VoucherHandling.getVouchersForRecipeId);
+app.get('/validateAllVouchers', VoucherHandling.validateAllVouchers);
 
 // Feedback
 app.post('/giveFeedback', FeedbackHandling.giveFeedback);

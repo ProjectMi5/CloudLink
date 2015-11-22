@@ -135,6 +135,22 @@ VoucherDB.prototype.updateVoucher = function(voucher){
     });
 };
 
+VoucherDB.prototype.validateAllVouchers = function(){
+  var self = instance;
+  var query = {valid: false};
+
+  return self.Voucher.updateQ(query, {$set: { valid: true}})
+    .then(function(result){
+      console.log(result);
+      return Q.Promise(function(resolve, reject) {
+        if (result.ok == 1) {
+          resolve({status: 'ok', description: result.nModified+' vouchers have been updated'});
+        } else {
+          reject({status: 'err', description: 'an error occurred'});
+        }
+      });
+    });
+};
 
 VoucherDB.prototype.deleteAllVouchers = function(){
   var self = instance;

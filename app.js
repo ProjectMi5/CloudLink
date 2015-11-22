@@ -42,7 +42,7 @@ app.get('/helloWorld', function (req, res) {
     res.send('Hello World!');
 });
 app.get('/test', function(req, res){
-  res.sendfile('public/assets/views/placeOrderQRFeedback/OrderFeedback.html', {root: __dirname});
+  res.render('feedbackQR', {resdescrpt: 'Free Passion has been placed successfully', orderdescrpt: 'Do something.'});
 });
 // placeOrder without authentification
 app.get('/QR/:identifier/:humanReadable', OrderHandling.placeOrderQR);

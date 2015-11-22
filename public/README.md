@@ -1,0 +1,1 @@
+put all static files in this folder

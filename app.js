@@ -22,8 +22,11 @@ var basicAuth = require('basic-auth-connect');
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
 
+// Static files:
+app.use(express.static(__dirname + '/public'));
+
 // View engine
-app.set('views', './views');
+app.set('views', __dirname+'/views');
 app.set('view engine', 'jade');
 
 var DeviceHandling  = require('./controllers/device-handling').DeviceHandling;

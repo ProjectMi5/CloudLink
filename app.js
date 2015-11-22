@@ -91,8 +91,9 @@ app.post('/giveFeedback', FeedbackHandling.giveFeedback);
 app.post('/giveRecommendation', FeedbackHandling.giveRecommendation);
 app.get('/getFeedbacks', FeedbackHandling.getFeedbacks);
 
-// Machine Data
+// Machine Status
 app.get('/hasStandstill', MachineDataHandling.hasStandstill);
+app.post('/reportMachineStatus', MachineDataHandling.reportMachineStatus);
 
 // Start web-server
 app.listen(config.HTTPPort);

@@ -41,9 +41,7 @@ app.get('/helloWorld', function (req, res) {
     console.log('Hello World!');
     res.send('Hello World!');
 });
-app.get('/test', function(req, res){
-  res.render('feedbackQR', {resdescrpt: 'Free Passion has been placed successfully', orderdescrpt: 'Do something.'});
-});
+
 // placeOrder without authentification
 app.get('/QR/:identifier/:humanReadable', OrderHandling.placeOrderQR);
 

@@ -12,7 +12,8 @@ MachineDataHandling.prototype.hasStandstill = function(req, res){
 
 MachineDataHandling.prototype.reportMachineStatus = function(req, res){
   console.log('/setStandstill '+JSON.stringify(req.body.status));
-  status = JSON.parse(req.body.status);
+  status = req.body.status;
+  console.log(status);
   if(status == 'out of order'){
     hasStandstill = true;
     res.json({"status": "ok","description": "Set machine status to "+status});

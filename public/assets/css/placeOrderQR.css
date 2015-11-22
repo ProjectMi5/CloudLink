@@ -67,6 +67,9 @@ body {
 	
 }
 
+@viewport {
+    width: device-width;
+}
 
 @media (min-width: 760px) {
 	.wrapper {

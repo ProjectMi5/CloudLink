@@ -197,7 +197,7 @@ OrderHandling.prototype.getActiveOrders = function (req, res){
 };
 
 OrderHandling.prototype.getOrdersSince = function (req, res){
-  //console.log('/getOrdersSince '+req.body.timestamp);
+  console.log('/getOrdersSince '+req.body.timestamp);
   var filter = {
     status: ['accepted', 'in progress','done'],
     createdSince: req.body.timestamp,
@@ -215,7 +215,7 @@ OrderHandling.prototype.getOrdersSince = function (req, res){
 };
 
 OrderHandling.prototype.getOrdersUpdatedSince = function (req, res){
-  //console.log('/getOrdersUpdatedSince ' + req.body.timestamp);
+  console.log('/getOrdersUpdatedSince ' + req.body.timestamp);
   var filter = {
     status: ['accepted', 'in progress','done'],
     updatedSince: req.body.timestamp,

@@ -61,6 +61,7 @@ app.get('/deleteAllRecipes', RecipeHandling.deleteAllRecipes); //deactivate late
 app.get('/loadDefaultRecipes', RecipeHandling.loadDefaultRecipes); // Debug function
 
 // Orders
+app.get('/order', OrderHandling.browseOrders);
 app.get('/getLastOrder', OrderHandling.getLastOrder);
 app.get('/getOrders', OrderHandling.getOrders);
 app.post('/saveOrder', OrderHandling.saveOrder);

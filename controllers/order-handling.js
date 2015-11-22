@@ -2,6 +2,7 @@ var Q = require('q');
 
 var OrderDB = require('./../models/database-order').instance;
 var VoucherDB = require('./../models/database-voucher').instance;
+var RecipeDB = require('./../models/database-recipe').instance;
 
 OrderHandling = function () {
 };
@@ -321,4 +322,15 @@ OrderHandling.prototype.updateOrder = function (req, res) {
       console.log(err);
     });
 
+};
+
+OrderHandling.prototype.browseOrders = function(req, res){
+  console.log('/order --- browseOrders');
+  RecipeDB.getRecipes()
+    .then(function(recipes){
+      res.render('browseOrders', {recipes: recipes});
+    })
+    .catch(function(err){
+      res.json(err);
+    });
 };

@@ -1,0 +1,22 @@
+doctype html
+html
+  head
+    title Watchout
+    meta(name='viewport', content='initial-scale=1.0')
+    link(href='https://fonts.googleapis.com/css?family=Lato:100,300|Advent+Pro:100,300', rel='stylesheet', type='text/css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js')
+    link(rel='stylesheet', href='/assets/css/placeOrderQR.css', type='text/css')
+  body
+    .wrapper
+      .headline
+        h1 WATCHOUT
+
+      .content
+        each recipe in recipes
+          //p= recipe
+          .response
+           a(href='https://mi5.itq.de/placeOrder/' + recipe.recipeId + '/[100,50,20,10,1]/eu')
+            .resdescrpt!= recipe.name +' - '+ recipe.recipeId
+                img(src='https://raw.githubusercontent.com/ProjectMi5/HMI/master/public/assets/images/recipes/recipe'+recipe.recipeId+'/cocktail.jpg', width=100, height=100)
+           .order
+             .orderId &nbsp;

@@ -112,8 +112,8 @@ OrderHandling.prototype.placeOrderGet = function (req, res){
 };
 
 OrderHandling.prototype.setBarcode = function (req, res) {
-  var orderId = JSON.parse(req.body.id);
-  var barcode = JSON.parse(req.body.barcode);
+  var orderId = parseInt(req.body.id, 10);
+  var barcode = parseInt(req.body.barcode, 10);
   console.log('/setBarcode of order ' + orderId + ' to ' + barcode);
 
   OrderDB.setBarcode(orderId, barcode)

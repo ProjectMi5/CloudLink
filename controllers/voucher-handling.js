@@ -103,12 +103,12 @@ VoucherHandling.prototype.updateVoucher = function(req, res){
 VoucherHandling.prototype.validateAllVouchers = function(req, res){
   console.log('/validateAllVouchers');
   VoucherDB.validateAllVouchers()
-    .then(function(){
+    .then(function(result){
       console.log('/validateAllVouchers successfull');
-      res.json({status: 'ok', description: 'vouchers have been validated'})
+      res.json(result)
     })
     .catch(function(err){
-      res.json({err: err});
+      res.json(err);
       console.log('err in validating all vouchers:',err);
     });
 };

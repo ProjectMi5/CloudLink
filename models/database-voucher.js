@@ -139,7 +139,7 @@ VoucherDB.prototype.validateAllVouchers = function(){
   var self = instance;
   var query = {valid: false};
 
-  return self.Voucher.updateQ(query, {$set: { valid: true}})
+  return self.Voucher.updateQ(query, {$set: { valid: true}},{multi: true})
     .then(function(result){
       console.log(result);
       return Q.Promise(function(resolve, reject) {

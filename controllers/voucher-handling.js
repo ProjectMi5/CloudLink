@@ -84,23 +84,6 @@ VoucherHandling.prototype.getVouchersForRecipeId = function(req, res){
     });
 };
 
-VoucherHandling.prototype.manageVoucher = function(req, res){
-  var voucher = JSON.parse(req.body.voucher);
-
-  console.log('managing voucher', voucher);
-  VoucherDB.parseVoucherRequest(voucher)
-    .then(VoucherDB.translateVoucher)
-    .then(VoucherDB.manageVoucher)
-    .then(function(){
-          console.log('/manageVoucher successfull', 'identifier:', voucher.identifier );
-          res.json({status: 'ok', description: 'voucher has been managed'})
-    })
-    .catch(function(err){
-      res.json({err: err});
-      console.log('manageVoucher err:',err);
-    });
-};
-
 VoucherHandling.prototype.updateVoucher = function(req, res){
   var voucher = JSON.parse(req.body.voucher);
 

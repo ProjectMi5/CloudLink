@@ -113,20 +113,21 @@ VoucherDB.prototype.parseVoucherRequest = function(voucher){
   });
 };
 
-VoucherDB.prototype.updateVoucher = function(req){
-  console.log(req);
+VoucherDB.prototype.updateVoucher = function(voucher){
+  console.log(voucher);
   var self = instance;
-  var identifier = req.identifier;
-  delete req.identifier;
+  var identifier = voucher.identifier;
+  voucher.valid = JSON.parse(voucher.valid);
+  delete voucher.identifier;
 
 
-  return self.Voucher.updateQ({identifier: identifier}, { $set: req})
+  return self.Voucher.updateQ({identifier: identifier}, { $set: voucher})
     .then(function(result){
       console.log(result);
       return Q.Promise(function(resolve, reject){
         if(result.n == 1){
           resolve({status: 'ok', description: 'voucher with id ' + identifier + 'was updated with: '
-          + JSON.stringify(req)});
+          + JSON.stringify(voucher)});
         } else {
           reject({status: 'err', description: 'no voucher has been modified, probably the identifier is wrong, or the status has not changed'});
         }

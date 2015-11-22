@@ -69,8 +69,9 @@ OrderHandling.prototype.placeOrder = function (req, res) {
 
 OrderHandling.prototype.placeOrderQR = function (req, res){
   console.log('/placeOrderQR:',req.params);
+  var identifier = req.params.identifier;
 
-  VoucherDB.getVoucher(req.params.identifier)
+  VoucherDB.getVoucher(identifier)
     .then(function(voucher) {
       var deferred = Q.defer();
       if (typeof voucher == 'undefined') {
@@ -78,6 +79,7 @@ OrderHandling.prototype.placeOrderQR = function (req, res){
         return deferred.promise;
       } else if (voucher.valid == true) {
         console.log('placeOrder', voucher.recipeId, voucher.parameters);
+        VoucherDB.updateVoucher({identifier: identifier, valid: 'false'});
         return OrderDB.placeOrder({recipeId: voucher.recipeId, parameters: voucher.parameters, marketPlaceId: voucher.marketPlaceId});
       } else {
         deferred.reject('Your identifier is invalid!');

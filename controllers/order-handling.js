@@ -87,10 +87,13 @@ OrderHandling.prototype.placeOrderQR = function (req, res){
       }
     })
     .then(function(order){
-      res.render('feedbackQR', {resdescrpt: order.status, orderdescrpt: 'Do something.'});
+      res.render('feedbackQR', {resdescrpt: 'Your Cocktail was successfully ordered',
+        check: '&#x2714;', orderId: order.orderId,
+        orderdescrpt: 'You can use the ID above to identify your Cocktail!'});
     })
     .catch(function(err){
-      res.render('feedbackQR', {resdescrpt: order.status, orderdescrpt: err.toString()});
+      res.render('feedbackQR', {resdescrpt: err.toString(), check: '&#x2716', orderId: '',
+        orderdescrpt: ''});
     });
 };
 

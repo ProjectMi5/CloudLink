@@ -327,6 +327,8 @@ OrderHandling.prototype.updateOrder = function (req, res) {
 
 OrderHandling.prototype.browseOrders = function(req, res){
   console.log('/order --- browseOrders');
+  var config = require('./../config.js');
+
   RecipeDB.getRecipes()
     .then(function(recipes){
       var newRecipes = [];
@@ -336,7 +338,11 @@ OrderHandling.prototype.browseOrders = function(req, res){
         parameters = _.without(parameters, _.findWhere(parameters, {Name: 'Identifier assignment / Barcode'}));
         recipe.userparameters = _.without(parameters, _.findWhere(parameters, {Name: 'Total Liquid Amount'}));
         console.log(parameters);
-        newRecipes.push(recipe);
+
+        //only push cocktails and cookies
+        if(_.contains(config.Cocktails, recipe.recipeId) || _.contains(config.Cookies, recipe.recipeId)){
+          newRecipes.push(recipe);
+        }
       });
       console.log(newRecipes);
       res.render('browseOrders', {recipes: newRecipes});

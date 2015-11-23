@@ -14,9 +14,11 @@ img {
 }
 
 .wrapper {
+    width: 35em;
+    height:14em;
+    box-shadow: 0 0 20px black;
     margin: 1em;
-	  background-color: white;
-    display: inline-block;
+    background-color: white;
     overflow: hidden;
     display:block;
     margin-bottom:3em;
@@ -99,7 +101,6 @@ img {
 }
 
 .product {
-
     width: 35%;
 }
 
@@ -111,12 +112,17 @@ img {
     zoom: 0.5;
 }
 
-@media screen and (min-width: 760px) {
+@media (max-width: 560px) {
 	.wrapper {
-		box-shadow: 0 0 20px black;
-        width: 35em;
-        height:14em;
-          
+        width: 90%;
+        height: auto;
 	}
+    .one-third {
+        width: 100%;
+    }
+
+    .two-third {
+        width: 100%;
+    }
 	
 }

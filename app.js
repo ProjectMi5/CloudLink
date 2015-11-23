@@ -15,6 +15,10 @@ var client  = mqtt.connect(config.MQTTHost);
 // REST API
 var express = require('express');
 var app = express();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+module.exports.io = io;
+
 var bodyParser = require('body-parser');
 var basicAuth = require('basic-auth-connect');
 
@@ -35,7 +39,7 @@ var OrderHandling   = require('./controllers/order-handling').OrderHandling;
 var FeedbackHandling= require('./controllers/feedback-handling').FeedbackHandling;
 var VoucherHandling = require('./controllers/voucher-handling').VoucherHandling;
 var MachineDataHandling = require('./controllers/machine-data-handling').MachineDataHandling;
-var CloudlinkHandling = require('./controllers/cloudlink-handling').CloudlinkHandling;
+var CloudlinkHandling = require('./controllers/cloudlink-handling'); //other structure than other ctrls, better syntax highliting
 
 // Routes: No authentification
 app.get('/helloWorld', function (req, res) {
@@ -98,8 +102,11 @@ app.get('/getFeedbacks', FeedbackHandling.getFeedbacks);
 app.get('/hasStandstill', MachineDataHandling.hasStandstill);
 app.post('/reportMachineStatus', MachineDataHandling.reportMachineStatus);
 
+// Cloudlink Handling, logs, etc.
+app.get('/clh-showlog', CloudlinkHandling.showLog);
+
 // Start web-server
-app.listen(config.HTTPPort);
+server.listen(config.HTTPPort);
 
 // -----------------------------------------------------------------
 // -----------------------------------------------------------------

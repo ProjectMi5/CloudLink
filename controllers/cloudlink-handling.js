@@ -1,10 +1,18 @@
 var Q = require('q');
 var Tail = require('tail').Tail;
+var io = require('./../models/socket-io').io;
 
-CloudlinkHandling = function(){
+CLOUDLINKHANDLING = function(){
 };
-exports.CloudlinkHandling = new CloudlinkHandling();
+var CloudlinkHandling = new CLOUDLINKHANDLING();
+module.exports = CloudlinkHandling;
 
-CloudlinkHandling.prototype.showLog = function(req, res){
-    res.json({"hasStandstill": hasStandstill});
+CLOUDLINKHANDLING.prototype.showLog = function(req, res){
+  var i = 0;
+  setInterval(function(){
+    io.emit('news','hallo ');
+    i = i+1;
+  },1000);
+
+  res.render('showLog');
 };

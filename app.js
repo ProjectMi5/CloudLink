@@ -35,6 +35,7 @@ var OrderHandling   = require('./controllers/order-handling').OrderHandling;
 var FeedbackHandling= require('./controllers/feedback-handling').FeedbackHandling;
 var VoucherHandling = require('./controllers/voucher-handling').VoucherHandling;
 var MachineDataHandling = require('./controllers/machine-data-handling').MachineDataHandling;
+var CloudlinkHandling = require('./controllers/cloudlink-handling').CloudlinkHandling;
 
 // Routes: No authentification
 app.get('/helloWorld', function (req, res) {

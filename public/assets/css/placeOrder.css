@@ -15,9 +15,13 @@ img {
 
 .wrapper {
     margin: 1em;
-	background-color: white;
+	  background-color: white;
     display: inline-block;
     overflow: hidden;
+    display:block;
+    margin-bottom:3em;
+    margin-left:auto;
+    margin-right:auto;
 }
 
 .one-third {
@@ -33,7 +37,6 @@ img {
 .aligncentered {
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 0px;
     margin-top: auto;
 }
 
@@ -50,7 +53,7 @@ img {
 }
 
 .content {
-    padding: 1em;
+    padding: 1.8em;
     color: #434344;
     font-size: 0.5em
 }
@@ -81,15 +84,18 @@ img {
 .ingredients {
     list-style-type: none;
     color: #999999;
-    margin-top: 0.55em;
+    margin-top: 0.0;
     margin-bottom: 0px;
     padding-left:0;
-    font-size: 1.5em;
+    font-size:1.8em;
 }
 
 .descrpt {
-    width: 100%;
-    display: block;
+    color: #999999;
+    padding: 1em;
+    font-size:1.8em;
+    font-style:oblique;
+    float: left;
 }
 
 .product {
@@ -109,6 +115,8 @@ img {
 	.wrapper {
 		box-shadow: 0 0 20px black;
         width: 35em;
+        height:14em;
+          
 	}
 	
 }

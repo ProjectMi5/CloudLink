@@ -333,18 +333,16 @@ OrderHandling.prototype.browseOrders = function(req, res){
     .then(function(recipes){
       var newRecipes = [];
       recipes.forEach(function(recipe){
-        console.log(recipe);
         var parameters = recipe.userparameters;
-        parameters = _.without(parameters, _.findWhere(parameters, {Name: 'Identifier assignment / Barcode'}));
-        recipe.userparameters = _.without(parameters, _.findWhere(parameters, {Name: 'Total Liquid Amount'}));
-        console.log(parameters);
+        recipe.userparameters = _.without(parameters, _.findWhere(parameters, {Name: 'Identifier assignment / Barcode'})||
+          _.findWhere(parameters, {Name: 'Total Liquid Amount'})||
+          _.findWhere(parameters, {Name: 'Amount'})|| _.findWhere(parameters, {Name: 'Topping'}));
 
         //only push cocktails and cookies
         if(_.contains(config.Cocktails, recipe.recipeId) || _.contains(config.Cookies, recipe.recipeId)){
           newRecipes.push(recipe);
         }
       });
-      console.log(newRecipes);
       res.render('browseOrders', {recipes: newRecipes});
     })
     .catch(function(err){

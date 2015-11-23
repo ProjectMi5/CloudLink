@@ -1,4 +1,5 @@
 var Q = require('q');
+var _ = require('underscore');
 
 var OrderDB = require('./../models/database-order').instance;
 var VoucherDB = require('./../models/database-voucher').instance;
@@ -328,7 +329,17 @@ OrderHandling.prototype.browseOrders = function(req, res){
   console.log('/order --- browseOrders');
   RecipeDB.getRecipes()
     .then(function(recipes){
-      res.render('browseOrders', {recipes: recipes});
+      var newRecipes = [];
+      recipes.forEach(function(recipe){
+        console.log(recipe);
+        var parameters = recipe.userparameters;
+        parameters = _.without(parameters, _.findWhere(parameters, {Name: 'Identifier assignment / Barcode'}));
+        recipe.userparameters = _.without(parameters, _.findWhere(parameters, {Name: 'Total Liquid Amount'}));
+        console.log(parameters);
+        newRecipes.push(recipe);
+      });
+      console.log(newRecipes);
+      res.render('browseOrders', {recipes: newRecipes});
     })
     .catch(function(err){
       res.json(err);

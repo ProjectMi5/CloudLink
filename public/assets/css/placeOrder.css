@@ -1,0 +1,114 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:100,300|Advent+Pro:100,300);
+
+body {
+	font-family: 'Lato', sans-serif;
+	font-weight: 300;
+	background-color: #CCCCCC;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    margin-bottom: 0;
+}
+
+.wrapper {
+    margin: 1em;
+	background-color: white;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.one-third {
+    width: 40%;
+    float: left;
+}
+
+.two-third {
+    width: 60%;
+    float: left;
+}
+
+.aligncentered {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0px;
+    margin-top: auto;
+}
+
+.alignright {
+    margin-left:auto;
+    margin-right: 0;
+    float: right;
+}
+
+.headline {
+    font-weight: 100;
+    padding: 0.8em;
+    background-color: #0069B3;
+}
+
+.content {
+    padding: 1em;
+    color: #434344;
+    font-size: 0.5em
+}
+
+.headline h1 {
+	color: white;
+	font-weight: 300;
+	margin-top: 0;
+	margin-bottom: 0;
+    font-size: 1.8em;
+}
+
+.blueline {
+    display: block;
+	font-weight: 100;
+	text-align: center;
+	border-top: 1px solid #0069B3;
+	border-bottom: 1px solid #0069B3
+}
+
+.productname {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    color: #434344;
+    font-size: 2.5em;
+}
+
+.ingredients {
+    list-style-type: none;
+    color: #999999;
+    margin-top: 0.55em;
+    margin-bottom: 0px;
+    padding-left:0;
+    font-size: 1.5em;
+}
+
+.descrpt {
+    width: 100%;
+    display: block;
+}
+
+.product {
+
+    width: 35%;
+}
+
+
+
+
+@viewport {
+    width: device-width;
+    zoom: 0.5;
+}
+
+@media screen and (min-width: 760px) {
+	.wrapper {
+		box-shadow: 0 0 20px black;
+        width: 35em;
+	}
+	
+}

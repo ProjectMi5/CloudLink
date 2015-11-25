@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sudo git pull
+sudo ./start.sh stop
+sudo ./start.sh start
+

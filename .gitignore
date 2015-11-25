@@ -6,3 +6,4 @@ config.js
 grunt-tests-results.txt
 /docs
 jsdoc.json
+*~

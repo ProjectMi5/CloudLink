@@ -30,7 +30,7 @@ exports.instance = instance;
 CookieDB.prototype.recordCookieLevel = function(level){
   var self = instance;
 
-  var NewLevel = new self.Voucher({number: level});
+  var NewLevel = new self.CookieLevel({count: level});
   //console.log('new voucher saving:'+voucher);
   return NewLevel.saveQ();
 };
@@ -63,7 +63,7 @@ CookieDB.prototype.getCookieLevelHistory = function(){
   return deferred.promise;
 };
 
-OrderDB.prototype.deleteCookieLevelHistory = function(){
+CookieDB.prototype.deleteCookieLevelHistory = function(){
   var self = this;
 
   return Q.Promise(function(resolve, reject){

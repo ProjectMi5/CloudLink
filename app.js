@@ -41,12 +41,16 @@ var FeedbackHandling= require('./controllers/feedback-handling').FeedbackHandlin
 var VoucherHandling = require('./controllers/voucher-handling').VoucherHandling;
 var MachineDataHandling = require('./controllers/machine-data-handling').MachineDataHandling;
 var CloudlinkHandling = require('./controllers/cloudlink-handling'); //other structure than other ctrls, better syntax highliting
+var CookieHandling = require('./controllers/cookie-handling').CookieHandling;
 
 // Routes: No authentification
 app.get('/helloWorld', function (req, res) {
     console.log('Hello World!');
     res.send('Hello World!');
 });
+
+app.get('/CookieLevel', CookieHandling.getLastCookieLevel);
+app.get('/CookieLevelHistory', CookieHandling.getCookieLevelHistory);
 
 // placeOrder without authentification
 app.get('/QR/:identifier/:humanReadable', OrderHandling.placeOrderQR);
@@ -181,7 +185,7 @@ client.on('message', function (topic, message) {
    // Handle cookie data
     if(mi5CookieCount == topic){
       console.log('received info from the cookie module');
-      var count = JSON.parse(message.data);
+      var count = JSON.parse(message);
       count = parseInt(count, 10);
       DBCookie.recordCookieLevel(count);
     }

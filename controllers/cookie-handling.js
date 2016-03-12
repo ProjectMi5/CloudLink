@@ -18,7 +18,7 @@ CookieHandling.prototype.getLastCookieLevel = function (req, res) {
     })
 };
 
-OrderHandling.prototype.getCookieLevelHistory = function (req, res) {
+CookieHandling.prototype.getCookieLevelHistory = function (req, res) {
   CookieDB.getCookieLevelHistory()
     .then(function (history) {
       res.json(history);

@@ -588,7 +588,7 @@ OrderDB.prototype.getOrdersByStatus = function(status){
   var self = instance;
 
   if (_.contains(self.validStates, status)){
-    return self.Order.findQ({status: status},'-_id -__v')
+    return self.Order.findQ({status: status},'-_id -__v');
   } else {
     return Q.Promise(function(resolve, reject){
       reject({status: 'err', description: status + ' is not a valid status'});

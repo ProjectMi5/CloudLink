@@ -3,6 +3,7 @@
  */
 var config = require('./config.js');
 var database = require('./models/database.js');
+var DBCookie = require('./models/database-cookie.js').instance;
 var gcm = require('./models/google-cloud-messaging.js');
 
 var Q = require('q');
@@ -125,6 +126,9 @@ client.subscribe(mi5ServerUpstream);
 var mi5ShowcaseCocktailUserFeedback = '/mi5/showcase/cocktail/user/feedback';
 client.subscribe(mi5ShowcaseCocktailUserFeedback);
 
+// Cookie example
+var mi5CookieCount = '/mi5/showcase/cookie/quantity';
+client.subscribe(mi5CookieCount);
 
 client.on('message', function (topic, message) {
     // message is Buffer
@@ -172,6 +176,16 @@ client.on('message', function (topic, message) {
             .then(database.cleanRegIdsQ)
             .done();
     }
+
+
+   // Handle cookie data
+    if(mi5CookieCount == topic){
+      console.log('received info from the cookie module');
+      var count = JSON.parse(message.data);
+      count = parseInt(count, 10);
+      DBCookie.recordCookieLevel(count);
+    }
+
 
 
     // End Listen ---------------------------------

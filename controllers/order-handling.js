@@ -241,8 +241,6 @@ OrderHandling.prototype.getOrdersUpdatedSince = function (req, res){
 };
 
 OrderHandling.prototype.getOrdersFiltered = function (req, res){
-  console.log('/getOrdersFiltered ' + JSON.stringify(req.body.filter));
-  console.log(filter);
   var filter = {
     status: req.body.status,
     createdSince: req.body.createdSince,
@@ -252,6 +250,9 @@ OrderHandling.prototype.getOrdersFiltered = function (req, res){
     type: req.body.type,
     limit: req.body.limit
   };
+
+  console.log('/getOrdersFiltered ' + JSON.stringify(filter));
+  //console.log(filter);
 
 
   OrderDB.getOrdersFiltered(filter)

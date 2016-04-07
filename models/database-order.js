@@ -618,6 +618,7 @@ OrderDB.prototype.getOrdersFiltered = function(filter){
     var limit = parseInt(filter.limit,10);
 
     if (typeof status != 'undefined'){
+      status = JSON.parse(status);
       status.forEach(function(item){
         if(self.validStates.indexOf(item)<0){
           deferred.reject(item+' is not a valid status.');
@@ -677,6 +678,7 @@ OrderDB.prototype.getOrdersFiltered = function(filter){
     }
 
     if(typeof type != 'undefined'){
+      type = JSON.parse(type);
       var arr = [];
       if(type.indexOf('Cocktails') > -1){
         arr = _.union(arr, CONFIG.Cocktails);

@@ -76,7 +76,7 @@ FeedbackHandling.prototype.giveRecommendation = function(req, res){
       res.json(result);
     })
     .catch(function(err){
-      console.log('giveRecom err', err)
+      console.log('giveRecom err', err);
       res.json({status: 'err', description: err});
     });
 };

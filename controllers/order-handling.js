@@ -1,14 +1,32 @@
+/**
+ * requires module: q
+ */
 var Q = require('q');
+/** requires module: underscore */
 var _ = require('underscore');
 
+/** requires module: ./../models/database-order */
 var OrderDB = require('./../models/database-order').instance;
+/** requires module: ./../models/database-voucher */
 var VoucherDB = require('./../models/database-voucher').instance;
+/** requires module: ./../models/database-recipe */
 var RecipeDB = require('./../models/database-recipe').instance;
 
+/**@function OrderHandling
+ *
+ * @constructor
+ */
 OrderHandling = function () {
 };
+
 exports.OrderHandling = new OrderHandling();
 
+/** Prototype to define last order
+ * @memberof OrderHandling
+ * @function getLastOrder 
+ * @param {HttpRequest} req /getLastOrder
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.getLastOrder = function (req, res) {
   console.log('/getLastOrder');
   OrderDB.getLastOrder()
@@ -22,6 +40,12 @@ OrderHandling.prototype.getLastOrder = function (req, res) {
     })
 };
 
+/** Prototype to define orders
+ * @memberof OrderHandling
+ * @function getOrders
+ * @param {HttpRequest} req /getOrders
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.getOrders = function (req, res) {
   console.log('/getOrders');
   OrderDB.getOrders()
@@ -35,10 +59,11 @@ OrderHandling.prototype.getOrders = function (req, res) {
     });
 };
 
-/**
- * deprecated?
- * @param req
- * @param res
+/** Prototype to define save Order
+ * @memberof OrderHandling
+ * @function saveOrder
+ * @param {HttpRequest} req /saveOrder
+ * @param {HttpResponse} res
  */
 OrderHandling.prototype.saveOrder = function (req, res) {
   console.log('/saveOrder '+JSON.stringify(req.body.order));
@@ -55,6 +80,12 @@ OrderHandling.prototype.saveOrder = function (req, res) {
     });
 };
 
+/** Prototype to place Order
+ * @memberof OrderHandling
+ * @function placeOrder
+ * @param {HttpRequest} req /placeOrder
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.placeOrder = function (req, res) {
   console.log('/placeOrder '+JSON.stringify(req.body.order));
   var order = JSON.parse(req.body.order);
@@ -69,6 +100,12 @@ OrderHandling.prototype.placeOrder = function (req, res) {
     });
 };
 
+/** Prototype to place Order by QR
+ * @memberof OrderHandling
+ * @function placeOrderQR
+ * @param {HttpRequest} req /placeOrderQR
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.placeOrderQR = function (req, res){
   console.log('/placeOrderQR:',req.params);
   var identifier = req.params.identifier;
@@ -99,6 +136,12 @@ OrderHandling.prototype.placeOrderQR = function (req, res){
     });
 };
 
+/** Prototype to get placed Order
+ * @memberof OrderHandling
+ * @function placeOrderGet
+ * @param {HttpRequest} req /placeOrderGet
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.placeOrderGet = function (req, res){
   console.log('/placeOrderGet',req.params);
 
@@ -121,6 +164,12 @@ OrderHandling.prototype.placeOrderGet = function (req, res){
     });
 };
 
+/** Prototype to set Barcode
+ * @memberof OrderHandling
+ * @function setBarcode
+ * @param {HttpRequest} req [id,barcode]
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.setBarcode = function (req, res) {
   var orderId = parseInt(req.body.id, 10);
   var barcode = parseInt(req.body.barcode, 10);
@@ -135,6 +184,12 @@ OrderHandling.prototype.setBarcode = function (req, res) {
     });
 };
 
+/** Prototype to get OrderId by Barcode
+ * @memberof OrderHandling
+ * @function getOrderIdByBarcode
+ * @param {HttpRequest} req barcode
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.getOrderIdByBarcode = function (req, res) {
   var barcode = parseInt(req.body.barcode,10);
   console.log('/getOrderIdByBarcode '+barcode);
@@ -154,6 +209,12 @@ OrderHandling.prototype.getOrderIdByBarcode = function (req, res) {
     });
 };
 
+/** Prototype to get Order by Id
+ * @memberof OrderHandling
+ * @function getOrderById
+ * @param {HttpRequest} req /getOrderById
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.getOrderById = function (req, res) {
   var id = parseInt(req.body.id, 10);
   console.log('/getOrderById '+id);
@@ -175,6 +236,12 @@ OrderHandling.prototype.getOrderById = function (req, res) {
     })
 };
 
+/** Prototype to get CocktailData by OrderId
+ * @memberof OrderHandling
+ * @function getCocktailDataByOrderId
+ * @param {HttpRequest} req id
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.getCocktailDataByOrderId = function (req, res) {
   var id = parseInt(req.body.id, 10);
   console.log('/getCocktailDataByOrderId id '+id);
@@ -191,6 +258,12 @@ OrderHandling.prototype.getCocktailDataByOrderId = function (req, res) {
     });
 };
 
+/** Prototype to get active orders
+ * @memberof OrderHandling
+ * @function getActiveOrders
+ * @param {HttpRequest} req /getActiveOrders
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.getActiveOrders = function (req, res){
   console.log('/getActiveOrders');
   var filter = {status: ['accepted', 'in progress'], type: ['Cocktails', 'Cookies']};
@@ -204,6 +277,12 @@ OrderHandling.prototype.getActiveOrders = function (req, res){
     });
 };
 
+/** Prototype to get orders since timestamp
+ * @memberof OrderHandling
+ * @function getOrdersSince
+ * @param {HttpRequest} req timestamp
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.getOrdersSince = function (req, res){
   console.log('/getOrdersSince '+req.body.timestamp);
   var filter = {
@@ -222,6 +301,12 @@ OrderHandling.prototype.getOrdersSince = function (req, res){
 
 };
 
+/** Prototype to get orders updated since timestamp
+ * @memberof OrderHandling
+ * @function getOrdersUpdatedSince
+ * @param {HttpRequest} req timestamp
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.getOrdersUpdatedSince = function (req, res){
   console.log('/getOrdersUpdatedSince ' + req.body.timestamp);
   var filter = {
@@ -240,6 +325,14 @@ OrderHandling.prototype.getOrdersUpdatedSince = function (req, res){
     });
 };
 
+/** Prototype to filter Orders by status, createdSince, createdBefore,
+ * updatedSince, updatedBefore, type, limit
+ * @memberof OrderHandling
+ * @function getOrdersFiltered
+ * @param {HttpRequest} req [status, createdSince, createdBefore,
+ * updatedSince, updatedBefore, type, limit]
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.getOrdersFiltered = function (req, res){
   var filter = {
     status: req.body.status,
@@ -265,11 +358,22 @@ OrderHandling.prototype.getOrdersFiltered = function (req, res){
     });
 };
 
-
+/** Prototype to delete all orders
+ * @memberof OrderHandling
+ * @function deleteAllOrders
+ * @param {HttpRequest} req
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.deleteAllOrders = function (req, res) {
   res.json({err: 'not yet implemented'});
 };
 
+/** Prototype to get ordersByStatus
+ * @memberof OrderHandling
+ * @function getOrdersByStatus
+ * @param {HttpRequest} req status
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.getOrdersByStatus = function (req, res) {
   var _ = require('underscore');
 
@@ -287,6 +391,12 @@ OrderHandling.prototype.getOrdersByStatus = function (req, res) {
   }
 };
 
+/** Prototype to update order status
+ * @memberof OrderHandling
+ * @function updateOrderStatus
+ * @param {HttpRequest} req [id,status]
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.updateOrderStatus = function (req, res) {
   var _ = require('underscore');
 
@@ -310,6 +420,12 @@ OrderHandling.prototype.updateOrderStatus = function (req, res) {
 
 };
 
+/** Prototype to update order
+ * @memberof OrderHandling
+ * @function updateOrder
+ * @param {HttpRequest} req order
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.updateOrder = function (req, res) {
   req = JSON.parse(req.body.order);
 
@@ -326,6 +442,12 @@ OrderHandling.prototype.updateOrder = function (req, res) {
 
 };
 
+/** Prototype to browse orders
+ * @memberof OrderHandling
+ * @function browseOrders
+ * @param {HttpRequest} req
+ * @param {HttpResponse} res
+ */
 OrderHandling.prototype.browseOrders = function(req, res){
   console.log('/order --- browseOrders');
   var config = require('./../config.js');

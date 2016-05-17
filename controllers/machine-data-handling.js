@@ -1,7 +1,12 @@
+/** requires module: q */
 var Q = require('q');
 
 var hasStandstill = false;
 
+/**@function MachineDataHandling
+ *
+ * @constructor
+ */
 MachineDataHandling = function(){
 };
 exports.MachineDataHandling = new MachineDataHandling();

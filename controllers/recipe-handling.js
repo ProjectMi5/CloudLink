@@ -1,13 +1,26 @@
+/** requires module: q */
 var Q = require('q');
+/** requires module: underscore */
 var _ = require('underscore');
 
+/** requires module: ./../models/database-recipe */
 var RecipeDB = require('./../models/database-recipe').instance;
 
+/**@function RecipeHandling
+ *
+ * @constructor
+ */
 RecipeHandling = function(){
 };
 var instance =  new RecipeHandling();
 exports.RecipeHandling = instance;
 
+/** Prototype to get Recipes
+ * @memberof RecipeHandling
+ * @function getRecipes
+ * @param  req 
+ * @param  res recipes
+ */
 RecipeHandling.prototype.getRecipes = function(req, res){
   RecipeDB.getRecipes()
     .then(function(recipes){
@@ -20,6 +33,12 @@ RecipeHandling.prototype.getRecipes = function(req, res){
     });
 };
 
+/** Prototype to manage a Recipe
+ * @memberof RecipeHandling
+ * @function manageRecipes
+ * @param  req recipe
+ * @param  res 
+ */
 RecipeHandling.prototype.manageRecipe = function(req, res){
   var recipe = req.body.recipe;
 
@@ -45,6 +64,12 @@ RecipeHandling.prototype.manageRecipe = function(req, res){
     });
 };
 
+/** Prototype to delete all Recipes
+ * @memberof RecipeHandling
+ * @function deleteAllRecipes
+ * @param  req
+ * @param  res Status
+ */
 RecipeHandling.prototype.deleteAllRecipes = function(req, res){
   RecipeDB.deleteAllRecipes()
     .then(function(){
@@ -59,6 +84,9 @@ RecipeHandling.prototype.deleteAllRecipes = function(req, res){
 
 /**
  * experimental feature only for localhost loading recipes
+ *
+ * @memberof RecipeHandling
+ * @function loadDefaultRecipes
  * @param req
  * @param res
  */

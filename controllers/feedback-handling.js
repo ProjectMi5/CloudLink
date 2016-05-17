@@ -1,20 +1,31 @@
+/** requires module: q */
 var Q = require('q');
+/** requires module: underscore */
 var _ = require('underscore');
 
+/** requires module: ./../models/database.js */
 var database = require('./../models/database.js');
+/** requires module: ./../models/database-feedback */
 var mi5Database = require('./../models/database-feedback').instance;
+/** requires module: ./../models/google-cloud-messaging.js */
 var gcm = require('./../models/google-cloud-messaging.js');
 
+/**@function FeedbackHandling
+ *
+ * @constructor
+ */
 FeedbackHandling = function(){
 };
 
-/**
- * Feedback is given to a cocktail
+/** Feedback is given to a cocktail
  *
  * the feedback is sent to the watch
- * @param req
- * @param res
+ * @memberof FeedbackHandling
+ * @function giveFeedback
+ * @param  req Feedback
+ * @param  res
  */
+
 FeedbackHandling.prototype.giveFeedback = function(req, res){
   var feedback = req.body.feedback;
 
@@ -48,6 +59,12 @@ FeedbackHandling.prototype.giveFeedback = function(req, res){
     });
 };
 
+/** Prototype to get Feedbacks
+ * @memberof FeedbackHandling
+ * @function giveFeedback
+ * @param  req
+ * @param  res Feedbacks
+ */
 FeedbackHandling.prototype.getFeedbacks = function(req, res){
   mi5Database.getFeedbacks()
     .then(function(feedbacks){
@@ -58,6 +75,12 @@ FeedbackHandling.prototype.getFeedbacks = function(req, res){
     });
 };
 
+/** Prototype to give Recommendation
+ * @memberof FeedbackHandling
+ * @function giveRecommendation
+ * @param  req recommendation
+ * @param  res 
+ */
 FeedbackHandling.prototype.giveRecommendation = function(req, res){
   var recommendation = JSON.parse(req.body.recommendation);
   console.log('/giveRecommendation POST');

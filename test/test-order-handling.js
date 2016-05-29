@@ -4,7 +4,7 @@ var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
 
-describe.skip('Orders', function () {
+describe('Orders', function () {
   var OrderDB = require('./../models/database-order').instance;
   var RecipeDB = require('./../models/database-recipe').instance;
 
@@ -166,6 +166,21 @@ describe.skip('Orders', function () {
         });
     });
 
+    it.skip('#resetBarcode', function () {
+      return OrderDB.resetBarcode(mockOrder2.barcode)
+          .then(function (answer) {
+            assert.equal(answer.ok, 1);
+          });
+    });
+
+    it('#resetBarcodes', function () {
+      return OrderDB.resetBarcodes()
+          .then(function (answer) {
+            console.log(answer);
+            assert.equal(result.status, 'ok');
+          });
+    });
+
     it('#updateStatus - in progress', function(){
       return OrderDB.getLastOrderId()
         .then(function(orderId){
@@ -225,7 +240,7 @@ describe.skip('Orders', function () {
         type: ix.toString(),
         limit: 1
       };
-      return OrderDB.getOrdersFiltered(filter)
+      return OrderDB.getOrdersFiltered(JSON.stringify(filter))
         .then(function(result){
           assert.isArray(result);
           console.log(result);

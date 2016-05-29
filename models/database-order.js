@@ -483,11 +483,13 @@ OrderDB.prototype.setBarcode = function(orderId, barcode){
     .then(function(order){
       if(typeof order.barcode != 'undefined'){
         deferred.reject("barcode is already set to " + order.barcode);
+        return false;
+      } else {
+        return self.checkBarcode(barcode);
       }
-      console.log(order.barcode);
     })
-    .then(self.checkBarcode(barcode))
-    .then(function(){
+    .then(function(mayProceed){
+      if(!mayProceed) return;
       console.log('set Barcode '+barcode+' of order '+orderId);
       deferred.resolve(self.Order.updateQ({orderId: orderId}, { $set: {barcode: barcode, lastUpdate: new Date()}}));
     })
@@ -523,6 +525,30 @@ OrderDB.prototype.getOrderIdByBarcode = function(barcode){
   });
 
   return deferred.promise;
+};
+
+OrderDB.prototype.resetBarcodes = function(){
+  return instance.Order.updateQ({barcode: {$exists:true}}, {$unset: {barcode: 1}}, {$set: {lastUpdate: new Date()}});
+};
+
+OrderDB.prototype.resetBarcode = function(barcode){
+  //var deferred = Q.defer();
+  //var self = instance;
+  // $ne means 'not equal'
+  return instance.Order.updateQ({barcode: barcode}, {$unset: {barcode: 1}}, {$set: {lastUpdate: new Date()}});
+  /*self.Order.find({'barcode': barcode}).exec(function(err, post){
+    if(err) deferred.reject(err);
+    //forEach is synchronous
+    var order = post.pop();
+    if (typeof order == 'undefined'){
+      deferred.reject('Order with barcode '+barcode+' does not exist.');
+    } else {
+      console.log('reset barcode of order ' + order.orderId);
+      deferred.resolve(self.Order.updateQ({orderId: order.orderId}, {$set: {barcode: null, lastUpdate: new Date()}}));
+    }
+  });*/
+
+  //return deferred.promise;
 };
 
 /**

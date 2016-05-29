@@ -4,7 +4,7 @@ var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
 
-describe('Voucher', function () {
+describe.skip('Voucher', function () {
   var VoucherDB = require('./../models/database-voucher').instance;
   var VoucherHandling = require('./../controllers/voucher-handling').VoucherHandling;
   var mockVoucher1 = {
@@ -14,7 +14,7 @@ describe('Voucher', function () {
     humanReadable: 'humanReadable1'
   };
   var mockVoucher2 = {
-    identifier: 'sdkfjrosaijefkane884848399äpo3920u29o3jpojrrqoi',
+    identifier: 'sdkfjrosaijefkane884848399ï¿½po3920u29o3jpojrrqoi',
     recipeId: '1051',
     parameters: [100,20,50,49],
     humanReadable: 'humanReadable2'

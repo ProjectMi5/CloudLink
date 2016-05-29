@@ -124,6 +124,8 @@ app.post('/placeOrder', OrderHandling.placeOrder);
 app.get('/placeOrder/:recipeId/:parameters/:marketPlaceId', OrderHandling.placeOrderGet);
 app.post('/getOrderById', OrderHandling.getOrderById);
 app.post('/setBarcode', OrderHandling.setBarcode);
+app.post('/resetBarcode', OrderHandling.resetBarcode);
+app.get('/resetBarcodes',OrderHandling.resetBarcodes);
 app.post('/getOrderIdByBarcode', OrderHandling.getOrderIdByBarcode);
 app.post('/getCocktailDataByOrderId', OrderHandling.getCocktailDataByOrderId);
 app.post('/getOrdersByStatus', OrderHandling.getOrdersByStatus);

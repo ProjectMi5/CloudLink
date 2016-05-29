@@ -206,7 +206,7 @@ describe('Test REST api', function() {
       });
     });
 
-    it('/QR/id123/hello', function(done){
+    it.skip('/QR/id123/hello', function(done){
       var options = {
         url:  'http://localhost:'+config.HTTPPort+'/QR/id123/hello',
         auth: {

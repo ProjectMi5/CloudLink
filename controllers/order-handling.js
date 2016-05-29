@@ -184,6 +184,43 @@ OrderHandling.prototype.setBarcode = function (req, res) {
     });
 };
 
+/** Prototype to reset Barcode
+ * @memberof OrderHandling
+ * @function resetBarcode
+ * @param {HttpRequest} req [barcode]
+ * @param {HttpResponse} res
+ */
+OrderHandling.prototype.resetBarcode = function (req, res) {
+  var barcode = parseInt(req.body.barcode, 10);
+  console.log('/resetBarcode ' + barcode);
+
+  OrderDB.resetBarcode(barcode)
+      .then(function (feedback) {
+        res.json({status: 'ok', description: feedback.nModified + ' barcodes have been reset'});
+      })
+      .catch(function (err) {
+        res.json({status: 'err', description: err});
+      });
+};
+
+/** Prototype to reset all Barcodes
+ * @memberof OrderHandling
+ * @function resetBarcodes
+ * @param {HttpRequest} req []
+ * @param {HttpResponse} res
+ */
+OrderHandling.prototype.resetBarcodes = function (req, res) {
+  console.log('/resetBarcodes');
+
+  OrderDB.resetBarcodes()
+      .then(function (feedback) {
+        res.json({status: 'ok', description: feedback.nModified + ' barcodes have been reset'});
+      })
+      .catch(function (err) {
+        res.json({status: 'err', description: err});
+      });
+};
+
 /** Prototype to get OrderId by Barcode
  * @memberof OrderHandling
  * @function getOrderIdByBarcode

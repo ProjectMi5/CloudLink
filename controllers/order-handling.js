@@ -411,6 +411,23 @@ OrderHandling.prototype.deleteAllOrders = function (req, res) {
       });
 };
 
+/** Prototype to delete one order
+ * @memberof OrderHandling
+ * @function deleteOrder
+ * @param {HttpRequest} req [id]
+ * @param {HttpResponse} res
+ */
+OrderHandling.prototype.deleteOrder = function (req, res) {
+  var id = parseInt(req.body.id,10);
+  OrderDB.deleteOrder(id)
+      .then(function(ret){
+        res.json({status: 'ok', description: ret.result.n + ' orders deleted'});
+      })
+      .catch(function(err){
+        res.json({status: 'err', description: err});
+      });
+};
+
 /** Prototype to get ordersByStatus
  * @memberof OrderHandling
  * @function getOrdersByStatus

@@ -456,6 +456,21 @@ OrderDB.prototype.deleteAllOrders = function(){
   });
 };
 
+OrderDB.prototype.deleteOrder = function(orderId){
+  var self = this;
+  var deferred = Q.defer();
+
+  self.Order.find({'orderId': orderId}).limit(1).remove().exec(function(err, data){
+    if(err){
+      deferred.reject(err);
+    } else {
+      deferred.resolve(data);
+    }
+  });
+
+  return deferred.promise;
+};
+
 OrderDB.prototype.checkBarcode = function(barcode){
   console.log('check barcode');
   var self = instance;

@@ -402,7 +402,13 @@ OrderHandling.prototype.getOrdersFiltered = function (req, res){
  * @param {HttpResponse} res
  */
 OrderHandling.prototype.deleteAllOrders = function (req, res) {
-  res.json({err: 'not yet implemented'});
+  OrderDB.deleteAllOrders()
+      .then(function(ret){
+        res.json({status: 'ok', description: ret});
+      })
+      .catch(function(err){
+        res.json({status: 'err', description: err});
+      });
 };
 
 /** Prototype to get ordersByStatus

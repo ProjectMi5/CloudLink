@@ -177,7 +177,7 @@ describe('Orders', function () {
       return OrderDB.resetBarcodes()
           .then(function (answer) {
             console.log(answer);
-            assert.equal(result.status, 'ok');
+            assert.equal(answer.ok, 1);
           });
     });
 

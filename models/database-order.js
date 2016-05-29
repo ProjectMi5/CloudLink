@@ -1,6 +1,7 @@
 var Q = require('q');
 var _ = require('underscore');
 var moment = require('moment');
+var semaphore = require('semaphore')(1);
 
 var config = require('./../config.js');
 var CONFIG = {};
@@ -227,20 +228,25 @@ OrderDB.prototype.prepareOrder = function(order){
 
 OrderDB.prototype.idHelper = function(){
   var self = instance;
+  var deferred = Q.defer();
 
-  return self.getLastOrderId()
-    .then(function(id){
-      return id + 1;
-    })
-    .catch(function(err){
-      if(err == "no order has been found"){
-        return 1;
-      } else {
-        var deferred = Q.defer();
-        deferred.reject(err);
-        return deferred.promise;
-      }
-    });
+  semaphore.take(function(){
+    self.getLastOrderId()
+      .then(function(id){
+        semaphore.leave();
+        deferred.resolve(id + 1);
+      })
+      .catch(function(err){
+        semaphore.leave();
+        if(err == "no order has been found"){
+          deferred.resolve(1);
+        } else {
+          deferred.reject(err);
+        }
+      });
+  });
+
+  return deferred.promise;
 };
 
 OrderDB.prototype.returnPriority = function(marketplaceId){

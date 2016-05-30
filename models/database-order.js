@@ -737,7 +737,7 @@ OrderDB.prototype.getOrdersFiltered = function(filter){
     }
 
     if (isNaN(limit)){
-      limit = {};
+      limit = 0;// {};
     }
   }
 

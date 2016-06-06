@@ -117,6 +117,7 @@ app.get('/loadDefaultRecipes', RecipeHandling.loadDefaultRecipes); // Debug func
 
 // Orders
 app.get('/order', OrderHandling.browseOrders);
+app.get('/deleteAllOrders', OrderHandling.deleteAllOrders);
 app.get('/getLastOrder', OrderHandling.getLastOrder);
 app.get('/getOrders', OrderHandling.getOrders);
 app.post('/saveOrder', OrderHandling.saveOrder);

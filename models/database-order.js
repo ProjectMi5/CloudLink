@@ -155,12 +155,23 @@ OrderDB.prototype.checkOrder = function(order){
       if(typeof recipe == 'undefined'){
         deferred.reject('recipe with id '+ recipeId + ' does not exist');
       }
-      //if(parameters.length != recipe.userparameters.length){
-      //  deferred.reject('number of parameters (' + parameters.length + ') does not fit recipe requirements ('+
-      //    recipe.userparameters.length + ' parameters)');
-      //}
-      order.recipeName = recipe.name;
-      deferred.resolve(order);
+      if(parameters.length == 0){
+        // take default values if parameters is empty
+        console.log('empty.');
+        console.log(recipe.userparameters)
+        recipe.userparameters.forEach(function(param){
+          console.log(param.Default);
+          parameters.push(param.Default);
+        });
+      }
+      if(parameters.length != recipe.userparameters.length){
+        deferred.reject('number of parameters (' + parameters.length + ') does not fit recipe requirements ('+
+          recipe.userparameters.length + ' parameters)');
+      } else {
+        order.recipeName = recipe.name;
+        order.parameters = parameters;
+        deferred.resolve(order);
+      }
     })
     .catch(function(err){
       deferred.reject(err);
@@ -230,21 +241,18 @@ OrderDB.prototype.idHelper = function(){
   var self = instance;
   var deferred = Q.defer();
 
-  semaphore.take(function(){
-    self.getLastOrderId()
-      .then(function(id){
-        semaphore.leave();
-        deferred.resolve(id + 1);
-      })
-      .catch(function(err){
-        semaphore.leave();
-        if(err == "no order has been found"){
-          deferred.resolve(1);
-        } else {
-          deferred.reject(err);
-        }
-      });
-  });
+
+  self.getLastOrderId()
+    .then(function(id){
+      deferred.resolve(id + 1);
+    })
+    .catch(function(err){
+      if(err == "no order has been found"){
+        deferred.resolve(1);
+      } else {
+        deferred.reject(err);
+      }
+    });
 
   return deferred.promise;
 };
@@ -272,14 +280,23 @@ OrderDB.prototype.saveOrder = function(order){
 OrderDB.prototype.placeOrder = function(order){
   var self = instance;
   var deferred = Q.defer();
-
-  self.checkOrder(order)
-    .then(self.prepareOrder)
-    .then(self.saveOrder)
-    .then(deferred.resolve)
-    .catch(function(err){
-      deferred.reject(err)
-    });
+  console.log(semaphore.current);
+  semaphore.take(function(){
+    self.checkOrder(order)
+      .then(self.prepareOrder)
+      .then(self.saveOrder)
+      .then(deferred.resolve)
+      .then(function(){
+        console.log(semaphore.current);
+        semaphore.leave();
+      })
+      .catch(function(err){
+        console.log('error: semaphore.leave:'+semaphore.current);
+        console.log(err);
+        semaphore.leave();
+        deferred.reject(err)
+      });
+  });
 
   return deferred.promise;
 };
@@ -549,7 +566,7 @@ OrderDB.prototype.getOrderIdByBarcode = function(barcode){
 };
 
 OrderDB.prototype.resetBarcodes = function(){
-  return instance.Order.updateQ({barcode: {$exists:true}}, {$unset: {barcode: 1}}, {$set: {lastUpdate: new Date()}});
+  return instance.Order.updateQ({barcode: {$exists:true}}, {$unset: {barcode: 1}, $set: {lastUpdate: new Date()}}, {multi: true});
 };
 
 OrderDB.prototype.resetBarcode = function(barcode){

@@ -56,7 +56,7 @@ FeedbackDB.prototype.getRecommendation = function(orderId){
   var self = instance;
   var deferred = Q.defer();
 
-  self.Recommendation.find({'productId': orderId}).sort('timestamp').limit(1).exec(function(err, post){
+  self.Recommendation.find({'productId': orderId}).sort('-timestamp').limit(1).exec(function(err, post){
     if(err) deferred.reject(err);
 
     deferred.resolve(post.pop());

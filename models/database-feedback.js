@@ -56,7 +56,7 @@ FeedbackDB.prototype.getRecommendation = function(orderId){
   var self = instance;
   var deferred = Q.defer();
 
-  self.Recommendation.find({'productId': orderId}).limit(1).exec(function(err, post){
+  self.Recommendation.find({'productId': orderId}).sort('-timestamp').limit(1).exec(function(err, post){
     if(err) deferred.reject(err);
 
     deferred.resolve(post.pop());
@@ -151,7 +151,7 @@ FeedbackDB.prototype.getLastRecommendationId = function(){
   var deferred = Q.defer();
 
   //var lastOrderId = self.Order.findQ().sort({_id:-1}).limit(1);
-  self.Recommendation.find().sort({'productId': -1}).limit(1).exec(function(err, post){
+  self.Recommendation.find().sort({'timestamp': -1}).limit(1).exec(function(err, post){
     if(err) deferred.reject(err);
     if(false === _.isEmpty(post)){
       // post[0].orderId == [1456]? -> pop -> parse to int

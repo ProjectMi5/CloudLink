@@ -196,7 +196,8 @@ OrderHandling.prototype.resetBarcode = function (req, res) {
 
   OrderDB.resetBarcode(barcode)
       .then(function (feedback) {
-        res.json({status: 'ok', description: feedback.nModified + ' barcodes have been reset'});
+        console.log(feedback);
+        res.json({status: 'ok', description: feedback.n + ' barcodes have been reset'});
       })
       .catch(function (err) {
         res.json({status: 'err', description: err});
@@ -214,7 +215,8 @@ OrderHandling.prototype.resetBarcodes = function (req, res) {
 
   OrderDB.resetBarcodes()
       .then(function (feedback) {
-        res.json({status: 'ok', description: feedback.nModified + ' barcodes have been reset'});
+        console.log(feedback);
+        res.json({status: 'ok', description: feedback.n + ' barcodes have been reset'});
       })
       .catch(function (err) {
         res.json({status: 'err', description: err});

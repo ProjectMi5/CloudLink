@@ -519,6 +519,10 @@ OrderHandling.prototype.browseOrders = function(req, res){
       var newRecipes = [];
       recipes.forEach(function(recipe){
         var parameters = recipe.userparameters;
+        recipe.defaultParameters = [];
+        recipe.userparameters.forEach(function(parameter){
+          recipe.defaultParameters.push(parameter.Default);
+        });
         recipe.userparameters = _.without(parameters, _.findWhere(parameters, {Name: 'Identifier assignment / Barcode'})||
           _.findWhere(parameters, {Name: 'Total Liquid Amount'})||
           _.findWhere(parameters, {Name: 'Amount'})|| _.findWhere(parameters, {Name: 'Topping'}));
@@ -528,7 +532,7 @@ OrderHandling.prototype.browseOrders = function(req, res){
           newRecipes.push(recipe);
         }
       });
-      res.render('browseOrders', {recipes: newRecipes});
+      res.render('browseOrders', {address: config.webAddress, marketPlaceIds: config.marketPlaceIds, recipes: newRecipes});
     })
     .catch(function(err){
       res.json(err);

@@ -676,7 +676,7 @@ var recipes = [
 	{
 		"description": "Caribbean Cocktail with a fine shot of grenadine syrup",
 		"dummy": false,
-		"name": "Planter´s Punch ",
+		"name": "PlanterÂ´s Punch ",
 		"recipeId": 10061,
 		"userparameters": [
 			{
@@ -996,7 +996,7 @@ var recipes = [
 	{
 		"description": "Caribbean Cocktail with a fine shot of grenadine syrup",
 		"dummy": false,
-		"name": "Planter´s Punch - Barcode ",
+		"name": "PlanterÂ´s Punch - Barcode ",
 		"recipeId": 10071,
 		"userparameters": [
 			{

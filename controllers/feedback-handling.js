@@ -75,6 +75,54 @@ FeedbackHandling.prototype.getFeedbacks = function(req, res){
     });
 };
 
+/** Prototype to get Recommendations
+ * @memberof FeedbackHandling
+ * @function getRecommendations
+ * @param  req
+ * @param  res Feedbacks
+ */
+FeedbackHandling.prototype.getRecommendations = function(req, res){
+  mi5Database.getRecommendations()
+    .then(function(recommendation){
+      res.json(recommendation);
+    })
+    .catch(function(err){
+      res.json({status: 'err', description: err});
+    });
+};
+
+/** Prototype to get LastFeedback
+ * @memberof FeedbackHandling
+ * @function giveFeedback
+ * @param  req
+ * @param  res Feedbacks
+ */
+FeedbackHandling.prototype.getLastFeedback = function(req, res){
+  mi5Database.getLastFeedback()
+    .then(function(feedbacks){
+      res.json(feedbacks);
+    })
+    .catch(function(err){
+      res.json({status: 'err', description: err});
+    });
+};
+
+/** Prototype to get LastRecommendation
+ * @memberof FeedbackHandling
+ * @function getLastRecommendation
+ * @param  req
+ * @param  res Feedbacks
+ */
+FeedbackHandling.prototype.getLastRecommendation = function(req, res){
+  mi5Database.getLastRecommendation()
+    .then(function(recommendation){
+      res.json(recommendation);
+    })
+    .catch(function(err){
+      res.json({status: 'err', description: err});
+    });
+};
+
 /** Prototype to give Recommendation
  * @memberof FeedbackHandling
  * @function giveRecommendation

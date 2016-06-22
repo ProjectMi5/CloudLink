@@ -8,6 +8,8 @@
 var config = require('./config.js');
 /** @requires module:./models/database.js*/
 var database = require('./models/database.js');
+/** @requires module:./models/database-feedback.js*/
+var databaseFeedback = require('./models/database-feedback.js').instance;
 /** @requires module:./models/google-cloud-messaging.js*/
 var gcm = require('./models/google-cloud-messaging.js');
 /** @requires module:q*/
@@ -151,6 +153,9 @@ app.get('/validateAllVouchers', VoucherHandling.validateAllVouchers);
 app.post('/giveFeedback', FeedbackHandling.giveFeedback);
 app.post('/giveRecommendation', FeedbackHandling.giveRecommendation);
 app.get('/getFeedbacks', FeedbackHandling.getFeedbacks);
+app.get('/getRecommendations', FeedbackHandling.getRecommendations);
+app.get('/getLastRecommendation', FeedbackHandling.getLastRecommendation);
+
 
 // Machine Status
 app.get('/hasStandstill', MachineDataHandling.hasStandstill);
@@ -216,8 +221,11 @@ client.on('message', function (topic, message) {
             console.log('payload:', payload);
             if(typeof payload.recommendation != 'undefined'){
                 console.log('message is a recommendation');
+                console.log(payload.recommendation);
                 /*cannot send JSON-object directly!*/
                 client.publish('/mi5/showcase/cocktail/operator/recommendation', JSON.stringify(payload));
+                databaseFeedback.saveRecommendation(payload.recommendation);
+
             }
         }
     }

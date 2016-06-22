@@ -132,6 +132,19 @@ FeedbackDB.prototype.getFeedbacks = function(){
   return deferred.promise;
 };
 
+FeedbackDB.prototype.getRecommendations = function(){
+  var self = instance;
+  var deferred = Q.defer();
+
+  self.Recommendation.find().limit().exec(function(err, post){
+    if(err) deferred.reject(err);
+
+    deferred.resolve(post);
+  });
+
+  return deferred.promise;
+};
+
 FeedbackDB.prototype.getFeedback = function(orderId){
   var self = instance;
   var deferred = Q.defer();

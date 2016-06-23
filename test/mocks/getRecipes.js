@@ -200,6 +200,273 @@ var recipes = [
 		]
 	},
 	{
+		"recipeId": 10057,
+		"name": "Green Five",
+		"description": "Remember spring feelings in autumn",
+		"dummy": false,
+		"userparameters": [
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Total Liquid Amount",
+				"MinValue": 10,
+				"MaxValue": 200,
+				"Dummy": false,
+				"Description": "Gives the total fluid amount in the glass",
+				"Default": 200
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Orange Juice",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Orange Juice",
+				"Default": 20
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Lemon Juice",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Lemon Juice",
+				"Default": 10
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Pineapple Juice",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Pineapple Juice",
+				"Default": 30
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Maracuja Juice",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Maracuja Juice",
+				"Default": 30
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Blue Curacao",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Blue Curacao",
+				"Default": 10
+			}
+		],
+	},
+	{
+		"recipeId": 10056,
+		"name": "Blue Sunrise",
+		"description": "Contrastful arrangement of sweet syrup and sour juice",
+		"dummy": false,
+		"userparameters": [
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Total Liquid Amount",
+				"MinValue": 10,
+				"MaxValue": 200,
+				"Dummy": false,
+				"Description": "Gives the total fluid amount in the glass",
+				"Default": 200
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Lemon Juice",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Lemon Juice",
+				"Default": 30
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Strawberry Syrup",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Strawberry Syrup",
+				"Default": 8
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Pineapple Juice",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Pineapple Juice",
+				"Default": 54
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Blue Curacao",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Blue Curacao",
+				"Default": 8
+			}
+		],
+		"_id": "563a69af1f19f23506e6a7b9",
+		"__v": 0
+	},
+	{
+		"recipeId": 10053,
+		"name": "911 Targa",
+		"description": "A fruit explosion in your mouth",
+		"dummy": false,
+		"userparameters": [
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Total Liquid Amount",
+				"MinValue": 10,
+				"MaxValue": 200,
+				"Dummy": false,
+				"Description": "Gives the total fluid amount in the glass",
+				"Default": 200
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Maracuja Juice",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Maracuja Juice",
+				"Default": 29
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Orange Juice",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Orange Juice",
+				"Default": 29
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Pineapple Juice",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Pineapple Juice",
+				"Default": 29
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Lemon Juice",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Lemon Juice",
+				"Default": 14
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Grenadine Syrup",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Grenadine Syrup",
+				"Default": 14
+			}
+		],
+		"_id": "563a69af1f19f23506e6a7bd",
+		"__v": 0
+	}, {
+		"__v": 0,
+		"_id": "563a69af1f19f23506e6a7bb",
+		"description": "Flavoursome cocktail painting a picture of a beautiful summer day",
+		"dummy": false,
+		"name": "Summerday",
+		"recipeId": 10055,
+		"userparameters": [
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Total Liquid Amount",
+				"MinValue": 10,
+				"MaxValue": 200,
+				"Dummy": false,
+				"Description": "Gives the total fluid amount in the glass",
+				"Default": 200
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Strawberry",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Strawberry",
+				"Default": 14
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Lemon Juice",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Lemon Juice",
+				"Default": 14
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Pineapple Juice",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Pineapple Juice",
+				"Default": 36
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Orange Juice",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Orange Juice",
+				"Default": 36
+			},
+			{
+				"Unit": "ml",
+				"Step": 0,
+				"Name": "Water",
+				"MinValue": 1,
+				"MaxValue": 100,
+				"Dummy": false,
+				"Description": "Water",
+				"Default": 20
+			}
+		]
+	},
+	{
 		"description": "A fruit explosion in your mouth",
 		"dummy": false,
 		"name": "911 Targa - Barcode",
